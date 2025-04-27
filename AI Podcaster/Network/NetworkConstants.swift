@@ -9,10 +9,8 @@ import Foundation
 
 struct NetworkConstants {
     static var apiKey: String {
-        guard let path = Bundle.main.path(forResource: "GenerativeAI-Info", ofType: "plist"),
-              let dict = NSDictionary(contentsOfFile: path) as? [String: Any],
-              let apiKey = dict["API_KEY"] as? String else {
-            fatalError("API_KEY bulunamadı. Lütfen GenerativeAI-Info.plist dosyasını kontrol edin.")
+        guard let apiKey = EnvironmentManager.shared.getAPIKey() else {
+            fatalError("API_KEY bulunamadı. Lütfen .env dosyasını kontrol edin.")
         }
         return apiKey
     }
