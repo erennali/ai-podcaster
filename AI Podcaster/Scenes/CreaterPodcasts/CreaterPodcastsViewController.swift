@@ -6,16 +6,49 @@
 //
 
 import UIKit
+import SnapKit
 
 class CreaterPodcastsViewController: UIViewController {
     
     // MARK: - UI Components
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        return scrollView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     private lazy var promptTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Soru veya isteğinizi yazın..."
         textField.borderStyle = .roundedRect
-        textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
+    }()
+    
+    private lazy var durationSlider: UISlider = {
+        let slider = UISlider()
+        slider.minimumValue = 5
+        slider.maximumValue = 10
+        slider.value = 5
+        slider.addTarget(self, action: #selector(durationSliderValueChanged), for: .valueChanged)
+        return slider
+    }()
+    
+    private lazy var durationLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Süre: 5 dakika"
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var styleSegmentedControl: UISegmentedControl = {
+        let items = ["Teknik", "Eğlenceli", "Profesyonel", "Yol Arkadaşı"]
+        let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.selectedSegmentIndex = 0
+        return segmentedControl
     }()
     
     private lazy var sendButton: UIButton = {
@@ -24,7 +57,6 @@ class CreaterPodcastsViewController: UIViewController {
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
-        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(sendButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -33,52 +65,35 @@ class CreaterPodcastsViewController: UIViewController {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
-    }
-    
-    // MARK: - UI Setup
-    private func setupUI() {
-        view.backgroundColor = .white
-        title = "AI Podcaster"
-        
-        view.addSubview(promptTextField)
-        view.addSubview(sendButton)
-        view.addSubview(responseLabel)
-        
-        NSLayoutConstraint.activate([
-            promptTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            promptTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            promptTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            promptTextField.heightAnchor.constraint(equalToConstant: 44),
-            
-            sendButton.topAnchor.constraint(equalTo: promptTextField.bottomAnchor, constant: 20),
-            sendButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            sendButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            sendButton.heightAnchor.constraint(equalToConstant: 44),
-            
-            responseLabel.topAnchor.constraint(equalTo: sendButton.bottomAnchor, constant: 20),
-            responseLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            responseLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
-        ])
+        configureView()
     }
     
     // MARK: - Actions
+    @objc private func durationSliderValueChanged() {
+        let duration = Int(durationSlider.value)
+        durationLabel.text = "Süre: \(duration) dakika"
+    }
+    
     @objc private func sendButtonTapped() {
         guard let prompt = promptTextField.text, !prompt.isEmpty else {
             showAlert(message: "Lütfen bir soru veya istek girin")
             return
         }
         
+        let duration = Int(durationSlider.value)
+        let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
+        
         responseLabel.text = "Yanıt bekleniyor..."
         
-        GoogleAIService.shared.generateAIResponse(prompt: prompt) { [weak self] result in
+        let podcastPrompt = "\(prompt) Konusunda ,Okunma Süresi \(duration) dakika olacak şekilde, Stili \(selectedStyle) olacak şekilde text to speech AI tooluna yazarak ses dosyasına dönüştürebileceğim bir podcast içeriği oluştur. Direkt ve sadece paragraf olarak Podcast içeriğini yaz başka hiçbir şey yazma. Podcasti sadece 1 kişi seslendirecek ona göre yaz "
+        
+        GoogleAIService.shared.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
@@ -89,12 +104,70 @@ class CreaterPodcastsViewController: UIViewController {
             }
         }
     }
-    
     private func showAlert(message: String) {
         let alert = UIAlertController(title: "Uyarı", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Tamam", style: .default))
         present(alert, animated: true)
     }
+}
 
+// MARK: - UI Setup
+private extension CreaterPodcastsViewController {
 
+    private func configureView() {
+        view.backgroundColor = .systemBackground
+        title = "AI Podcaster"
+        
+        addViews()
+        configureLayout()
+        }
+    
+    func addViews() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubview(promptTextField)
+        contentView.addSubview(durationSlider)
+        contentView.addSubview(durationLabel)
+        contentView.addSubview(styleSegmentedControl)
+        contentView.addSubview(sendButton)
+        contentView.addSubview(responseLabel)
+    }
+    
+    func configureLayout() {
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        promptTextField.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(44)
+        }
+        durationLabel.snp.makeConstraints { make in
+            make.top.equalTo(promptTextField.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        durationSlider.snp.makeConstraints { make in
+            make.top.equalTo(durationLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        styleSegmentedControl.snp.makeConstraints { make in
+            make.top.equalTo(durationSlider.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        sendButton.snp.makeConstraints { make in
+            make.top.equalTo(styleSegmentedControl.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(44)
+        }
+        responseLabel.snp.makeConstraints { make in
+            make.top.equalTo(sendButton.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.bottom.equalToSuperview().offset(-20)
+        }
+    }
 }

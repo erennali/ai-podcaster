@@ -3,6 +3,7 @@
 *.xccheckout
 *.xcworkspace
 *.xcodeproj
+GenerativeAI-Info.plist
 !default.xcworkspace
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
