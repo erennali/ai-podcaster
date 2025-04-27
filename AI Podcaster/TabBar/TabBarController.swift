@@ -38,7 +38,7 @@ private extension TabBarController {
         )
         let createrPodcast = createNav(
             with: "Create Podcast",
-            and: UIImage(systemName: "plus"),
+            and: UIImage(systemName: "plus.square"),
             viewController: CreaterPodcastsViewController()
         )
         let libraryVC = createNav(

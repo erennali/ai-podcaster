@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class SplashViewController: UIViewController {
 
@@ -14,7 +15,7 @@ class SplashViewController: UIViewController {
     
     private let iconImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "music.quarternote.3")
+        imageView.image = UIImage(systemName: "music.quarternote.3")
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -57,17 +58,16 @@ private extension SplashViewController {
     }
     
     func configureLayout() {
+        iconImage.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-50) // İkon biraz yukarıda olsun
+            make.width.height.equalTo(100) // İkon boyutu
+        }
         
-        
-        NSLayoutConstraint.activate([
-            iconImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            iconImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            iconImage.widthAnchor.constraint(equalToConstant: 200),
-            iconImage.heightAnchor.constraint(equalToConstant: 200),
-            
-            podcastLabel.topAnchor.constraint(equalTo: iconImage.bottomAnchor, constant: 8),
-            podcastLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+        podcastLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(iconImage.snp.bottom).offset(20) // İkonun altına biraz boşluk bırak
+        }
     }
     
     func navigateToTabBar() {
@@ -81,5 +81,9 @@ private extension SplashViewController {
     
     
     
+}
+
+#Preview {
+    SplashViewController()
 }
 
