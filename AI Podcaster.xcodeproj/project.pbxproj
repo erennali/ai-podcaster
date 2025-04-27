@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BED2DBE86DA00827F7C /* Alamofire */; };
+		BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */; };
 		BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BAC317392DBE56500066DF0D /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */,
 				BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */,
+				BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +88,8 @@
 			name = "AI Podcaster";
 			packageProductDependencies = (
 				BAC317392DBE56500066DF0D /* SnapKit */,
+				BA7A9BED2DBE86DA00827F7C /* Alamofire */,
+				BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */,
 			);
 			productName = "AI Podcaster";
 			productReference = BAC316902DBE41350066DF0D /* AI Podcaster.app */;
@@ -115,6 +121,8 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BAC317382DBE56500066DF0D /* XCRemoteSwiftPackageReference "SnapKit" */,
+				BA7A9BEC2DBE86DA00827F7C /* XCRemoteSwiftPackageReference "Alamofire" */,
+				BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BAC316912DBE41350066DF0D /* Products */;
@@ -354,6 +362,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		BA7A9BEC2DBE86DA00827F7C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google-gemini/deprecated-generative-ai-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
 		BAC317382DBE56500066DF0D /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -365,6 +389,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BA7A9BED2DBE86DA00827F7C /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA7A9BEC2DBE86DA00827F7C /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
 		BAC317392DBE56500066DF0D /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BAC317382DBE56500066DF0D /* XCRemoteSwiftPackageReference "SnapKit" */;
