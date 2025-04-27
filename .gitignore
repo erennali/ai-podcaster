@@ -1,0 +1,56 @@
+# Xcode Projeleri için Temel Ignore'lar
+**/xcuserdata/
+*.xccheckout
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+DerivedData/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Swift Paket Yöneticisi (SPM)
+.swiftpm/
+.build/
+Packages/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+Cartfile.resolved
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# API Anahtarları ve Hassas Veriler (.env formatı)
+.env
+.env.local
+.env.*.local
+*.encrypted
+Secrets.swift  # Hassas verileri tuttuğunuz özel dosya
+
+# Sistem ve IDE Dosyaları
+.DS_Store
+*.swp
+*.backup
+
+# Test ve Loglar
+*.log
+*.testresult
+
+# Playgrounds
+*.playground
+
+# Rosetta Simülatör Önbelleği (Apple Silicon için)
+RosettaStone/
+
+# App Thinning (Asset Katalogları hariç)
+*.appthinning
