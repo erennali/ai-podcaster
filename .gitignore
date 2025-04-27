@@ -2,6 +2,7 @@
 **/xcuserdata/
 *.xccheckout
 *.xcworkspace
+*.xcodeproj
 !default.xcworkspace
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
