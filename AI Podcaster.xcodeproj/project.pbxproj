@@ -10,6 +10,10 @@
 		BA34C2D52DC0CC44005915FE /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = BA34C2D42DC0CC44005915FE /* ElevenLabsSDK */; };
 		BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BED2DBE86DA00827F7C /* Alamofire */; };
 		BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */; };
+		BABAC5AE2DC15DB30025399E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5AD2DC15DB30025399E /* FirebaseAuth */; };
+		BABAC5B02DC15DB30025399E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5AF2DC15DB30025399E /* FirebaseCore */; };
+		BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5B12DC15DB30025399E /* FirebaseFirestore */; };
+		BABAC5B42DC15DB30025399E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5B32DC15DB30025399E /* FirebaseStorage */; };
 		BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BAC317392DBE56500066DF0D /* SnapKit */; };
 /* End PBXBuildFile section */
 
@@ -44,9 +48,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA34C2D52DC0CC44005915FE /* ElevenLabsSDK in Frameworks */,
+				BABAC5AE2DC15DB30025399E /* FirebaseAuth in Frameworks */,
 				BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */,
 				BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */,
+				BABAC5B02DC15DB30025399E /* FirebaseCore in Frameworks */,
+				BABAC5B42DC15DB30025399E /* FirebaseStorage in Frameworks */,
 				BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */,
+				BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +101,10 @@
 				BA7A9BED2DBE86DA00827F7C /* Alamofire */,
 				BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */,
 				BA34C2D42DC0CC44005915FE /* ElevenLabsSDK */,
+				BABAC5AD2DC15DB30025399E /* FirebaseAuth */,
+				BABAC5AF2DC15DB30025399E /* FirebaseCore */,
+				BABAC5B12DC15DB30025399E /* FirebaseFirestore */,
+				BABAC5B32DC15DB30025399E /* FirebaseStorage */,
 			);
 			productName = "AI Podcaster";
 			productReference = BAC316902DBE41350066DF0D /* AI Podcaster.app */;
@@ -127,6 +139,7 @@
 				BA7A9BEC2DBE86DA00827F7C /* XCRemoteSwiftPackageReference "Alamofire" */,
 				BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */,
 				BA34C2D32DC0CC44005915FE /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
+				BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BAC316912DBE41350066DF0D /* Products */;
@@ -390,6 +403,14 @@
 				minimumVersion = 0.5.6;
 			};
 		};
+		BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.12.0;
+			};
+		};
 		BAC317382DBE56500066DF0D /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -415,6 +436,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */;
 			productName = GoogleGenerativeAI;
+		};
+		BABAC5AD2DC15DB30025399E /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		BABAC5AF2DC15DB30025399E /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		BABAC5B12DC15DB30025399E /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		BABAC5B32DC15DB30025399E /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 		BAC317392DBE56500066DF0D /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

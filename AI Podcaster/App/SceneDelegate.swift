@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    static var loginUser: Bool = false
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
@@ -20,6 +21,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let splashVC = SplashViewController()
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
+        
+        
+        let currentUser = Auth.auth().currentUser
+        if currentUser != nil {
+            SceneDelegate.loginUser = true
+        }
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

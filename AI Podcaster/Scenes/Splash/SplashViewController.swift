@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+
 class SplashViewController: UIViewController {
 
     
@@ -37,6 +38,8 @@ class SplashViewController: UIViewController {
 
         configureView()
         navigateToTabBar()
+        
+        
         
     }
     
