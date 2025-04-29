@@ -13,8 +13,19 @@ class GoogleAIService {
     private let model: GenerativeModel
     
     private init() {
-    
-        self.model = GenerativeModel(name: "gemini-2.0-flash", apiKey: NetworkConstants.apiKey)
+        let config = GenerationConfig(
+            temperature: 0.7,
+            topP: 0.8,
+            topK: 40,
+            maxOutputTokens: 2048,
+            stopSequences: []
+        )
+        
+        self.model = GenerativeModel(
+            name: "gemini-2.0-flash",
+            apiKey: NetworkConstants.apiKey,
+            generationConfig: config
+        )
     }
     
     func generateAIResponse(prompt: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -22,12 +33,17 @@ class GoogleAIService {
             do {
                 let response = try await model.generateContent(prompt)
                 if let text = response.text {
-                    completion(.success(text))
+                    DispatchQueue.main.async {
+                        completion(.success(text))
+                        //AVSpeechService.shared.speak(text: text)
+                    }
                 } else {
                     completion(.failure(NSError(domain: "GoogleAIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Yanıt metni alınamadı"])))
                 }
             } catch {
-                completion(.failure(error))
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
             }
         }
     }
