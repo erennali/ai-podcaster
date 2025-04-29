@@ -46,19 +46,19 @@ private extension TabBarController {
             and: UIImage(systemName: "music.note"),
             viewController: LibraryViewController()
         )
-        let registerVC = createNav(
-            with: "Register",
-            and: UIImage(systemName: "person.fill"),
-            viewController: RegisterViewController()
-        )
        
         let profileVC = createNav(
-            with: "Settings",
+            with: "Profile",
             and: UIImage(systemName: "gear"),
             viewController: ProfileViewController()
         )
         
         if SceneDelegate.loginUser == false {
+            let registerVC = createNav(
+                with: "Register",
+                and: UIImage(systemName: "person.fill"),
+                viewController: RegisterViewController()
+            )
             setViewControllers([homeVC, searchVC, createrPodcast, libraryVC, registerVC], animated: false)
         } else {
             setViewControllers([homeVC,searchVC, createrPodcast,libraryVC, profileVC], animated: false)

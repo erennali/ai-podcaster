@@ -35,7 +35,7 @@ private extension RegisterViewController {
     
     private func configureView2() {
         view.backgroundColor = .systemBackground
-        title = "Rehister"
+        title = "Register"
         
         addViews2()
         configureLayout2()

@@ -13,6 +13,7 @@ build/
 *.mode1v3
 *.mode2v3
 *.perspectivev3
+GoogleService-Info.plist
 
 # Swift Paket Yöneticisi (SPM)
 .swiftpm/
