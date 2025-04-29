@@ -35,4 +35,7 @@ class EnvironmentManager {
     func getAPIKey() -> String? {
         return environmentVariables["GENERATIVE_AI_API_KEY"]
     }
-} 
+    func getElevenlabsAPIKey() -> String? {
+        return environmentVariables["ELEVENLABS_API_KEY"]
+    }
+}

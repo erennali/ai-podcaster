@@ -1,5 +1,5 @@
 {
-  "originHash" : "3c5312bfec7cb42e265778790e3918b6c7f89d6c6ec2c0812c95271b5c8f7b3d",
+  "originHash" : "4b00fdcc7ee2e89ae13f41272a433f83ca7b744064b9a7515b1faed6c34b1f8c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -20,12 +20,39 @@
       }
     },
     {
+      "identity" : "devicekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devicekit/DeviceKit.git",
+      "state" : {
+        "revision" : "513b9d7e7a1bd46504a1009bbab943b75ce2f195",
+        "version" : "5.6.0"
+      }
+    },
+    {
+      "identity" : "elevenlabsswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/elevenlabs/ElevenLabsSwift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "73588d629f33352dd74408b97e53d649643fb698"
+      }
+    },
+    {
       "identity" : "snapkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",
       "state" : {
         "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
         "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
       }
     }
   ],

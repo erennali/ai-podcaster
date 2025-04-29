@@ -35,7 +35,7 @@ class GoogleAIService {
                 if let text = response.text {
                     DispatchQueue.main.async {
                         completion(.success(text))
-                        //AVSpeechService.shared.speak(text: text)
+                        AVSpeechService.shared.speak(text: text)
                     }
                 } else {
                     completion(.failure(NSError(domain: "GoogleAIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Yanıt metni alınamadı"])))
