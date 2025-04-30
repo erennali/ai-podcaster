@@ -15,6 +15,7 @@ build/
 *.perspectivev3
 GoogleService-Info.plist
 *.plist
+**.plist
 
 # Swift Paket Yöneticisi (SPM)
 .swiftpm/
