@@ -248,7 +248,8 @@ class RegisterViewController: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        let loginVC = LoginViewController()
+        navigationController?.pushViewController(loginVC, animated: true)
     }
     
     // MARK: - Keyboard Handling

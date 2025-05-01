@@ -7,12 +7,20 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if let user = Auth.auth().currentUser {
+                Firestore.firestore().collection("users").document(user.uid).getDocument { snapshot, error in
+                    if let data = snapshot?.data() {
+                        print("Kullanıcı verisi: \(data)")
+                        self.nameLabel.text = data["name"] as? String
+                    }
+                }
+            }
         configureView()
     }
     
@@ -22,7 +30,13 @@ class ProfileViewController: UIViewController {
         button.addTarget(self, action: #selector(logoutButtonTapped), for: .touchUpInside)
         return button
     }()
-
+    
+    let nameLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Name"
+        label.font = .systemFont(ofSize: 20)
+        return label
+    }()
 
     
     // MARK: - Actions
@@ -69,11 +83,16 @@ extension ProfileViewController {
     
     func addViews() {
         view.addSubview(exitButton)
+        view.addSubview(nameLabel)
     }
     
     func configureLayout() {
         exitButton.snp.makeConstraints{
             $0.edges.equalToSuperview()
+        }
+        nameLabel.snp.makeConstraints{
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            $0.leading.equalToSuperview().offset(20)
         }
     }
 }

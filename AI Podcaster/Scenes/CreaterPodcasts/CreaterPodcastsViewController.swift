@@ -45,7 +45,7 @@ class CreaterPodcastsViewController: UIViewController {
     }()
     
     private lazy var styleSegmentedControl: UISegmentedControl = {
-        let items = ["Teknik", "Eğlenceli", "Profesyonel", "Yol Arkadaşı"]
+        let items = ["Technical", "Fun", "Professional", "Companion"]
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.selectedSegmentIndex = 0
         return segmentedControl
@@ -78,21 +78,26 @@ class CreaterPodcastsViewController: UIViewController {
     // MARK: - Actions
     @objc private func durationSliderValueChanged() {
         let duration = Int(durationSlider.value)
-        durationLabel.text = "Süre: \(duration) dakika"
+        durationLabel.text = "Time: \(duration) minutes"
     }
     
     @objc private func sendButtonTapped() {
+        if SceneDelegate.loginUser == false {
+            showAlert(message: "You must be logged in to use this feature!")
+            return
+                    }
+        
         guard let prompt = promptTextField.text, !prompt.isEmpty else {
-            showAlert(message: "Lütfen bir soru veya istek girin")
+            showAlert(message: "Please enter a question or request")
             return
         }
         
         let duration = Int(durationSlider.value)
         let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
         
-        responseLabel.text = "Yanıt bekleniyor..."
+        responseLabel.text = "Awaiting a response..."
         
-        let podcastPrompt = "\(prompt) Konusunda ,Okunma Süresi \(duration) dakika olacak şekilde, Stili \(selectedStyle) olacak şekilde text to speech AI tooluna yazarak ses dosyasına dönüştürebileceğim bir podcast içeriği oluştur. Direkt ve sadece paragraf olarak Podcast içeriğini yaz başka hiçbir şey yazma. Podcasti sadece 1 kişi seslendirecek ona göre yaz "
+        let podcastPrompt = "Create a podcast content that I can convert into an audio file by typing it into the text to speech AI tool in the subject \(prompt), with a reading time \(duration) minutes, with a style \(selectedStyle). Write the podcast content directly and only in paragraphs, don't write anything else. Only 1 person will voice the podcast, write accordingly "
         
         GoogleAIService.shared.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
             DispatchQueue.main.async {
@@ -100,14 +105,14 @@ class CreaterPodcastsViewController: UIViewController {
                 case .success(let response):
                     self?.responseLabel.text = response
                 case .failure(let error):
-                    self?.responseLabel.text = "Hata: \(error.localizedDescription)"
+                    self?.responseLabel.text = "Error: \(error.localizedDescription)"
                 }
             }
         }
     }
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Uyarı", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Tamam", style: .default))
+        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
 }
