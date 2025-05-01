@@ -23,7 +23,7 @@ class CreaterPodcastsViewController: UIViewController {
     
     private lazy var promptTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Soru veya isteğinizi yazın..."
+        textField.placeholder = "Please enter a question or request"
         textField.borderStyle = .roundedRect
         return textField
     }()
@@ -39,7 +39,7 @@ class CreaterPodcastsViewController: UIViewController {
     
     private lazy var durationLabel: UILabel = {
         let label = UILabel()
-        label.text = "Süre: 5 dakika"
+        label.text = "Time: 5 minutes"
         label.textAlignment = .center
         return label
     }()
@@ -53,7 +53,7 @@ class CreaterPodcastsViewController: UIViewController {
     
     private lazy var sendButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Gönder", for: .normal)
+        button.setTitle("Create", for: .normal)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 8
@@ -73,6 +73,8 @@ class CreaterPodcastsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Actions
@@ -114,6 +116,9 @@ class CreaterPodcastsViewController: UIViewController {
         let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

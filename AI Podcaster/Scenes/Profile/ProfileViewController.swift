@@ -74,7 +74,7 @@ class ProfileViewController: UIViewController {
 extension ProfileViewController {
     // MARK: - UI Setup
      func configureView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
        
        addViews()
        configureLayout()
