@@ -35,12 +35,11 @@ class SplashViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         configureView()
-        navigateToTabBar()
-        
-        
-        
+        Task {
+            await FirebaseService.shared.fetchUserData()
+            navigateToTabBar()
+        }
     }
     
 }
