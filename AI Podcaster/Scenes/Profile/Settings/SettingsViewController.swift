@@ -4,6 +4,7 @@ import SafariServices
 
 final class SettingsViewController: UIViewController {
     
+    
     private let viewModel: SettingsViewModel
     private let themeKey = "selectedTheme"
     
@@ -88,10 +89,29 @@ private extension SettingsViewController {
     func didSelect(item: SettingsItem){
         switch item.type {
         case .rateApp : promptReview()
+        case .deleteAccount:
+            deleteAccount()
         case .privacyPolicy , .termsOfUse :
             openUrl("https://google.com")
         default : break
         }
+    }
+    func deleteAccount() {
+        let splashVC = SplashViewController()
+        let alert = UIAlertController(
+            title: "Delete Account",
+            message: "Are you sure you want to delete your account?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            self?.viewModel.deleteAccount()
+            SceneDelegate.loginUser = false
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.changeRootViewController(splashVC)
+            }
+        })
+        present(alert, animated: true)
     }
     func promptReview() {
         if let scene = view.window?.windowScene {
@@ -150,6 +170,8 @@ extension SettingsViewController: UITableViewDataSource {
             viewModel.fetchNotificationStatus{switchControl.isOn = $0 }
             switchControl.addTarget(self, action: #selector(didToggleNotification(_:)), for: .valueChanged)
             cell.accessoryView = switchControl
+        case .deleteAccount:
+            cell.accessoryType = .disclosureIndicator
         case .rateApp, .privacyPolicy, .termsOfUse:
             cell.accessoryType = .disclosureIndicator
         }

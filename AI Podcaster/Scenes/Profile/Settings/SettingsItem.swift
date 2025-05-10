@@ -10,6 +10,7 @@ import Foundation
 enum SettingsItemType {
     case theme
     case notification
+    case deleteAccount
     case rateApp
     case privacyPolicy
     case termsOfUse
@@ -34,6 +35,9 @@ struct SettingsSection {
         ]),
         SettingsSection(title: "Rate Us", items: [
             SettingsItem(title: "Rate Us", iconName: "star.fill", type: .rateApp),
+        ]),
+        SettingsSection(title: "Delete Account", items: [
+            SettingsItem(title: "Delete Account", iconName: "person.crop.circle.fill.badge.minus", type: .deleteAccount),
         ]),
         SettingsSection(title: "Legal", items: [
             SettingsItem(title: "Privacy Policy", iconName: "text.document.fill", type: .privacyPolicy),

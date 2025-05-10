@@ -7,10 +7,11 @@
 
 import Foundation
 import UserNotifications
+import FirebaseAuth
 
 class SettingsViewModel {
-    var sections = SettingsSection.sections
     
+    var sections = SettingsSection.sections
     private let themeKey = "selectedTheme"
     
     init() {
@@ -35,6 +36,15 @@ extension SettingsViewModel {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             DispatchQueue.main.async {
                 completion(settings.authorizationStatus == .authorized)
+            }
+        }
+    }
+    func deleteAccount() {
+        Auth.auth().currentUser?.delete { error in
+            if let error = error {
+                print("Error deleting user: \(error.localizedDescription)")
+            } else {
+                print("User deleted successfully.")
             }
         }
     }

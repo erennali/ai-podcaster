@@ -51,7 +51,7 @@ private extension TabBarController {
        
         let profileVC = createNav(
             with: "Profile",
-            and: UIImage(systemName: "gear"),
+            and: UIImage(systemName: "person.crop.circle.fill"),
             viewController: ProfileViewController()
         )
         

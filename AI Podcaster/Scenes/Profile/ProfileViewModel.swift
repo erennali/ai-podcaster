@@ -24,7 +24,7 @@ class ProfileViewModel {
         }
     }
     
-    func signOut() {
+     func signOut() {
         do {
             try Auth.auth().signOut()
             UserDefaults.standard.removeObject(forKey: "userData")
