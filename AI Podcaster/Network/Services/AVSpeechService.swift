@@ -10,7 +10,7 @@ import AVKit
 
 class AVSpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     static let shared = AVSpeechService()
-    private var synthesizer: AVSpeechSynthesizer
+    var synthesizer: AVSpeechSynthesizer
     
     override init() {
         synthesizer = AVSpeechSynthesizer()
@@ -35,6 +35,18 @@ class AVSpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
             synthesizer.speak(utterance)
         } catch {
             print("Speech playback error: \(error.localizedDescription)")
+        }
+    }
+    
+    func pause() {
+        if synthesizer.isSpeaking {
+            synthesizer.pauseSpeaking(at: .immediate)
+        }
+    }
+    
+    func resume() {
+        if synthesizer.isPaused {
+            synthesizer.continueSpeaking()
         }
     }
     
