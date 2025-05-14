@@ -55,12 +55,54 @@ final class CreaterPodcastsViewController: UIViewController {
         return segmentedControl
     }()
     
+    private lazy var languageLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Select Language"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    private lazy var chooseSpeakLanguage: UIPickerView = {
+        let picker = UIPickerView()
+        picker.delegate = self
+        picker.dataSource = self
+        picker.backgroundColor = .systemBackground
+        return picker
+    }()
+    
+    private let languages = [
+        ("Türkçe", "tr-TR"),
+        ("English (US)", "en-US"),
+        ("English (UK)", "en-GB"),
+        ("Español", "es-ES"),
+        ("Français", "fr-FR"),
+        ("Deutsch", "de-DE"),
+        ("Italiano", "it-IT"),
+        ("Português", "pt-BR"),
+        ("Русский", "ru-RU"),
+        ("日本語", "ja-JP"),
+        ("한국어", "ko-KR"),
+        ("中文", "zh-CN"),
+        ("العربية", "ar-SA")
+    ]
+    
+    private var selectedLanguage: String {
+        let index = chooseSpeakLanguage.selectedRow(inComponent: 0)
+        return languages[index].1
+    }
+    
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Create", for: .normal)
+        button.setTitle("Create Podcast", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        button.layer.shadowOpacity = 0.1
         button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -68,9 +110,14 @@ final class CreaterPodcastsViewController: UIViewController {
     private lazy var playPauseButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Play", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.backgroundColor = .systemGreen
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 8
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        button.layer.shadowOpacity = 0.1
         button.isEnabled = false
         button.addTarget(self, action: #selector(playPauseButtonTapped), for: .touchUpInside)
         return button
@@ -121,11 +168,12 @@ final class CreaterPodcastsViewController: UIViewController {
         
         let duration = Int(durationSlider.value)
         let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
+        let selectedLanguage = languages[chooseSpeakLanguage.selectedRow(inComponent: 0)].0
         
         responseLabel.text = "Awaiting a response..."
         playPauseButton.isEnabled = false
         
-        viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle)
+        viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle, language: selectedLanguage)
     }
     
     @objc private func playPauseButtonTapped() {
@@ -184,6 +232,8 @@ private extension CreaterPodcastsViewController {
         contentView.addSubview(durationSlider)
         contentView.addSubview(durationLabel)
         contentView.addSubview(styleSegmentedControl)
+        contentView.addSubview(languageLabel)
+        contentView.addSubview(chooseSpeakLanguage)
         contentView.addSubview(createButton)
         contentView.addSubview(playPauseButton)
         contentView.addSubview(responseLabel)
@@ -220,16 +270,27 @@ private extension CreaterPodcastsViewController {
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
-        createButton.snp.makeConstraints { make in
+        languageLabel.snp.makeConstraints { make in
             make.top.equalTo(styleSegmentedControl.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(44)
+        }
+        
+        chooseSpeakLanguage.snp.makeConstraints { make in
+            make.top.equalTo(languageLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(120)
+        }
+        
+        createButton.snp.makeConstraints { make in
+            make.top.equalTo(chooseSpeakLanguage.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(50)
         }
         
         playPauseButton.snp.makeConstraints { make in
             make.top.equalTo(createButton.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(44)
+            make.height.equalTo(50)
         }
         
         responseLabel.snp.makeConstraints { make in
@@ -239,3 +300,18 @@ private extension CreaterPodcastsViewController {
         }
     }
 }
+
+extension CreaterPodcastsViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return languages.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return languages[row].0
+    }
+}
+

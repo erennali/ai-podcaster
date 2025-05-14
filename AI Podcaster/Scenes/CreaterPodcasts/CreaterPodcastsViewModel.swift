@@ -29,8 +29,8 @@ final class CreaterPodcastsViewModel: NSObject {
     }
     
     // MARK: - Public Methods
-    func generatePodcast(prompt: String, duration: Int, style: String) {
-        let podcastPrompt = "Create a podcast content that I can convert into an audio file by typing it into the text to speech AI tool in the subject \(prompt), with a reading time \(duration) minutes, with a style \(style). Write the podcast content directly and only in paragraphs, don't write anything else. Only 1 person will voice the podcast, write accordingly"
+    func generatePodcast(prompt: String, duration: Int, style: String , language: String) {
+        let podcastPrompt = "Create a podcast content that I can convert into an audio file by typing it into the text to speech AI tool in the subject \(prompt), with a reading time \(duration) minutes, with a style \(style). Write the podcast content directly and only in paragraphs, don't write anything else. Only 1 person will voice the podcast, write accordingly. Answer in \(language)."
         
         googleAIService.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
             DispatchQueue.main.async {
