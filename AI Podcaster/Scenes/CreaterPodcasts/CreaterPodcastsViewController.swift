@@ -71,25 +71,9 @@ final class CreaterPodcastsViewController: UIViewController {
         return picker
     }()
     
-    private let languages = [
-        ("Türkçe", "tr-TR"),
-        ("English (US)", "en-US"),
-        ("English (UK)", "en-GB"),
-        ("Español", "es-ES"),
-        ("Français", "fr-FR"),
-        ("Deutsch", "de-DE"),
-        ("Italiano", "it-IT"),
-        ("Português", "pt-BR"),
-        ("Русский", "ru-RU"),
-        ("日本語", "ja-JP"),
-        ("한국어", "ko-KR"),
-        ("中文", "zh-CN"),
-        ("العربية", "ar-SA")
-    ]
-    
     private var selectedLanguage: String {
         let index = chooseSpeakLanguage.selectedRow(inComponent: 0)
-        return languages[index].1
+        return viewModel.getLanguageName(at: index)
     }
     
     private lazy var createButton: UIButton = {
@@ -123,11 +107,32 @@ final class CreaterPodcastsViewController: UIViewController {
         return button
     }()
     
-    private lazy var responseLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
+    private lazy var responseTextView: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = false
+        textView.isScrollEnabled = true
+        textView.font = .systemFont(ofSize: 16)
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor.systemGray4.cgColor
+        textView.layer.cornerRadius = 8
+        textView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        return textView
+    }()
+    
+    private lazy var saveButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Save Podcast", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        button.backgroundColor = .systemIndigo
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        button.layer.shadowOpacity = 0.1
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        return button
     }()
     
     // MARK: - Initialization
@@ -156,21 +161,12 @@ final class CreaterPodcastsViewController: UIViewController {
     }
     
     @objc private func createButtonTapped() {
-        if SceneDelegate.loginUser == false {
-            showAlert(message: "You must be logged in to use this feature!")
-            return
-        }
-        
-        guard let prompt = promptTextField.text, !prompt.isEmpty else {
-            showAlert(message: "Please enter a question or request")
-            return
-        }
-        
+        let prompt = promptTextField.text ?? ""
         let duration = Int(durationSlider.value)
         let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
-        let selectedLanguage = languages[chooseSpeakLanguage.selectedRow(inComponent: 0)].0
         
-        responseLabel.text = "Awaiting a response..."
+        responseTextView.text = "Awaiting a response..."
+        responseTextView.textAlignment = .center
         playPauseButton.isEnabled = false
         
         viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle, language: selectedLanguage)
@@ -180,27 +176,46 @@ final class CreaterPodcastsViewController: UIViewController {
         viewModel.togglePlayback()
     }
     
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc private func saveButtonTapped() {
+        let saveVC = SavePodcastViewController(
+            podcastText: responseTextView.text,
+            podcastLanguage: selectedLanguage,
+            podcastStyle: styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
+            
+        )
+        saveVC.delegate = self
+        saveVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = saveVC.sheetPresentationController {
+            sheet.detents = [.medium()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(saveVC, animated: true)
     }
     
     // MARK: - Private Methods
     private func setupViewModel() {
         viewModel.delegate = self
     }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }
 
 // MARK: - CreaterPodcastsViewModelDelegate
 extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
     func didUpdateResponse(_ response: String) {
-        responseLabel.text = response
+        responseTextView.text = response
         playPauseButton.isEnabled = true
+        saveButton.isEnabled = true
     }
     
     func didUpdatePlaybackState(isPlaying: Bool) {
@@ -209,8 +224,26 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
     }
     
     func didShowError(_ error: String) {
-        responseLabel.text = "Error: \(error)"
+        responseTextView.text = "Error: \(error)"
         playPauseButton.isEnabled = false
+        saveButton.isEnabled = false
+    }
+    
+    func didUpdateUIState(isLoading: Bool) {
+        createButton.isEnabled = !isLoading
+        if isLoading {
+            responseTextView.text = "Awaiting a response..."
+        }
+    }
+    
+    func didShowAlert(message: String) {
+        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    func didSavePodcastSuccessfully() {
+        showAlert(message: "Podcast saved successfully!")
     }
 }
 
@@ -236,7 +269,8 @@ private extension CreaterPodcastsViewController {
         contentView.addSubview(chooseSpeakLanguage)
         contentView.addSubview(createButton)
         contentView.addSubview(playPauseButton)
-        contentView.addSubview(responseLabel)
+        contentView.addSubview(responseTextView)
+        contentView.addSubview(saveButton)
     }
     
     func configureLayout() {
@@ -293,9 +327,16 @@ private extension CreaterPodcastsViewController {
             make.height.equalTo(50)
         }
         
-        responseLabel.snp.makeConstraints { make in
+        responseTextView.snp.makeConstraints { make in
             make.top.equalTo(playPauseButton.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(200)
+        }
+        
+        saveButton.snp.makeConstraints { make in
+            make.top.equalTo(responseTextView.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(50)
             make.bottom.equalToSuperview().offset(-20)
         }
     }
@@ -307,11 +348,18 @@ extension CreaterPodcastsViewController: UIPickerViewDelegate, UIPickerViewDataS
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return languages.count
+        return viewModel.languages.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return languages[row].0
+        return viewModel.getLanguageName(at: row)
+    }
+}
+
+extension CreaterPodcastsViewController: SavePodcastViewControllerDelegate {
+    func didSavePodcast(title: String) {
+        let style = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
+        viewModel.savePodcast(title: title, style: style, language: selectedLanguage, duration: Int(durationSlider.value))
     }
 }
 
