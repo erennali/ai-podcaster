@@ -81,7 +81,7 @@ final class CreaterPodcastsViewModel: NSObject {
         }
     }
     
-    func savePodcast(title: String, style: String, language: String, duration: Int) {
+    func savePodcast(id:UUID,title: String, style: String, language: String, duration: Int) {
         guard let currentText = currentText,
               let userId = Auth.auth().currentUser?.uid else {
             delegate?.didShowError("Failed to save podcast")
@@ -89,6 +89,7 @@ final class CreaterPodcastsViewModel: NSObject {
         }
         
         let podcastData: [String: Any] = [
+            "id": id.uuidString,
             "title": title,
             "content": currentText,
             "minutes": duration,

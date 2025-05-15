@@ -359,7 +359,8 @@ extension CreaterPodcastsViewController: UIPickerViewDelegate, UIPickerViewDataS
 extension CreaterPodcastsViewController: SavePodcastViewControllerDelegate {
     func didSavePodcast(title: String) {
         let style = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
-        viewModel.savePodcast(title: title, style: style, language: selectedLanguage, duration: Int(durationSlider.value))
+        let podcastId = UUID()
+        viewModel.savePodcast(id: podcastId, title: title, style: style, language: selectedLanguage, duration: Int(durationSlider.value))
     }
 }
 
