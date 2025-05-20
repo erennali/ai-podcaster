@@ -46,7 +46,7 @@ private extension TabBarController {
         let libraryVC = createNav(
             with: "Library",
             and: UIImage(systemName: "music.note"),
-            viewController: LibraryViewController()
+            viewController: PodcastsViewController()
         )
        
         let profileVC = createNav(
