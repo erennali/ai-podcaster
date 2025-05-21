@@ -14,6 +14,7 @@ class PodcastsCell: UITableViewCell {
     static let identifier = "PodcastsCell"
 
     private var podcast: Podcast?
+    private var isPlaying = false
     
     private let containerView: UIView = {
         let view = UIView()
@@ -35,6 +36,15 @@ class PodcastsCell: UITableViewCell {
         imageView.image = UIImage(systemName: "mic.fill")
         imageView.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
         return imageView
+    }()
+    
+    private let playButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "play.circle.fill"), for: .normal)
+        button.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        return button
     }()
     
     private let titleLabel: UILabel = {
@@ -134,6 +144,13 @@ class PodcastsCell: UITableViewCell {
             self.containerView.backgroundColor = selected ? UIColor(red: 0.95, green: 0.95, blue: 1.0, alpha: 1.0) : .white
         }
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        if isPlaying {
+            stopSpeech()
+        }
+    }
 }
 
 // MARK: - Public Methods
@@ -163,12 +180,14 @@ private extension PodcastsCell {
         
         addViews()
         configureLayout()
+        setupActions()
     }
     
     func addViews() {
         contentView.addSubview(containerView)
         
         containerView.addSubview(podcastImageView)
+        containerView.addSubview(playButton)
         containerView.addSubview(titleLabel)
         containerView.addSubview(contentLabel)
         containerView.addSubview(infoStackView)
@@ -189,6 +208,12 @@ private extension PodcastsCell {
         podcastImageView.snp.makeConstraints { make in
             make.leading.top.equalToSuperview().inset(16)
             make.width.height.equalTo(60)
+        }
+        
+        playButton.snp.makeConstraints { make in
+            make.top.equalTo(podcastImageView.snp.bottom).offset(8)
+            make.centerX.equalTo(podcastImageView)
+            make.width.height.equalTo(32)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -227,5 +252,52 @@ private extension PodcastsCell {
             make.leading.equalTo(podcastImageView.snp.trailing).offset(12)
             make.trailing.bottom.equalToSuperview().inset(16)
         }
+    }
+    
+    func setupActions() {
+        playButton.addTarget(self, action: #selector(togglePlayPause), for: .touchUpInside)
+    }
+    
+    @objc func togglePlayPause() {
+        guard let podcast = podcast else { return }
+        
+        if isPlaying {
+            stopSpeech()
+        } else {
+            startSpeech(with: podcast.content)
+        }
+    }
+    
+    func startSpeech(with text: String) {
+        AVSpeechService.shared.speak(text: text)
+        isPlaying = true
+        updatePlayButtonState()
+        
+        // Register for speech completion notification
+        NotificationCenter.default.addObserver(self, 
+                                              selector: #selector(speechDidFinish), 
+                                              name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
+                                              object: nil)
+    }
+    
+    func stopSpeech() {
+        AVSpeechService.shared.stop()
+        isPlaying = false
+        updatePlayButtonState()
+        
+        // Remove observer
+        NotificationCenter.default.removeObserver(self, 
+                                                name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
+                                                object: nil)
+    }
+    
+    @objc func speechDidFinish() {
+        isPlaying = false
+        updatePlayButtonState()
+    }
+    
+    func updatePlayButtonState() {
+        let imageName = isPlaying ? "pause.circle.fill" : "play.circle.fill"
+        playButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
 }

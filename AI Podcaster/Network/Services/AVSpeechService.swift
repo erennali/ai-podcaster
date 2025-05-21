@@ -50,6 +50,12 @@ class AVSpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
         }
     }
     
+    func stop() {
+        if synthesizer.isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
+        }
+    }
+    
     // MARK: - AVSpeechSynthesizerDelegate
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         do {
@@ -57,6 +63,9 @@ class AVSpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
         } catch {
             print("Error deactivating audio session: \(error.localizedDescription)")
         }
+        
+        // Post notification when speech finishes
+        NotificationCenter.default.post(name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), object: nil)
     }
     
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
@@ -73,5 +82,8 @@ class AVSpeechService: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
     
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         print("Speech cancelled")
+        
+        // Post notification when speech is cancelled
+        NotificationCenter.default.post(name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), object: nil)
     }
 }
