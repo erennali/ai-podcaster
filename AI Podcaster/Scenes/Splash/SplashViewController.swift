@@ -15,9 +15,18 @@ class SplashViewController: UIViewController {
     
     private let viewModel = SplashViewModel()
     
+    private let backgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "background3")
+        imageView.contentMode = .scaleAspectFill
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     private let iconImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "music.quarternote.3")
+        
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -26,7 +35,7 @@ class SplashViewController: UIViewController {
     private let podcastLabel: UILabel = {
         let label = UILabel()
         label.text = "AI Podcaster"
-        label.textColor = .label
+        label.textColor = .white // Changed to white for better visibility on background
         label.font = .preferredFont(forTextStyle: .extraLargeTitle)
         label.textAlignment = .center
         return label
@@ -51,17 +60,23 @@ class SplashViewController: UIViewController {
 private extension SplashViewController {
     
     func configureView() {
+        
         view.backgroundColor = .systemBackground
         addViews()
         configureLayout()
     }
     
     func addViews() {
+        view.addSubview(backgroundImageView)
         view.addSubview(iconImage)
         view.addSubview(podcastLabel)
     }
     
     func configureLayout() {
+        backgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         iconImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-50) // İkon biraz yukarıda olsun

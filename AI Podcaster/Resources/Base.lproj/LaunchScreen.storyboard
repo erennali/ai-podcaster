@@ -16,20 +16,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="music.quarternote.3" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="CSY-0k-UdD">
-                                <rect key="frame" x="145" y="347" width="113" height="81"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background3" translatesAutoresizingMaskIntoConstraints="NO" id="IPW-j4-Fae">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="AI Podcaster" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HdY-q2-SSG">
-                                <rect key="frame" x="76" y="459" width="251" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="music.quarternote.3" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="CSY-0k-UdD">
+                                <rect key="frame" x="152" y="346" width="91" height="84"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AI Podcaster" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HdY-q2-SSG">
+                                <rect key="frame" x="71" y="403" width="251" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="39" id="Wip-Ee-93E"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" systemColor="systemBackgroundColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="HdY-q2-SSG" firstAttribute="top" secondItem="CSY-0k-UdD" secondAttribute="bottom" constant="-27.666666666666686" id="27a-Z7-9bb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HdY-q2-SSG" secondAttribute="bottom" constant="342" id="2fX-39-ogU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HdY-q2-SSG" secondAttribute="bottom" constant="342" id="4oz-Aa-B91"/>
+                            <constraint firstItem="CSY-0k-UdD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="227" id="9P2-2k-TH6"/>
+                            <constraint firstItem="IPW-j4-Fae" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="Cpr-b4-LeF"/>
+                            <constraint firstAttribute="trailing" secondItem="IPW-j4-Fae" secondAttribute="trailing" id="SgK-L0-ybS"/>
+                            <constraint firstAttribute="bottom" secondItem="IPW-j4-Fae" secondAttribute="bottom" id="ZeU-EK-SPW"/>
+                            <constraint firstItem="IPW-j4-Fae" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="ean-Cx-iXg"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HdY-q2-SSG" secondAttribute="bottom" constant="342" id="gwN-rh-hw2"/>
+                            <constraint firstItem="CSY-0k-UdD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="152" id="ho2-DA-M5j"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HdY-q2-SSG" secondAttribute="bottom" constant="342" id="moB-ZV-Etb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HdY-q2-SSG" secondAttribute="trailing" constant="71" id="og4-Gq-ZVB"/>
+                            <constraint firstItem="CSY-0k-UdD" firstAttribute="centerX" secondItem="HdY-q2-SSG" secondAttribute="centerX" constant="1" id="rAF-aG-w1I"/>
+                            <constraint firstItem="HdY-q2-SSG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="71" id="xtb-GE-9g8"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -38,6 +58,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="background3" width="1024" height="1536"/>
         <image name="music.quarternote.3" catalog="system" width="128" height="102"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
