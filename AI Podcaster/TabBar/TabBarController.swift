@@ -70,7 +70,7 @@ private extension TabBarController {
     }
     
     func customizeTabBarAppearance() {
-        // Change the selected tab color
+        //TabBar rengi
         UITabBar.appearance().tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
     }
     

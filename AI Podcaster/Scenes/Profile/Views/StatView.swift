@@ -3,9 +3,25 @@ import SnapKit
 
 class StatView: UIView {
     // MARK: - UI Components
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 8
+        return stackView
+    }()
+    
+    private let iconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "headphones")
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemBlue
+        return imageView
+    }()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
         return label
@@ -13,7 +29,7 @@ class StatView: UIView {
     
     private let valueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.font = .systemFont(ofSize: 22, weight: .bold)
         label.textAlignment = .center
         return label
     }()
@@ -32,16 +48,18 @@ class StatView: UIView {
     
     // MARK: - Setup
     private func setupUI() {
-        addSubview(titleLabel)
-        addSubview(valueLabel)
+        addSubview(stackView)
         
-        titleLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+        stackView.addArrangedSubview(iconView)
+        stackView.addArrangedSubview(valueLabel)
+        stackView.addArrangedSubview(titleLabel)
+        
+        stackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
-        valueLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(4)
-            make.leading.trailing.bottom.equalToSuperview()
+        iconView.snp.makeConstraints { make in
+            make.width.height.equalTo(28)
         }
     }
     
