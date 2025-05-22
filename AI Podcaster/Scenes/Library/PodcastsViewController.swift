@@ -51,8 +51,6 @@ final class PodcastsViewController: UIViewController {
         // Her görünüme geldiğinde podcast listesini yenile
         viewModel.fetchPodcasts()
         
-        // Navigasyon başlığını ayarla
-        title = "My Podcasts"
         navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
@@ -61,6 +59,7 @@ private extension PodcastsViewController {
     
     func configureView() {
         view.backgroundColor = .systemBackground
+        title = "My Podcasts"
         addViews()
         configureLayout()
     }

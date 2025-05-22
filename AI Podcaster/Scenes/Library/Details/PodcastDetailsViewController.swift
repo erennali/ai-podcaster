@@ -208,6 +208,29 @@ class PodcastDetailsViewController: UIViewController {
         return label
     }()
     
+    private lazy var deleteButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        var config = UIButton.Configuration.filled()
+        config.cornerStyle = .large
+        config.baseBackgroundColor = .systemRed
+        config.baseForegroundColor = .white
+        config.title = "Delete Podcast"
+        config.image = UIImage(systemName: "trash")
+        config.imagePadding = 8
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
+        
+        button.configuration = config
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowOpacity = 0.1
+        button.layer.shadowRadius = 4
+        
+        button.addTarget(self, action: #selector(deletePodcast), for: .touchUpInside)
+        return button
+    }()
+    
     // MARK: Inits
     
     init(viewModel: PodcastDetailsViewModel) {
@@ -233,6 +256,29 @@ class PodcastDetailsViewController: UIViewController {
         }
         removeNotifications()
     }
+    
+    // MARK: Notifications
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(speechDidFinish),
+            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"),
+            object: nil
+        )
+    }
+    
+    private func removeNotifications() {
+        NotificationCenter.default.removeObserver(
+            self,
+            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"),
+            object: nil
+        )
+    }
+    
+    @objc func speechDidFinish() {
+        isPlaying = false
+        updatePlaybackUI()
+    }
 }
 
 //MARK: Private Methods
@@ -247,23 +293,7 @@ private extension PodcastDetailsViewController {
         configureLabels()
     }
     
-    func setupNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(speechDidFinish),
-            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"),
-            object: nil
-        )
-    }
-    
-    func removeNotifications() {
-        NotificationCenter.default.removeObserver(
-            self,
-            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"),
-            object: nil
-        )
-    }
-    
+    // MARK: Add Views and Layout
     func addViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -272,6 +302,7 @@ private extension PodcastDetailsViewController {
         headerView.addSubview(titleLabel)
         
         contentView.addSubview(infoStackView)
+        
         
         // Add containers to stack view
         infoStackView.addArrangedSubview(languageContainer)
@@ -296,6 +327,8 @@ private extension PodcastDetailsViewController {
         
         playbackControlsStack.addArrangedSubview(playPauseButton)
         playbackControlsStack.addArrangedSubview(stopButton)
+        
+        contentView.addSubview(deleteButton)
     }
     
     func configureLayout() {
@@ -364,7 +397,6 @@ private extension PodcastDetailsViewController {
             make.top.equalTo(contentCard.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(120)
-            make.bottom.equalToSuperview().inset(24)
         }
         
         playbackControlsStack.snp.makeConstraints { make in
@@ -378,6 +410,13 @@ private extension PodcastDetailsViewController {
             make.top.equalTo(playbackControlsStack.snp.bottom).offset(12)
             make.centerX.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        deleteButton.snp.makeConstraints { make in
+            make.top.equalTo(playbackControlsContainer.snp.bottom).offset(24)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(50)
+            make.bottom.equalToSuperview().inset(24)
         }
     }
     
@@ -406,11 +445,6 @@ private extension PodcastDetailsViewController {
     
     @objc func stopButtonTapped() {
         stopPlayback()
-    }
-    
-    @objc func speechDidFinish() {
-        isPlaying = false
-        updatePlaybackUI()
     }
     
     func startPlayback() {
@@ -451,5 +485,61 @@ private extension PodcastDetailsViewController {
             playPauseButton.setImage(UIImage(systemName: "play.circle.fill"), for: .normal)
             statusLabel.text = "Paused"
         }
+    }
+    
+    @objc func deletePodcast() {
+        let alert = UIAlertController(
+            title: "Delete Podcast",
+            message: "Are you sure you want to delete this podcast? This action cannot be undone.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            self?.performDelete()
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    func performDelete() {
+        viewModel.deletePodcast { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.showSuccessAlert()
+                case .failure(let error):
+                    self.showErrorAlert(message: error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    func showSuccessAlert() {
+        let alert = UIAlertController(
+            title: "Success",
+            message: "Podcast deleted successfully",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    func showErrorAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Error",
+            message: "Failed to delete podcast: \(message)",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        present(alert, animated: true)
     }
 }

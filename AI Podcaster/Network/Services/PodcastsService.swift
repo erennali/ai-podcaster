@@ -53,11 +53,27 @@ extension PodcastsService {
             return
         }
         
-        firestore.collection("users").document(userId).collection("podcasts").document(podcastId).delete { error in
+        // Doğrudan podcast ID'si ile belgeyi bul ve sil
+        firestore.collection("users").document(userId).collection("podcasts").whereField("id", isEqualTo: podcastId).getDocuments { [weak self] (snapshot, error) in
+            guard let self = self else { return }
+            
             if let error = error {
                 completion(.failure(error))
-            } else {
+                return
+            }
+            
+            guard let document = snapshot?.documents.first else {
                 completion(.success(()))
+                return
+            }
+            
+            // Belgeyi sil
+            self.firestore.collection("users").document(userId).collection("podcasts").document(document.documentID).delete { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
             }
         }
     }
