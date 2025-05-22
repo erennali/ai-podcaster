@@ -10,6 +10,8 @@ import FirebaseAuth
 
 class LoginViewController: UIViewController {
 
+    private let viewModel = LoginViewModel()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Login"
@@ -57,49 +59,21 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         configureView()
+        setupViewModel()
     }
     
+    private func setupViewModel() {
+        viewModel.delegate = self
+    }
 
     @objc func loginButtonTapped() {
-        guard let email = emailTextField.text, !email.isEmpty,
-              let password = passwordTextField.text, !password.isEmpty else {
-            showErrorAlert(message: "Please enter your email and password.")
-            return
-        }
-        
-        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            if let error = error {
-                print("Error signing in: \(error.localizedDescription)")
-                return
-            }
-            
-            // User is signed in
-            print("User signed in: \(authResult?.user.uid ?? "")")
-            
-            SceneDelegate.loginUser = true
-            let splashVC = SplashViewController()
-                        
-                        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                            sceneDelegate.changeRootViewController(splashVC)
-                        }
-
-        }
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        viewModel.login(email: email, password: password)
     }
+    
     @objc func forgotPasswordTapped() {
-        guard let email = emailTextField.text, !email.isEmpty else {
-            showErrorAlert(message: "Please enter your email address.")
-            return
-        }
-        
-        Auth.auth().sendPasswordReset(withEmail: email) { error in
-            if let error = error {
-                print("Error sending password reset: \(error.localizedDescription)")
-                return
-            }
-            
-            // Password reset email sent
-            print("Password reset email sent to \(email)")
-        }
+        guard let email = emailTextField.text else { return }
+        viewModel.resetPassword(email: email)
     }
 
     private func showErrorAlert(message: String) {
@@ -150,9 +124,30 @@ extension LoginViewController {
             make.centerX.equalToSuperview()
             make.height.equalTo(30)
         }
-        
-        
-       
+    }
+}
+
+// MARK: - LoginViewModelDelegate
+extension LoginViewController: LoginViewModelDelegate {
+    func didLoginSuccessfully() {
+        let splashVC = SplashViewController()
+        if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+            sceneDelegate.changeRootViewController(splashVC)
+        }
+    }
+    
+    func didFailToLogin(with error: String) {
+        showErrorAlert(message: error)
+    }
+    
+    func didSendPasswordReset() {
+        let alert = UIAlertController(title: "Success", message: "Password reset email sent!", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    func didFailToSendPasswordReset(with error: String) {
+        showErrorAlert(message: error)
     }
 }
 

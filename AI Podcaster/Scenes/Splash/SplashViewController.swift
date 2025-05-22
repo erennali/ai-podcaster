@@ -11,8 +11,9 @@ import SnapKit
 
 class SplashViewController: UIViewController {
 
-    
     // MARK: - Properties
+    
+    private let viewModel = SplashViewModel()
     
     private let iconImage: UIImageView = {
         let imageView = UIImageView()
@@ -36,12 +37,13 @@ class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        Task {
-            await FirebaseService.shared.fetchUserData()
-            navigateToTabBar()
-        }
+        setupViewModel()
+        viewModel.loadInitialData()
     }
     
+    private func setupViewModel() {
+        viewModel.delegate = self
+    }
 }
 
 // MARK: - Private Methods
@@ -79,10 +81,19 @@ private extension SplashViewController {
             sceneDelegate.window?.rootViewController = tabBarController
         }
     }
-        
+}
+
+// MARK: - SplashViewModelDelegate
+extension SplashViewController: SplashViewModelDelegate {
+    func didFinishLoading() {
+        navigateToTabBar()
+    }
     
-    
-    
+    func didFailLoading(with error: String) {
+        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
 }
 
 #Preview {
