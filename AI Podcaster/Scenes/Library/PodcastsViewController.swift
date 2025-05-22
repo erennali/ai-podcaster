@@ -87,11 +87,11 @@ extension PodcastsViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let selectedArticle = viewModel.podcasts[indexPath.row]
-//        let detailsVM = DetailsViewModel(article: selectedArticle)
-//        let detailsViewController = DetailsViewController(viewModel: detailsVM)
-//        navigationController?.pushViewController(detailsViewController, animated: true)
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedPodcast = viewModel.podcasts[indexPath.row]
+        let detailsVM = PodcastDetailsViewModel(podcast: selectedPodcast)
+        let detailsViewController = PodcastDetailsViewController(viewModel: detailsVM)
+        navigationController?.pushViewController(detailsViewController, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
