@@ -78,7 +78,7 @@ private extension SplashViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             guard let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate else { return }
             let tabBarController = TabBarController()
-            sceneDelegate.window?.rootViewController = tabBarController
+            sceneDelegate.changeRootViewController(tabBarController)
         }
     }
 }

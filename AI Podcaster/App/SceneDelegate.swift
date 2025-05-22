@@ -12,6 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     static var loginUser: Bool = false
+    private let themeKey = "selectedTheme"
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
@@ -22,6 +23,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
         
+        // Apply saved theme
+        applyTheme(to: window)
         
         let currentUser = Auth.auth().currentUser
         if currentUser != nil {
@@ -64,6 +67,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         window.rootViewController = vc
+        
+        // Apply theme to the new root view controller's window
+        applyTheme(to: window)
 
         if animated {
             UIView.transition(with: window,
@@ -73,6 +79,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                               completion: nil)
         }
     }
-
+    
+    private func applyTheme(to window: UIWindow) {
+        let themeMode = UserDefaults.standard.integer(forKey: themeKey)
+        switch themeMode {
+        case 1:
+            window.overrideUserInterfaceStyle = .light
+        case 2:
+            window.overrideUserInterfaceStyle = .dark
+        default:
+            window.overrideUserInterfaceStyle = .unspecified
+        }
+    }
 }
 
