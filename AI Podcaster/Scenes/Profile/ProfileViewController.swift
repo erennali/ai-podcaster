@@ -93,7 +93,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewModel()
-        setupUI()
+        configureView()
     }
     
     // MARK: - Setup
@@ -102,7 +102,7 @@ class ProfileViewController: UIViewController {
         viewModel.loadUserData()
     }
     
-    private func setupUI() {
+    private func configureView() {
         title = "Profile"
         view.backgroundColor = .systemBackground
         navigationItem.largeTitleDisplayMode = .always
@@ -152,7 +152,7 @@ class ProfileViewController: UIViewController {
         podcastsContainerView.snp.makeConstraints { make in
             make.top.equalTo(containerView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
-            make.height.equalTo(80)
+            make.height.equalTo(95)
         }
         
         podcastsCountView.snp.makeConstraints { make in

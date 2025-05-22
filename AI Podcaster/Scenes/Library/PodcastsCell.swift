@@ -18,12 +18,14 @@ class PodcastsCell: UITableViewCell {
     
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 12
-        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowColor = UIColor.label.cgColor
         view.layer.shadowOpacity = 0.1
         view.layer.shadowOffset = CGSize(width: 0, height: 2)
         view.layer.shadowRadius = 4
+        view.layer.borderWidth = 0
+        view.layer.borderColor = UIColor.clear.cgColor
         return view
     }()
     
@@ -32,7 +34,7 @@ class PodcastsCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
-        imageView.backgroundColor = UIColor(red: 0.9, green: 0.9, blue: 0.95, alpha: 1.0)
+        imageView.backgroundColor = .secondarySystemBackground
         imageView.image = UIImage(systemName: "mic.fill")
         imageView.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
         return imageView
@@ -50,7 +52,7 @@ class PodcastsCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        label.textColor = .black
+        label.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
         label.numberOfLines = 2
         return label
     }()
@@ -58,7 +60,7 @@ class PodcastsCell: UITableViewCell {
     private let contentLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .darkGray
+        label.textColor = .secondaryLabel
         label.numberOfLines = 2
         return label
     }()
@@ -73,7 +75,7 @@ class PodcastsCell: UITableViewCell {
     
     private let minutesContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
+        view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 6
         return view
     }()
@@ -81,14 +83,14 @@ class PodcastsCell: UITableViewCell {
     private let minutesLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
+        label.textColor = .systemBlue
         label.textAlignment = .center
         return label
     }()
     
     private let styleContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
+        view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 6
         return view
     }()
@@ -96,14 +98,14 @@ class PodcastsCell: UITableViewCell {
     private let styleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
+        label.textColor = .systemBlue
         label.textAlignment = .center
         return label
     }()
     
     private let languageContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
+        view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 6
         return view
     }()
@@ -111,7 +113,7 @@ class PodcastsCell: UITableViewCell {
     private let languageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
+        label.textColor = .systemBlue
         label.textAlignment = .center
         return label
     }()
@@ -119,7 +121,7 @@ class PodcastsCell: UITableViewCell {
     private let createdLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-        label.textColor = .lightGray
+        label.textColor = .tertiaryLabel
         return label
     }()
     
@@ -127,6 +129,7 @@ class PodcastsCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureView()
+        updateAppearanceForCurrentTraitCollection() // Set initial appearance
     }
     
     required init?(coder: NSCoder) {
@@ -141,7 +144,7 @@ class PodcastsCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         UIView.animate(withDuration: 0.2) {
-            self.containerView.backgroundColor = selected ? UIColor(red: 0.95, green: 0.95, blue: 1.0, alpha: 1.0) : .white
+            self.containerView.backgroundColor = selected ? .secondarySystemBackground : .systemBackground
         }
     }
     
@@ -150,6 +153,33 @@ class PodcastsCell: UITableViewCell {
         if isPlaying {
             stopSpeech()
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            updateAppearanceForCurrentTraitCollection()
+        }
+    }
+    
+    private func updateAppearanceForCurrentTraitCollection() {
+        if traitCollection.userInterfaceStyle == .dark {
+            // Dark mode - add border for better separation
+            containerView.layer.borderWidth = 0.5
+            containerView.layer.borderColor = UIColor.systemGray4.cgColor
+            containerView.layer.shadowOpacity = 0.25
+            containerView.layer.shadowRadius = 6
+        } else {
+            // Light mode - use shadow only
+            containerView.layer.borderWidth = 0
+            containerView.layer.borderColor = UIColor.clear.cgColor
+            containerView.layer.shadowOpacity = 0.1
+            containerView.layer.shadowRadius = 4
+        }
+        
+        // Update shadow color based on current interface style
+        containerView.layer.shadowColor = UIColor.label.cgColor
     }
 }
 
@@ -185,6 +215,7 @@ private extension PodcastsCell {
     
     func addViews() {
         contentView.addSubview(containerView)
+        
         
         containerView.addSubview(podcastImageView)
         containerView.addSubview(playButton)

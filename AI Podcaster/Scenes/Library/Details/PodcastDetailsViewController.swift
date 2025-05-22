@@ -317,16 +317,17 @@ private extension PodcastDetailsViewController {
         contentView.addSubview(createdContainer)
         createdContainer.addSubview(createdLabel)
         
-        contentView.addSubview(contentCard)
-        contentCard.addSubview(contentTitleLabel)
-        contentCard.addSubview(contentLabel)
-        
+        // Move playback controls before content
         contentView.addSubview(playbackControlsContainer)
         playbackControlsContainer.addSubview(playbackControlsStack)
         playbackControlsContainer.addSubview(statusLabel)
         
         playbackControlsStack.addArrangedSubview(playPauseButton)
         playbackControlsStack.addArrangedSubview(stopButton)
+        
+        contentView.addSubview(contentCard)
+        contentCard.addSubview(contentTitleLabel)
+        contentCard.addSubview(contentLabel)
         
         contentView.addSubview(deleteButton)
     }
@@ -378,23 +379,9 @@ private extension PodcastDetailsViewController {
             make.edges.equalToSuperview().inset(8)
         }
         
-        contentCard.snp.makeConstraints { make in
-            make.top.equalTo(createdContainer.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        contentTitleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(16)
-        }
-        
-        contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(contentTitleLabel.snp.bottom).offset(8)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().inset(16)
-        }
-        
+        // Move playback controls layout before content
         playbackControlsContainer.snp.makeConstraints { make in
-            make.top.equalTo(contentCard.snp.bottom).offset(24)
+            make.top.equalTo(createdContainer.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(120)
         }
@@ -412,8 +399,23 @@ private extension PodcastDetailsViewController {
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
+        contentCard.snp.makeConstraints { make in
+            make.top.equalTo(playbackControlsContainer.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        contentTitleLabel.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().inset(16)
+        }
+        
+        contentLabel.snp.makeConstraints { make in
+            make.top.equalTo(contentTitleLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(16)
+        }
+        
         deleteButton.snp.makeConstraints { make in
-            make.top.equalTo(playbackControlsContainer.snp.bottom).offset(24)
+            make.top.equalTo(contentCard.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(50)
             make.bottom.equalToSuperview().inset(24)
