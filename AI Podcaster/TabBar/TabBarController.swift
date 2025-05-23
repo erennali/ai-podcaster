@@ -32,12 +32,12 @@ private extension TabBarController {
         let homeVC = createNav(
             with: "Home",
             and: UIImage(systemName: "house.fill"),
-            viewController: PodcastsViewController()
+            viewController: HomeViewController()
         )
         let searchVC = createNav(
-            with: "Search",
-            and: UIImage(systemName: "magnifyingglass"),
-            viewController: SearchViewController()
+            with: "Chat",
+            and: UIImage(systemName: "ellipsis.message.fill"),
+            viewController: ChatAIViewController()
         )
         let createrPodcast = createNav(
             with: "Create Podcast",
