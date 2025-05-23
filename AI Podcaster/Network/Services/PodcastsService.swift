@@ -13,6 +13,7 @@ protocol PodcastsServiceProtocol {
     func fetchPodcasts(completion: @escaping (Result<[Podcast], Error>) -> Void)
     func savePodcast(_ podcast: Podcast, completion: @escaping (Result<Void, Error>) -> Void)
     func deletePodcast(_ podcastId: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func searchPodcasts(query: String, completion: @escaping (Result<[Podcast], Error>) -> Void)
 }
 
 
@@ -136,6 +137,57 @@ extension PodcastsService {
                 completion(.success(podcasts))
             } catch {
                 print("Error decoding podcasts: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
+    }
+}
+
+extension PodcastsService {
+    func searchPodcasts(query: String, completion: @escaping (Result<[Podcast], Error>) -> Void) {
+        guard let userId = userId else {
+            completion(.failure(NSError(domain: "User not logged in", code: 401, userInfo: nil)))
+            return
+        }
+        
+        guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            completion(.success([]))
+            return
+        }
+        
+        let lowercaseQuery = query.lowercased()
+        
+        firestore.collection("users").document(userId).collection("podcasts").getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion(.success([]))
+                return
+            }
+            
+            do {
+                let allPodcasts = try documents.compactMap { document -> Podcast? in
+                    do {
+                        return try document.data(as: Podcast.self)
+                    } catch {
+                        print("Error decoding document \(document.documentID): \(error.localizedDescription)")
+                        return nil
+                    }
+                }
+                
+                // Filter podcasts based on search query
+                let filteredPodcasts = allPodcasts.filter { podcast in
+                    return podcast.title.lowercased().contains(lowercaseQuery) ||
+                           podcast.content.lowercased().contains(lowercaseQuery) ||
+                           podcast.style.lowercased().contains(lowercaseQuery) ||
+                           podcast.language.lowercased().contains(lowercaseQuery)
+                }
+                
+                completion(.success(filteredPodcasts))
+            } catch {
                 completion(.failure(error))
             }
         }

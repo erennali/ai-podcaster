@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class SearchViewController: UIViewController {
     
@@ -13,7 +14,7 @@ class SearchViewController: UIViewController {
     
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
-        controller.searchBar.placeholder = "Search podcasts"
+        controller.searchBar.placeholder = "Search your podcasts..."
         controller.obscuresBackgroundDuringPresentation = false
         controller.searchBar.delegate = self
         return controller
@@ -21,9 +22,13 @@ class SearchViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "PodcastCell")
+        tableView.register(PodcastsCell.self, forCellReuseIdentifier: PodcastsCell.identifier)
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = 180
+        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .clear
         return tableView
     }()
     
@@ -32,6 +37,7 @@ class SearchViewController: UIViewController {
         label.text = "Search for podcasts"
         label.textAlignment = .center
         label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 16)
         label.isHidden = true
         return label
     }()
@@ -50,6 +56,7 @@ class SearchViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Search"
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         
         view.addSubview(tableView)
         view.addSubview(emptyStateLabel)
@@ -67,8 +74,21 @@ class SearchViewController: UIViewController {
     }
     
     private func updateEmptyState() {
-        emptyStateLabel.isHidden = !viewModel.searchResults.isEmpty
-        tableView.isHidden = viewModel.searchResults.isEmpty
+        let hasResults = !viewModel.searchResults.isEmpty
+        let isSearching = !(searchController.searchBar.text?.isEmpty ?? true)
+        
+        if isSearching && !hasResults {
+            emptyStateLabel.text = "No podcasts found"
+            emptyStateLabel.isHidden = false
+            tableView.isHidden = true
+        } else if !isSearching {
+            emptyStateLabel.text = "Search for podcasts"
+            emptyStateLabel.isHidden = false
+            tableView.isHidden = true
+        } else {
+            emptyStateLabel.isHidden = true
+            tableView.isHidden = false
+        }
     }
 }
 
@@ -91,20 +111,20 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PodcastCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: PodcastsCell.identifier, for: indexPath) as! PodcastsCell
         let podcast = viewModel.searchResults[indexPath.row]
         
-        var content = cell.defaultContentConfiguration()
-        content.text = podcast.title
-        content.secondaryText = podcast.content
-        cell.contentConfiguration = content
+        cell.configure(with: podcast)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // Podcast detayına gidilebilir
+        let selectedPodcast = viewModel.searchResults[indexPath.row]
+        let detailsVM = PodcastDetailsViewModel(podcast: selectedPodcast)
+        let detailsViewController = PodcastDetailsViewController(viewModel: detailsVM)
+        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 
