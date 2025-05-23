@@ -30,7 +30,7 @@ class ProfileViewController: UIViewController {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "person.circle.fill")
         imageView.contentMode = .scaleAspectFill
-        imageView.tintColor = .systemBlue
+        imageView.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
         imageView.layer.cornerRadius = 50
         imageView.clipsToBounds = true
         return imageView
