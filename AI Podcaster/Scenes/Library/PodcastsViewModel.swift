@@ -38,6 +38,11 @@ final class PodcastsViewModel {
     
     // MARK: - Public Methods
     func fetchPodcasts() {
+        if !SceneDelegate.loginUser {
+            //delegate?.didShowError("You need to login to access this feature.")
+            return
+        }
+        
         podcastService.fetchPodcasts { [weak self] result in
             guard let self = self else { return }
             
@@ -76,6 +81,7 @@ final class PodcastsViewModel {
     var activeFiltersCount: Int {
         return currentFilterConfiguration.filterOptions.activeFiltersCount
     }
+    
 }
 
 // MARK: - Private Methods
@@ -84,4 +90,6 @@ private extension PodcastsViewModel {
         filteredPodcasts = filterService.filterAndSortPodcasts(allPodcasts, with: currentFilterConfiguration)
         delegate?.didUpdatePodcasts()
     }
+    
+    
 }

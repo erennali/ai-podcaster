@@ -14,6 +14,7 @@ protocol PodcastsViewControllerProtocol: AnyObject {
 
 final class PodcastsViewController: UIViewController {
 
+    // MARK: - Properties
     private let viewModel: PodcastsViewModel
     private lazy var searchComponent = PodcastSearchComponent()
     private var filterComponent: PodcastFilterComponent?
@@ -39,9 +40,10 @@ final class PodcastsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         viewModel.delegate = self
         searchComponent.delegate = self
         configureView()
@@ -56,7 +58,6 @@ final class PodcastsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         // Her görünüme geldiğinde podcast listesini yenile
         viewModel.fetchPodcasts()
         
@@ -64,12 +65,11 @@ final class PodcastsViewController: UIViewController {
     }
 }
 
+// MARK: - Private Methods
 private extension PodcastsViewController {
     
     func configureView() {
         view.backgroundColor = .systemBackground
-        
-        
         // Search controller'ı navigation bar'a ekle
         navigationItem.searchController = searchComponent.getSearchController()
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -81,6 +81,7 @@ private extension PodcastsViewController {
             target: self,
             action: #selector(filterButtonTapped)
         )
+        navigationItem.rightBarButtonItem?.tintColor = UIColor(named: "anaTemaRenk")
         
         addViews()
         configureLayout()
@@ -126,15 +127,18 @@ private extension PodcastsViewController {
     
     private func updateFilterButtonAppearance() {
         let hasFilters = viewModel.hasActiveFilters
-        let image = hasFilters ? 
+        let image = hasFilters ?
             UIImage(systemName: "line.3.horizontal.decrease.circle.fill") :
             UIImage(systemName: "line.3.horizontal.decrease.circle")
         
         navigationItem.rightBarButtonItem?.image = image
-        navigationItem.rightBarButtonItem?.tintColor = hasFilters ? .systemRed : .systemBlue
+        
+        // tintColor ile doğrudan renk atama
+        navigationItem.rightBarButtonItem?.tintColor = hasFilters ? .systemRed : UIColor(named: "anaTemaRenk")
     }
 }
 
+// MARK: - PodcastsViewControllerProtocol
 extension PodcastsViewController: PodcastsViewControllerProtocol {
     func reloadData() {
         DispatchQueue.main.async {
@@ -154,7 +158,7 @@ extension PodcastsViewController: PodcastsViewControllerProtocol {
     
     private func showEmptyStateMessage() {
         let messageLabel = UILabel()
-        let message = viewModel.hasActiveFilters ? 
+        let message = viewModel.hasActiveFilters ?
             "No podcasts match your filters.\nTry adjusting your filter settings." :
             "No podcasts yet.\nCreate your first podcast from the Create tab!"
         
@@ -240,3 +244,5 @@ extension PodcastsViewController: PodcastFilterComponentDelegate {
         viewModel.updateFilter(configuration: configuration)
     }
 }
+
+//

@@ -43,6 +43,12 @@ final class ChatViewModel: ChatViewModelProtocol {
     
     // MARK: - Public Methods
     func sendMessage(_ text: String) {
+        
+        if !SceneDelegate.loginUser {
+            delegate?.didFailWithError("You must be logged in to send messages.")
+            return
+        }
+        
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         guard currentState != .loading else { return }
         
@@ -52,6 +58,7 @@ final class ChatViewModel: ChatViewModelProtocol {
         
         // Update state to loading
         updateState(.loading)
+        
         
         // Send message to AI service
         chatService.sendMessageWithHistory(text, history: messages) { [weak self] result in

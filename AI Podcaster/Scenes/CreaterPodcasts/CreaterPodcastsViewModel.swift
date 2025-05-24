@@ -52,13 +52,14 @@ final class CreaterPodcastsViewModel: NSObject {
     
     // MARK: - Public Methods
     func generatePodcast(prompt: String, duration: Int, style: String, language: String) {
-        guard !prompt.isEmpty else {
-            delegate?.didShowAlert(message: "Please enter a question or request")
-            return
-        }
         
         if !SceneDelegate.loginUser {
             delegate?.didShowAlert(message: "You must be logged in to use this feature!")
+            return
+        }
+        
+        guard !prompt.isEmpty else {
+            delegate?.didShowAlert(message: "Please enter a question or request")
             return
         }
         
