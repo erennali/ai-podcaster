@@ -68,7 +68,7 @@ private extension PodcastsViewController {
     
     func configureView() {
         view.backgroundColor = .systemBackground
-        title = "My Podcasts"
+        
         
         // Search controller'ı navigation bar'a ekle
         navigationItem.searchController = searchComponent.getSearchController()

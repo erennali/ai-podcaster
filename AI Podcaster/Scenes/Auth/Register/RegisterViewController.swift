@@ -11,16 +11,14 @@ import SnapKit
 class RegisterViewController: UIViewController {
     
     // MARK: - UI Components
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.keyboardDismissMode = .onDrag
-        scrollView.alwaysBounceVertical = true
-        return scrollView
-    }()
-    
-    private lazy var contentView: UIView = {
+    private lazy var logoContainerView: UIView = {
         let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
+        view.layer.shadowRadius = 8
+        view.layer.shadowOpacity = 0.15
+        view.layer.masksToBounds = false
         return view
     }()
     
@@ -33,18 +31,6 @@ class RegisterViewController: UIViewController {
         imageView.layer.borderWidth = 1.5
         imageView.layer.borderColor = UIColor(named: "anaTemaRenk")?.withAlphaComponent(0.3).cgColor
         return imageView
-    }()
-    
-    private lazy var logoContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .clear
-        
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOffset = CGSize(width: 0, height: 4)
-        view.layer.shadowRadius = 8
-        view.layer.shadowOpacity = 0.15
-        view.layer.masksToBounds = false
-        return view
     }()
     
     private lazy var titleLabel: UILabel = {
@@ -65,35 +51,63 @@ class RegisterViewController: UIViewController {
         return label
     }()
     
-    private lazy var nameTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var nameTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Full Name"
-        textField.icon = UIImage(systemName: "person.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
+        textField.delegate = self
         return textField
     }()
     
-    private lazy var emailTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var emailTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Email Address"
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
-        textField.icon = UIImage(systemName: "envelope.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
+        textField.delegate = self
         return textField
     }()
     
-    private lazy var passwordTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var passwordTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Password"
         textField.isSecureTextEntry = true
-        textField.icon = UIImage(systemName: "lock.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
+        textField.delegate = self
         return textField
     }()
     
-    private lazy var confirmPasswordTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var confirmPasswordTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Confirm Password"
         textField.isSecureTextEntry = true
-        textField.icon = UIImage(systemName: "lock.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
+        textField.delegate = self
         return textField
     }()
     
@@ -131,6 +145,7 @@ class RegisterViewController: UIViewController {
     
     // MARK: - Properties
     private let viewModel = RegisterViewModel()
+    private var originalViewY: CGFloat = 0
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -142,14 +157,7 @@ class RegisterViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupKeyboardObservers()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        // Scroll view'ı en üste taşı
-        DispatchQueue.main.async { [weak self] in
-            self?.scrollView.setContentOffset(.zero, animated: false)
-        }
+        originalViewY = view.frame.origin.y
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -160,10 +168,6 @@ class RegisterViewController: UIViewController {
     // MARK: - Setup
     private func setupViewModel() {
         viewModel.delegate = self
-        
-        [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach {
-            $0.delegate = self
-        }
     }
     
     // MARK: - Actions
@@ -192,8 +196,18 @@ class RegisterViewController: UIViewController {
     
     // MARK: - Keyboard Handling
     private func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     
     private func removeKeyboardObservers() {
@@ -201,30 +215,39 @@ class RegisterViewController: UIViewController {
     }
     
     @objc private func keyboardWillShow(notification: NSNotification) {
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        guard let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+              let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
         
-        let keyboardHeight = keyboardSize.height
+        let keyboardHeight = keyboardFrame.height
         let safeAreaBottom = view.safeAreaInsets.bottom
         let adjustedKeyboardHeight = keyboardHeight - safeAreaBottom
         
-        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: adjustedKeyboardHeight, right: 0)
-        scrollView.contentInset = contentInsets
-        scrollView.scrollIndicatorInsets = contentInsets
-        
-        // Aktif metin alanının görünür kalmasını sağla
-        if let activeField = [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField].first(where: { $0.isFirstResponder }) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                guard let self = self else { return }
-                let activeFieldFrame = activeField.convert(activeField.bounds, to: self.scrollView)
-                let targetRect = CGRect(x: 0, y: activeFieldFrame.origin.y - 20, width: self.scrollView.frame.width, height: activeFieldFrame.height + 40)
-                self.scrollView.scrollRectToVisible(targetRect, animated: true)
+        // Aktif text field'ın pozisyonunu kontrol et
+        if let activeTextField = findActiveTextField() {
+            let textFieldBottomY = activeTextField.frame.maxY + activeTextField.superview!.frame.origin.y
+            let visibleHeight = view.frame.height - adjustedKeyboardHeight
+            
+            if textFieldBottomY > visibleHeight {
+                let offsetY = textFieldBottomY - visibleHeight + 20
+                
+                UIView.animate(withDuration: duration) {
+                    self.view.frame.origin.y = self.originalViewY - offsetY
+                }
             }
         }
     }
     
     @objc private func keyboardWillHide(notification: NSNotification) {
-        scrollView.contentInset = .zero
-        scrollView.scrollIndicatorInsets = .zero
+        guard let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        
+        UIView.animate(withDuration: duration) {
+            self.view.frame.origin.y = self.originalViewY
+        }
+    }
+    
+    private func findActiveTextField() -> UITextField? {
+        return [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField]
+            .first { $0.isFirstResponder }
     }
 }
 
@@ -232,6 +255,7 @@ class RegisterViewController: UIViewController {
 extension RegisterViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
+        title = "Register"
         
         addViews()
         configureLayout()
@@ -249,30 +273,23 @@ extension RegisterViewController {
     }
     
     func addViews() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        
-        [logoContainerView, titleLabel, subtitleLabel, nameTextField, emailTextField,
-         passwordTextField, confirmPasswordTextField, registerButton, loginButton, activityIndicator].forEach {
-            contentView.addSubview($0)
-        }
+        view.addSubview(logoContainerView)
+        view.addSubview(titleLabel)
+        view.addSubview(subtitleLabel)
+        view.addSubview(nameTextField)
+        view.addSubview(emailTextField)
+        view.addSubview(passwordTextField)
+        view.addSubview(confirmPasswordTextField)
+        view.addSubview(registerButton)
+        view.addSubview(loginButton)
+        view.addSubview(activityIndicator)
         
         logoContainerView.addSubview(logoImageView)
     }
     
     func configureLayout() {
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(view)
-            make.height.greaterThanOrEqualTo(view.safeAreaLayoutGuide).priority(.low)
-        }
-        
         logoContainerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(40)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
         }
@@ -282,7 +299,7 @@ extension RegisterViewController {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoContainerView.snp.bottom).offset(20)
+            make.top.equalTo(logoContainerView.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
@@ -292,39 +309,38 @@ extension RegisterViewController {
         }
         
         nameTextField.snp.makeConstraints { make in
-            make.top.equalTo(subtitleLabel.snp.bottom).offset(32)
+            make.top.equalTo(subtitleLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
         
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(nameTextField.snp.bottom).offset(16)
+            make.top.equalTo(nameTextField.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
         
         passwordTextField.snp.makeConstraints { make in
-            make.top.equalTo(emailTextField.snp.bottom).offset(16)
+            make.top.equalTo(emailTextField.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
         
         confirmPasswordTextField.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(16)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
         
         registerButton.snp.makeConstraints { make in
-            make.top.equalTo(confirmPasswordTextField.snp.bottom).offset(32)
+            make.top.equalTo(confirmPasswordTextField.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
         
         loginButton.snp.makeConstraints { make in
-            make.top.equalTo(registerButton.snp.bottom).offset(16)
+            make.top.equalTo(registerButton.snp.bottom).offset(12)
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-20)
         }
         
         activityIndicator.snp.makeConstraints { make in
@@ -377,56 +393,13 @@ extension RegisterViewController: RegisterViewModelDelegate {
         present(alert, animated: true)
     }
     
-     private func showErrorAlert(message: String) {
+    private func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
 }
 
-// MARK: - CustomTextField
-class CustomTextField: UITextField {
-    var icon: UIImage? {
-        didSet {
-            updateIcon()
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupTextField()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupTextField() {
-        backgroundColor = .systemGray6
-        layer.cornerRadius = 12
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.systemGray4.cgColor
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: frame.height))
-        leftView = paddingView
-        leftViewMode = .always
-        
-        let rightPaddingView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: frame.height))
-        rightView = rightPaddingView
-        rightViewMode = .always
-    }
-    
-    private func updateIcon() {
-        guard let icon = icon else { return }
-        let iconView = UIImageView(image: icon)
-        iconView.tintColor = .systemGray
-        iconView.contentMode = .scaleAspectFit
-        
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: frame.height))
-        iconView.frame = CGRect(x: 10, y: (containerView.frame.height - 20) / 2, width: 20, height: 20)
-        containerView.addSubview(iconView)
-        
-        leftView = containerView
-        leftViewMode = .always
-    }
-}
+
+
+

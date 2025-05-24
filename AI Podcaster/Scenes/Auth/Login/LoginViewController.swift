@@ -43,6 +43,16 @@ class LoginViewController: UIViewController {
         return label
     }()
     
+    private lazy var subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Welcome back to AI Podcaster"
+        label.font = .systemFont(ofSize: 16)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }()
+    
     private lazy var lostPasswordButton: UIButton = {
         let button = UIButton()
         button.setTitle("Forgot Password?", for: .normal)
@@ -50,20 +60,32 @@ class LoginViewController: UIViewController {
         button.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         return button
     }()
-    private lazy var emailTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var emailTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Email Address"
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
-        textField.icon = UIImage(systemName: "envelope.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
         return textField
     }()
     
-    private lazy var passwordTextField: CustomTextField = {
-        let textField = CustomTextField()
+    private lazy var passwordTextField: UITextField = {
+        let textField = UITextField()
         textField.placeholder = "Password"
         textField.isSecureTextEntry = true
-        textField.icon = UIImage(systemName: "lock.fill")
+        textField.backgroundColor = .systemGray6
+        textField.layer.cornerRadius = 12
+        textField.borderStyle = .none
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 1))
+        textField.leftViewMode = .always
         return textField
     }()
     
@@ -116,6 +138,7 @@ extension LoginViewController {
     func addViews() {
         view.addSubview(logoContainerView)
         view.addSubview(titleLabel)
+        view.addSubview(subtitleLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         view.addSubview(loginButton)
@@ -140,8 +163,14 @@ extension LoginViewController {
             make.centerX.equalToSuperview()
             make.height.equalTo(50)
         }
+        
+        subtitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(32)
+            make.top.equalTo(subtitleLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
