@@ -11,10 +11,15 @@ import FirebaseAuth
 
 class SettingsViewModel {
     
+    // MARK: - Properties
     var sections = SettingsSection.sections
     private let themeKey = "selectedTheme"
+    private var notificationManager: NotificationManager = .shared
+    
+    weak var delegate: SettingsViewControllerProtocol?
     
     init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleReturnFromSettings), name: .didReturnFromSettings, object: nil)
     }
     
 }
@@ -27,16 +32,25 @@ extension SettingsViewModel {
         UserDefaults.standard.integer(forKey: themeKey)
     }
     func updateNotificationStatus(isOn: Bool) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            print("Notification permission granted: \(granted)")
+        
+        Task {
+            if !notificationManager.isRequested && isOn {
+                try await notificationManager.requestNotificationPermissionWithAsync()
+                await notificationManager.updateNotificationStatus()
+                delegate?.updateSwitchValue(notificationManager.isAuthorized)
+            } else {
+                delegate?.openAppSettings()
+            }
         }
     }
     
     func fetchNotificationStatus(completion: @escaping (Bool) -> Void) {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            DispatchQueue.main.async {
-                completion(settings.authorizationStatus == .authorized)
-            }
+        completion(notificationManager.isAuthorized)
+    }
+    @objc func handleReturnFromSettings() {
+        Task {
+            await notificationManager.updateNotificationStatus()
+            delegate?.updateSwitchValue(notificationManager.isAuthorized)
         }
     }
     func deleteAccount() {
@@ -48,4 +62,8 @@ extension SettingsViewModel {
             }
         }
     }
+}
+
+extension Notification.Name {
+    static let didReturnFromSettings = Notification.Name("didReturnFromSettings")
 }

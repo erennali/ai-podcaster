@@ -2,6 +2,11 @@ import UIKit
 import StoreKit
 import SafariServices
 
+protocol SettingsViewControllerProtocol: AnyObject {
+    func updateSwitchValue(_ value: Bool)
+    func openAppSettings()
+}
+
 final class SettingsViewController: UIViewController {
     
     
@@ -16,6 +21,9 @@ final class SettingsViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
+    
+    private var notificationSwitch: UISwitch?
+    
     private let appVersionLabel: UILabel = {
         let label = UILabel()
         label.text = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
@@ -27,17 +35,20 @@ final class SettingsViewController: UIViewController {
     init(viewModel: SettingsViewModel = .init()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
     }
+    
 }
 
 // MARK: Objective Methods
@@ -50,11 +61,6 @@ final class SettingsViewController: UIViewController {
     }
 }
     
-
-
-
-
-
 
 
 // MARK: - Private Methods
@@ -166,10 +172,11 @@ extension SettingsViewController: UITableViewDataSource {
             segmentControl.addTarget(self, action: #selector(didChangeTheme(_:)), for: .valueChanged)
             cell.accessoryView = segmentControl
         case .notification:
-            let switchControl = UISwitch()
-            viewModel.fetchNotificationStatus{switchControl.isOn = $0 }
-            switchControl.addTarget(self, action: #selector(didToggleNotification(_:)), for: .valueChanged)
-            cell.accessoryView = switchControl
+            let switcher = UISwitch()
+            notificationSwitch = switcher
+            viewModel.fetchNotificationStatus{switcher.isOn = $0 }
+            switcher.addTarget(self, action: #selector(didToggleNotification(_:)), for: .valueChanged)
+            cell.accessoryView = switcher
         case .deleteAccount:
             cell.accessoryType = .disclosureIndicator
         case .rateApp, .privacyPolicy, .termsOfUse:
@@ -181,3 +188,25 @@ extension SettingsViewController: UITableViewDataSource {
     
 } 
 
+extension SettingsViewController: SettingsViewControllerProtocol {
+    func updateSwitchValue(_ value: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.notificationSwitch?.isOn = value
+        }
+    }
+    
+    func openAppSettings() {
+            if let settingsURL = URL(
+                string: UIApplication.openSettingsURLString
+            ),UIApplication.shared
+                .canOpenURL(settingsURL){ DispatchQueue.main.async {
+                    UIApplication.shared.open(
+                        settingsURL,
+                        options: [:],
+                        completionHandler: nil
+                    )
+                }
+            }
+                
+        }
+}
