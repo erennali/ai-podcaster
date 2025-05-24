@@ -399,6 +399,8 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
     
     func didSavePodcastSuccessfully() {
         showAlert(message: "Podcast saved successfully!")
+        guard let tabBarController = self.tabBarController else { return }
+        tabBarController.selectedIndex = 3
     }
 }
 

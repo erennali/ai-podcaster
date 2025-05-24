@@ -65,11 +65,6 @@ final class PodcastFilterViewModel {
         delegate?.didUpdateConfiguration(currentConfiguration)
     }
     
-    func clearAllFilters() {
-        currentConfiguration = PodcastFilterConfiguration()
-        delegate?.didUpdateConfiguration(currentConfiguration)
-    }
-    
     func resetToDefault() {
         currentConfiguration = PodcastFilterConfiguration()
         delegate?.didUpdateConfiguration(currentConfiguration)
@@ -103,5 +98,17 @@ final class PodcastFilterViewModel {
     
     var hasActiveFilters: Bool {
         return !currentConfiguration.isDefault
+    }
+    
+    // SortType helpers (taşındı)
+    var isSortTypeDate: Bool {
+        switch currentConfiguration.sortType {
+        case .date: return true
+        case .title: return false
+        }
+    }
+    
+    func getSortSegmentTitles() -> [String] {
+        return isSortTypeDate ? ["Newest First", "Oldest First"] : ["A to Z", "Z to A"]
     }
 } 

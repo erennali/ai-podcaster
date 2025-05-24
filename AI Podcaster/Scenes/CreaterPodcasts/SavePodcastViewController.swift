@@ -79,6 +79,7 @@ final class SavePodcastViewController: UIViewController {
         
         delegate?.didSavePodcast(title: title)
         dismiss(animated: true)
+        
     }
     
     private func showAlert(message: String) {

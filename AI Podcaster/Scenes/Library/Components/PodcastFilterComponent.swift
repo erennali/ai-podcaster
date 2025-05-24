@@ -19,110 +19,46 @@ final class PodcastFilterComponent: UIViewController {
     weak var delegate: PodcastFilterComponentDelegate?
     
     // MARK: - UI Components
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsVerticalScrollIndicator = true
-        scrollView.alwaysBounceVertical = true
-        return scrollView
-    }()
+    private lazy var scrollView = createScrollView()
+    private lazy var contentView = UIView()
+    private lazy var headerView = createHeaderView()
+    private lazy var titleLabel = createLabel(text: "Filter & Sort", fontSize: 20, weight: .bold)
     
-    private lazy var contentView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    private lazy var resetButton = createButton(
+        title: "Reset",
+        color: .systemRed,
+        bgColor: .systemRed.withAlphaComponent(0.1),
+        action: #selector(resetButtonTapped)
+    )
     
-    private lazy var headerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
-        return view
-    }()
+    private lazy var doneButton = createButton(
+        title: "Done",
+        color: .white,
+        bgColor: .systemIndigo,
+        action: #selector(doneButtonTapped),
+        withShadow: true
+    )
     
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Filter & Sort"
-        label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textAlignment = .center
-        return label
-    }()
-    
-    private lazy var resetButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Reset", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.setTitleColor(.systemRed, for: .normal)
-        button.backgroundColor = .systemRed.withAlphaComponent(0.1)
-        button.layer.cornerRadius = 8
-        button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
-        button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var doneButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Done", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .systemIndigo
-        button.layer.cornerRadius = 8
-        button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowOpacity = 0.1
-        button.layer.shadowRadius = 4
-        button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    // Sort Section
+    // Filter Sections
     private lazy var sortSectionView = createSectionView(title: "Sort By")
-    private lazy var sortSegmentedControl: UISegmentedControl = {
-        let items = ["Date", "Title"]
-        let control = UISegmentedControl(items: items)
-        control.selectedSegmentIndex = 0
-        control.selectedSegmentTintColor = .systemIndigo
-        control.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        control.setTitleTextAttributes([.foregroundColor: UIColor.systemIndigo], for: .normal)
-        control.addTarget(self, action: #selector(sortTypeChanged), for: .valueChanged)
-        return control
-    }()
-    
-    private lazy var sortOrderSegmentedControl: UISegmentedControl = {
-        let items = ["Newest First", "Oldest First"]
-        let control = UISegmentedControl(items: items)
-        control.selectedSegmentIndex = 0
-        control.selectedSegmentTintColor = .systemIndigo
-        control.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
-        control.setTitleTextAttributes([.foregroundColor: UIColor.systemIndigo], for: .normal)
-        control.addTarget(self, action: #selector(sortOrderChanged), for: .valueChanged)
-        return control
-    }()
-    
-    // Style Filter Section
     private lazy var styleSectionView = createSectionView(title: "Style")
-    private lazy var styleStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        return stackView
-    }()
-    
-    // Language Filter Section
     private lazy var languageSectionView = createSectionView(title: "Language")
-    private lazy var languageStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        return stackView
-    }()
-    
-    // Duration Filter Section
     private lazy var durationSectionView = createSectionView(title: "Duration")
-    private lazy var durationStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        return stackView
-    }()
+    
+    // Controls
+    private lazy var sortSegmentedControl = createSegmentedControl(
+        items: ["Date", "Title"],
+        action: #selector(sortTypeChanged)
+    )
+    
+    private lazy var sortOrderSegmentedControl = createSegmentedControl(
+        items: ["Newest First", "Oldest First"],
+        action: #selector(sortOrderChanged)
+    )
+    
+    private lazy var styleStackView = createVerticalStackView()
+    private lazy var languageStackView = createVerticalStackView()
+    private lazy var durationStackView = createVerticalStackView()
     
     // MARK: - Initialization
     init(filterViewModel: PodcastFilterViewModel = PodcastFilterViewModel()) {
@@ -137,8 +73,8 @@ final class PodcastFilterComponent: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
         setupViewModel()
+        configureView()
         setupInitialFilters()
         updateUI()
     }
@@ -153,27 +89,29 @@ final class PodcastFilterComponent: UIViewController {
         createFilterButtons(for: PodcastOptions.availableLanguages, type: .language)
         createDurationButtons()
     }
+    
+    private func setupViewModel() {
+        filterViewModel.delegate = self
+    }
 }
 
-// MARK: - Private Methods
+// MARK: - UI Setup
 private extension PodcastFilterComponent {
     
-    func setupView() {
+    func configureView() {
         view.backgroundColor = .systemBackground
         addViews()
         configureLayout()
     }
     
-    func setupViewModel() {
-        filterViewModel.delegate = self
-    }
-    
     func addViews() {
+        // Header Section
         view.addSubview(headerView)
         headerView.addSubview(titleLabel)
         headerView.addSubview(resetButton)
         headerView.addSubview(doneButton)
         
+        // Main Content
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
@@ -196,25 +134,17 @@ private extension PodcastFilterComponent {
     }
     
     func configureLayout() {
+        // Header layout
         headerView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(60)
         }
         
-        titleLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
+        titleLabel.snp.makeConstraints { make in make.center.equalToSuperview() }
+        resetButton.snp.makeConstraints { make in make.leading.equalToSuperview().inset(16); make.centerY.equalToSuperview() }
+        doneButton.snp.makeConstraints { make in make.trailing.equalToSuperview().inset(16); make.centerY.equalToSuperview() }
         
-        resetButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(16)
-            make.centerY.equalToSuperview()
-        }
-        
-        doneButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
-            make.centerY.equalToSuperview()
-        }
-        
+        // Scroll view layout
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.leading.trailing.bottom.equalToSuperview()
@@ -225,12 +155,24 @@ private extension PodcastFilterComponent {
             make.width.equalToSuperview()
         }
         
-        // Sort Section Layout
+        // Content sections layout
+        configureSortSectionLayout()
+        configureStyleSectionLayout()
+        configureLanguageSectionLayout()
+        configureDurationSectionLayout()
+    }
+}
+
+// MARK: - Section Layout
+private extension PodcastFilterComponent {
+    func configureSortSectionLayout() {
+        // Sort section
         sortSectionView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
+        // Sort controls
         sortSegmentedControl.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(40)
             make.leading.trailing.equalToSuperview().inset(16)
@@ -243,39 +185,50 @@ private extension PodcastFilterComponent {
             make.height.equalTo(44)
             make.bottom.equalToSuperview().inset(16)
         }
-        
-        // Style Section Layout
-        styleSectionView.snp.makeConstraints { make in
-            make.top.equalTo(sortSectionView.snp.bottom).offset(16)
+    }
+    
+    func configureStyleSectionLayout() {
+        configureFilterSectionLayout(
+            sectionView: styleSectionView,
+            stackView: styleStackView,
+            previousView: sortSectionView
+        )
+    }
+    
+    func configureLanguageSectionLayout() {
+        configureFilterSectionLayout(
+            sectionView: languageSectionView,
+            stackView: languageStackView,
+            previousView: styleSectionView
+        )
+    }
+    
+    func configureDurationSectionLayout() {
+        configureFilterSectionLayout(
+            sectionView: durationSectionView,
+            stackView: durationStackView,
+            previousView: languageSectionView,
+            isLastSection: true
+        )
+    }
+    
+    func configureFilterSectionLayout(
+        sectionView: UIView, 
+        stackView: UIStackView, 
+        previousView: UIView, 
+        isLastSection: Bool = false
+    ) {
+        let makeConstraints: (ConstraintMaker) -> Void = { make in
+            make.top.equalTo(previousView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
+            if isLastSection {
+                make.bottom.equalToSuperview().inset(16)
+            }
         }
         
-        styleStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(40)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().inset(16)
-        }
+        sectionView.snp.makeConstraints(makeConstraints)
         
-        // Language Section Layout
-        languageSectionView.snp.makeConstraints { make in
-            make.top.equalTo(styleSectionView.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        languageStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(40)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().inset(16)
-        }
-        
-        // Duration Section Layout
-        durationSectionView.snp.makeConstraints { make in
-            make.top.equalTo(languageSectionView.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().inset(16)
-        }
-        
-        durationStackView.snp.makeConstraints { make in
+        stackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(40)
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(16)
@@ -287,53 +240,59 @@ private extension PodcastFilterComponent {
         containerView.backgroundColor = .systemGray6
         containerView.layer.cornerRadius = 12
         
-        let titleLabel = UILabel()
-        titleLabel.text = title
-        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        let titleLabel = createLabel(text: title, fontSize: 18, weight: .semibold)
+        titleLabel.textAlignment = .left
         titleLabel.textColor = .label
         
         containerView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(16)
-        }
+        titleLabel.snp.makeConstraints { make in make.top.leading.equalToSuperview().inset(16) }
         
         return containerView
     }
-    
+}
+
+// MARK: - UI Updates
+private extension PodcastFilterComponent {
     func updateUI() {
-        updateSortUI()
-        updateResetButtonState()
-        refreshFilterButtons()
-    }
-    
-    func updateSortUI() {
-        switch filterViewModel.currentConfiguration.sortType {
+        // Update sort controls
+        let configuration = filterViewModel.currentConfiguration
+        let sortType = configuration.sortType
+        
+        // Update type control
+        sortSegmentedControl.selectedSegmentIndex = filterViewModel.isSortTypeDate ? 0 : 1
+        
+        // Update order control - daha temiz ve ViewModel'e bağlı
+        sortOrderSegmentedControl.removeAllSegments()
+        let segmentTitles = filterViewModel.getSortSegmentTitles()
+        
+        for (index, title) in segmentTitles.enumerated() {
+            sortOrderSegmentedControl.insertSegment(withTitle: title, at: index, animated: false)
+        }
+        
+        // Segment indeksini ayarla
+        switch sortType {
         case .date(let order):
-            sortSegmentedControl.selectedSegmentIndex = 0
-            sortOrderSegmentedControl.removeAllSegments()
-            sortOrderSegmentedControl.insertSegment(withTitle: "Newest First", at: 0, animated: false)
-            sortOrderSegmentedControl.insertSegment(withTitle: "Oldest First", at: 1, animated: false)
             sortOrderSegmentedControl.selectedSegmentIndex = order == .newest ? 0 : 1
-            
         case .title(let order):
-            sortSegmentedControl.selectedSegmentIndex = 1
-            sortOrderSegmentedControl.removeAllSegments()
-            sortOrderSegmentedControl.insertSegment(withTitle: "A to Z", at: 0, animated: false)
-            sortOrderSegmentedControl.insertSegment(withTitle: "Z to A", at: 1, animated: false)
             sortOrderSegmentedControl.selectedSegmentIndex = order == .aToZ ? 0 : 1
         }
-    }
-    
-    func updateResetButtonState() {
+        
+        // Update reset button state
         resetButton.isEnabled = filterViewModel.hasActiveFilters
         resetButton.alpha = filterViewModel.hasActiveFilters ? 1.0 : 0.5
+        
+        // Refresh filter buttons
+        refreshFilterButtons()
     }
-    
+}
+
+// MARK: - Filter Buttons Creation
+private extension PodcastFilterComponent {
     func createFilterButtons(for items: [String], type: FilterType) {
         let stackView = type == .style ? styleStackView : languageStackView
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        // Horizontal scroll view container oluştur
+        // Butonları içeren bir kaydırma görünümü oluştur
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -344,97 +303,73 @@ private extension PodcastFilterComponent {
         horizontalStackView.distribution = .fill
         
         scrollView.addSubview(horizontalStackView)
-        horizontalStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.height.equalToSuperview()
-        }
         
-        // Button'ları horizontal stack'e ekle
+        // Add buttons to stack
         for item in items {
-            let button = createFilterButton(title: item, type: type)
+            let button = createFilterButton(title: item) { [weak self] in
+                switch type {
+                case .style:
+                    self?.filterViewModel.toggleStyleFilter(item)
+                case .language:
+                    self?.filterViewModel.toggleLanguageFilter(item)
+                }
+            }
+            
+            // Set initial selection state
+            let isSelected = type == .style ? 
+                filterViewModel.isStyleSelected(item) : 
+                filterViewModel.isLanguageSelected(item)
+            updateButtonAppearance(button, isSelected: isSelected)
+            
             horizontalStackView.addArrangedSubview(button)
         }
         
         stackView.addArrangedSubview(scrollView)
         
-        // ScrollView height constraint
+        // Layout
+        horizontalStackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalToSuperview()
+        }
+        
         scrollView.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
     }
     
-    func createFilterButton(title: String, type: FilterType) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
-        
-        // CreaterPodcastsViewController tarzı padding
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-        
-        // PodcastsCell tarzı compact design
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 1)
-        button.layer.shadowOpacity = 0.05
-        button.layer.shadowRadius = 2
-        
-        let isSelected = type == .style ? 
-            filterViewModel.isStyleSelected(title) : 
-            filterViewModel.isLanguageSelected(title)
-        
-        updateButtonAppearance(button, isSelected: isSelected)
-        
-        button.addAction(UIAction { [weak self] _ in
-            switch type {
-            case .style:
-                self?.filterViewModel.toggleStyleFilter(title)
-            case .language:
-                self?.filterViewModel.toggleLanguageFilter(title)
-            }
-        }, for: .touchUpInside)
-        
-        // Button width constraint - minimum width
-        button.snp.makeConstraints { make in
-            make.height.equalTo(36)
-            make.width.greaterThanOrEqualTo(80)
-        }
-        
-        return button
-    }
-    
     func createDurationButtons() {
         durationStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        // Duration için vertical layout ama daha compact
         let horizontalContainer = UIStackView()
         horizontalContainer.axis = .horizontal
-        horizontalContainer.distribution = .fillEqually
         horizontalContainer.spacing = 12
+        horizontalContainer.distribution = .fillEqually
         
+        // Add range buttons
         for range in DurationRange.allRanges {
-            let button = createDurationButton(range: range)
+            let button = createFilterButton(title: range.displayName) { [weak self] in
+                guard let self = self else { return }
+                let currentRange = self.filterViewModel.currentConfiguration.filterOptions.selectedDurationRange
+                let newRange = currentRange == range ? nil : range
+                self.filterViewModel.updateDurationFilter(newRange)
+            }
+            
+            // Set initial selection state
+            let isSelected = filterViewModel.isDurationRangeSelected(range)
+            updateButtonAppearance(button, isSelected: isSelected)
+            
             horizontalContainer.addArrangedSubview(button)
         }
         
         durationStackView.addArrangedSubview(horizontalContainer)
         
-        // Clear button - daha subtle
-        let clearButton = UIButton(type: .system)
-        clearButton.setTitle("Clear", for: .normal)
-        clearButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        clearButton.setTitleColor(.systemRed, for: .normal)
-        clearButton.backgroundColor = .systemRed.withAlphaComponent(0.1)
-        clearButton.layer.cornerRadius = 8
-        clearButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-        
-        clearButton.addAction(UIAction { [weak self] _ in
+        // Add clear button
+        let clearButton = createFilterButton(title: "Clear", isSpecial: true) { [weak self] in
             self?.filterViewModel.updateDurationFilter(nil)
-        }, for: .touchUpInside)
-        
+        }
         durationStackView.addArrangedSubview(clearButton)
         
-        // Container height constraint
+        // Layout
         horizontalContainer.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
@@ -444,68 +379,76 @@ private extension PodcastFilterComponent {
         }
     }
     
-    func createDurationButton(range: DurationRange) -> UIButton {
+    func createFilterButton(title: String, isSpecial: Bool = false, action: @escaping () -> Void) -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(range.displayName, for: .normal)
+        button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        
+        // Style
         button.layer.cornerRadius = 8
         button.layer.borderWidth = 1
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         
-        // CreaterPodcastsViewController tarzı shadow
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 1)
-        button.layer.shadowOpacity = 0.05
-        button.layer.shadowRadius = 2
-        
-        let isSelected = filterViewModel.isDurationRangeSelected(range)
-        updateButtonAppearance(button, isSelected: isSelected)
-        
-        button.addAction(UIAction { [weak self] _ in
-            let currentRange = self?.filterViewModel.currentConfiguration.filterOptions.selectedDurationRange
-            let newRange = currentRange == range ? nil : range
-            self?.filterViewModel.updateDurationFilter(newRange)
-        }, for: .touchUpInside)
-        
-        return button
-    }
-    
-    func updateButtonAppearance(_ button: UIButton, isSelected: Bool) {
-        // CreaterPodcastsViewController'daki sistemIndigo temasını kullan
-        if isSelected {
-            button.backgroundColor = .systemIndigo
-            button.setTitleColor(.white, for: .normal)
-            button.layer.borderColor = UIColor.systemIndigo.cgColor
-            // Selected state için daha belirgin shadow
-            button.layer.shadowOpacity = 0.15
-            button.layer.shadowRadius = 4
+        if isSpecial {
+            button.setTitleColor(.systemRed, for: .normal)
+            button.backgroundColor = .systemRed.withAlphaComponent(0.1)
         } else {
+            button.layer.shadowColor = UIColor.black.cgColor
+            button.layer.shadowOffset = CGSize(width: 0, height: 1)
+            button.layer.shadowOpacity = 0.05
+            button.layer.shadowRadius = 2
             button.backgroundColor = .secondarySystemBackground
             button.setTitleColor(.systemIndigo, for: .normal)
             button.layer.borderColor = UIColor.systemGray4.cgColor
-            // Normal state için subtle shadow
-            button.layer.shadowOpacity = 0.05
-            button.layer.shadowRadius = 2
         }
+        
+        // Action
+        button.addAction(UIAction { _ in action() }, for: .touchUpInside)
+        
+        // Constraints
+        button.snp.makeConstraints { make in
+            make.height.equalTo(36)
+            make.width.greaterThanOrEqualTo(80)
+        }
+        
+        return button
+    }
+}
+
+// MARK: - Button Styling
+private extension PodcastFilterComponent {
+    func updateButtonAppearance(_ button: UIButton, isSelected: Bool) {
+        let backgroundColor: UIColor = isSelected ? .systemIndigo : .secondarySystemBackground
+        let textColor: UIColor = isSelected ? .white : .systemIndigo
+        let borderColor: CGColor = isSelected ? UIColor.systemIndigo.cgColor : UIColor.systemGray4.cgColor
+        let shadowOpacity: Float = isSelected ? 0.15 : 0.05
+        let shadowRadius: CGFloat = isSelected ? 4 : 2
+        
+        button.backgroundColor = backgroundColor
+        button.setTitleColor(textColor, for: .normal)
+        button.layer.borderColor = borderColor
+        button.layer.shadowOpacity = shadowOpacity
+        button.layer.shadowRadius = shadowRadius
     }
     
+}
+
+// MARK: - Actions
+private extension PodcastFilterComponent {
     @objc func sortTypeChanged() {
         let isDate = sortSegmentedControl.selectedSegmentIndex == 0
-        if isDate {
-            filterViewModel.updateSortType(.date(.newest))
-        } else {
-            filterViewModel.updateSortType(.title(.aToZ))
-        }
+        filterViewModel.updateSortType(isDate ? .date(.newest) : .title(.aToZ))
     }
     
     @objc func sortOrderChanged() {
         let isDate = sortSegmentedControl.selectedSegmentIndex == 0
         let firstOption = sortOrderSegmentedControl.selectedSegmentIndex == 0
         
-        if isDate {
-            filterViewModel.updateSortType(.date(firstOption ? .newest : .oldest))
-        } else {
-            filterViewModel.updateSortType(.title(firstOption ? .aToZ : .zToA))
-        }
+        let sortType = isDate 
+            ? SortType.date(firstOption ? .newest : .oldest)
+            : SortType.title(firstOption ? .aToZ : .zToA)
+            
+        filterViewModel.updateSortType(sortType)
     }
     
     @objc func resetButtonTapped() {
@@ -517,34 +460,46 @@ private extension PodcastFilterComponent {
         dismiss(animated: true)
     }
     
+}
+
+// MARK: - Button Refresh
+private extension PodcastFilterComponent {
     func refreshFilterButtons() {
-        // Style button'larını güncelle
-        for view in styleStackView.arrangedSubviews {
-            if let button = view as? UIButton, let title = button.title(for: .normal) {
-                let isSelected = filterViewModel.isStyleSelected(title)
-                updateButtonAppearance(button, isSelected: isSelected)
-            }
+        // Her filtre bölümünü tek bir yardımcı fonksiyonla güncelle
+        refreshButtonsInSection(styleStackView, languageStackView, durationStackView)
+    }
+    
+    func refreshButtonsInSection(_ styleStack: UIStackView, _ languageStack: UIStackView, _ durationStack: UIStackView) {
+        // Tüm butonları bul ve güncelle
+        findAndUpdateButtons(in: styleStack) { button, title in
+            updateButtonAppearance(button, isSelected: filterViewModel.isStyleSelected(title))
         }
         
-        // Language button'larını güncelle
-        for view in languageStackView.arrangedSubviews {
-            if let button = view as? UIButton, let title = button.title(for: .normal) {
-                let isSelected = filterViewModel.isLanguageSelected(title)
-                updateButtonAppearance(button, isSelected: isSelected)
-            }
+        findAndUpdateButtons(in: languageStack) { button, title in
+            updateButtonAppearance(button, isSelected: filterViewModel.isLanguageSelected(title))
         }
         
-        // Duration button'larını güncelle
-        for view in durationStackView.arrangedSubviews {
+        findAndUpdateButtons(in: durationStack) { button, title in
+            if title == "Clear" { return }
+            if let range = DurationRange.allRanges.first(where: { $0.displayName == title }) {
+                updateButtonAppearance(button, isSelected: filterViewModel.isDurationRangeSelected(range))
+            }
+        }
+    }
+    
+    func findAndUpdateButtons(in containerView: UIView, handler: (UIButton, String) -> Void) {
+        // Butonları bul
+        containerView.subviews.forEach { view in
+            // Doğrudan buton
             if let button = view as? UIButton, let title = button.title(for: .normal) {
-                // Duration button için range'i kontrol et
-                for range in DurationRange.allRanges {
-                    if title == range.displayName {
-                        let isSelected = filterViewModel.isDurationRangeSelected(range)
-                        updateButtonAppearance(button, isSelected: isSelected)
-                        break
-                    }
-                }
+                handler(button, title)
+            }
+            // Diğer container'lar
+            else if let stack = view as? UIStackView {
+                stack.arrangedSubviews.forEach { findAndUpdateButtons(in: $0, handler: handler) }
+            }
+            else if let scroll = view as? UIScrollView {
+                scroll.subviews.forEach { findAndUpdateButtons(in: $0, handler: handler) }
             }
         }
     }
@@ -566,5 +521,66 @@ extension PodcastFilterComponent: PodcastFilterViewModelDelegate {
         createFilterButtons(for: styles, type: .style)
         createFilterButtons(for: languages, type: .language)
         createDurationButtons()
+    }
+}
+
+// MARK: - Helpers
+private extension PodcastFilterComponent {
+    func createScrollView() -> UIScrollView {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }
+    
+    func createHeaderView() -> UIView {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        return view
+    }
+    
+    func createLabel(text: String, fontSize: CGFloat, weight: UIFont.Weight = .regular) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: fontSize, weight: weight)
+        label.textAlignment = .center
+        return label
+    }
+    
+    func createButton(title: String, color: UIColor, bgColor: UIColor, action: Selector, withShadow: Bool = false) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        button.setTitleColor(color, for: .normal)
+        button.backgroundColor = bgColor
+        button.layer.cornerRadius = 8
+        button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        
+        if withShadow {
+            button.layer.shadowColor = UIColor.black.cgColor
+            button.layer.shadowOffset = CGSize(width: 0, height: 2)
+            button.layer.shadowOpacity = 0.1
+            button.layer.shadowRadius = 4
+        }
+        
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
+    
+    func createSegmentedControl(items: [String], action: Selector) -> UISegmentedControl {
+        let control = UISegmentedControl(items: items)
+        control.selectedSegmentIndex = 0
+        control.selectedSegmentTintColor = .systemIndigo
+        control.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        control.setTitleTextAttributes([.foregroundColor: UIColor.systemIndigo], for: .normal)
+        control.addTarget(self, action: action, for: .valueChanged)
+        return control
+    }
+    
+    func createVerticalStackView() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        return stackView
     }
 } 
