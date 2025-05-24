@@ -103,42 +103,38 @@ extension PodcastsService {
             
             print("Found \(documents.count) documents")
             
-            do {
-                let podcasts = try documents.compactMap { document -> Podcast? in
-                    do {
-                        // Ham veriyi yazdır
-                        print("Raw data for document \(document.documentID):")
-                        print(document.data())
-                        
-                        let podcast = try document.data(as: Podcast.self)
-                        print("Successfully decoded podcast: \(podcast.id)")
-                        return podcast
-                    } catch {
-                        print("Error decoding document \(document.documentID): \(error.localizedDescription)")
-                        if let decodingError = error as? DecodingError {
-                            switch decodingError {
-                            case .keyNotFound(let key, let context):
-                                print("Missing key: \(key.stringValue)")
-                                print("Context: \(context.debugDescription)")
-                            case .typeMismatch(let type, let context):
-                                print("Type mismatch: expected \(type)")
-                                print("Context: \(context.debugDescription)")
-                            case .valueNotFound(let type, let context):
-                                print("Value not found: expected \(type)")
-                                print("Context: \(context.debugDescription)")
-                            default:
-                                print("Other decoding error: \(decodingError)")
-                            }
+            let podcasts = documents.compactMap { document -> Podcast? in
+                do {
+                    // Ham veriyi yazdır
+                    print("Raw data for document \(document.documentID):")
+                    print(document.data())
+                    
+                    let podcast = try document.data(as: Podcast.self)
+                    print("Successfully decoded podcast: \(podcast.id)")
+                    return podcast
+                } catch {
+                    print("Error decoding document \(document.documentID): \(error.localizedDescription)")
+                    if let decodingError = error as? DecodingError {
+                        switch decodingError {
+                        case .keyNotFound(let key, let context):
+                            print("Missing key: \(key.stringValue)")
+                            print("Context: \(context.debugDescription)")
+                        case .typeMismatch(let type, let context):
+                            print("Type mismatch: expected \(type)")
+                            print("Context: \(context.debugDescription)")
+                        case .valueNotFound(let type, let context):
+                            print("Value not found: expected \(type)")
+                            print("Context: \(context.debugDescription)")
+                        default:
+                            print("Other decoding error: \(decodingError)")
                         }
-                        return nil
                     }
+                    return nil
                 }
-                print("Successfully decoded \(podcasts.count) podcasts")
-                completion(.success(podcasts))
-            } catch {
-                print("Error decoding podcasts: \(error.localizedDescription)")
-                completion(.failure(error))
             }
+            
+            print("Successfully decoded \(podcasts.count) podcasts")
+            completion(.success(podcasts))
         }
     }
 }
@@ -168,28 +164,24 @@ extension PodcastsService {
                 return
             }
             
-            do {
-                let allPodcasts = try documents.compactMap { document -> Podcast? in
-                    do {
-                        return try document.data(as: Podcast.self)
-                    } catch {
-                        print("Error decoding document \(document.documentID): \(error.localizedDescription)")
-                        return nil
-                    }
+            let allPodcasts = documents.compactMap { document -> Podcast? in
+                do {
+                    return try document.data(as: Podcast.self)
+                } catch {
+                    print("Error decoding document \(document.documentID): \(error.localizedDescription)")
+                    return nil
                 }
-                
-                // Filter podcasts based on search query
-                let filteredPodcasts = allPodcasts.filter { podcast in
-                    return podcast.title.lowercased().contains(lowercaseQuery) ||
-                           podcast.content.lowercased().contains(lowercaseQuery) ||
-                           podcast.style.lowercased().contains(lowercaseQuery) ||
-                           podcast.language.lowercased().contains(lowercaseQuery)
-                }
-                
-                completion(.success(filteredPodcasts))
-            } catch {
-                completion(.failure(error))
             }
+            
+            // Filter podcasts based on search query
+            let filteredPodcasts = allPodcasts.filter { podcast in
+                return podcast.title.lowercased().contains(lowercaseQuery) ||
+                       podcast.content.lowercased().contains(lowercaseQuery) ||
+                       podcast.style.lowercased().contains(lowercaseQuery) ||
+                       podcast.language.lowercased().contains(lowercaseQuery)
+            }
+            
+            completion(.success(filteredPodcasts))
         }
     }
 }

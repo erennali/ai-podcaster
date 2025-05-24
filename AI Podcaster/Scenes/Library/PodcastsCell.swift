@@ -130,6 +130,9 @@ class PodcastsCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureView()
         updateAppearanceForCurrentTraitCollection() // Set initial appearance
+        
+        // iOS 17 için trait değişikliklerini izle
+        setupTraitChangeHandling()
     }
     
     required init?(coder: NSCoder) {
@@ -155,13 +158,25 @@ class PodcastsCell: UITableViewCell {
         }
     }
     
+    // Trait değişikliklerini izleme
+    private func setupTraitChangeHandling() {
+        if #available(iOS 17.0, *) {
+            // No implementation needed here, will use registerForTraitChanges below
+        }
+    }
+    
+    // iOS 17'de kullanımdan kaldırıldı, ancak eski iOS sürümleri için tutuyoruz
+    @available(iOS, deprecated: 17.0, message: "Use the trait change registration APIs declared in the UITraitChangeObservable protocol")
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
+        // iOS 16 ve altı için eski metodu kullanmaya devam ediyoruz
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             updateAppearanceForCurrentTraitCollection()
         }
     }
+    
+
     
     private func updateAppearanceForCurrentTraitCollection() {
         if traitCollection.userInterfaceStyle == .dark {

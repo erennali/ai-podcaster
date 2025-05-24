@@ -12,21 +12,23 @@ protocol SplashViewModelDelegate: AnyObject {
     func didFailLoading(with error: String)
 }
 
-class SplashViewModel {
+// Swift concurrency için @Sendable uyumluluğu ekleyelim
+@available(iOS 13.0, *)
+final class SplashViewModel: @unchecked Sendable {
     
     weak var delegate: SplashViewModelDelegate?
     
     func loadInitialData() {
+        // Önce self referansını dışarı alalım
+        let delegate = self.delegate
+        
         Task {
-            do {
-                try await FirebaseService.shared.fetchUserData()
-                DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didFinishLoading()
-                }
-            } catch {
-                DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didFailLoading(with: error.localizedDescription)
-                }
+            // FirebaseService'deki fetchUserData() fonksiyonu hata fırlatmıyor
+            await FirebaseService.shared.fetchUserData()
+            
+            // Main thread'e geçiş yapalım
+            await MainActor.run {
+                delegate?.didFinishLoading()
             }
         }
     }

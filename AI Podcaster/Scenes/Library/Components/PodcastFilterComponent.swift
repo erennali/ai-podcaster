@@ -386,25 +386,66 @@ private extension PodcastFilterComponent {
     
     func createFilterButton(title: String, isSpecial: Bool = false, action: @escaping () -> Void) -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         
-        // Style
+        // iOS 15 ve üzerinde UIButtonConfiguration kullan
+        if #available(iOS 15.0, *) {
+            var configuration: UIButton.Configuration
+            
+            if isSpecial {
+                configuration = UIButton.Configuration.filled()
+                configuration.baseBackgroundColor = .systemRed.withAlphaComponent(0.1)
+                configuration.baseForegroundColor = .systemRed
+            } else {
+                configuration = UIButton.Configuration.filled()
+                configuration.baseBackgroundColor = .secondarySystemBackground
+                configuration.baseForegroundColor = .systemIndigo
+            }
+            
+            configuration.cornerStyle = .medium
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                var outgoing = incoming
+                outgoing.font = .systemFont(ofSize: 14, weight: .medium)
+                return outgoing
+            }
+            
+            button.configuration = configuration
+        } else {
+            // iOS 14 ve altı için eski yöntemi kullan
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
+            
+            if isSpecial {
+                button.setTitleColor(.systemRed, for: .normal)
+                button.backgroundColor = .systemRed.withAlphaComponent(0.1)
+            } else {
+                button.backgroundColor = .secondarySystemBackground
+                button.setTitleColor(.systemIndigo, for: .normal)
+            }
+        }
+        
+        // Her iki durumda da geçerli olan özellikler
         button.layer.cornerRadius = 8
         button.layer.borderWidth = 1
-        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         
         if isSpecial {
-            button.setTitleColor(.systemRed, for: .normal)
-            button.backgroundColor = .systemRed.withAlphaComponent(0.1)
+            // Özel buton için ek özellikler
         } else {
+            // Normal butonlar için ek özellikler
             button.layer.shadowColor = UIColor.black.cgColor
             button.layer.shadowOffset = CGSize(width: 0, height: 1)
             button.layer.shadowOpacity = 0.05
             button.layer.shadowRadius = 2
-            button.backgroundColor = .secondarySystemBackground
-            button.setTitleColor(.systemIndigo, for: .normal)
             button.layer.borderColor = UIColor.systemGray4.cgColor
+        }
+        
+        // iOS 14 altında setTitle, iOS 15+ için configuration kullanıldığı için
+        // burada tekrar setTitle gerekli olabilir
+        if #available(iOS 15.0, *) {
+            // iOS 15'te configuration içinde zaten ayarlanıyor
+        } else {
+            button.setTitle(title, for: .normal)
         }
         
         // Action
@@ -577,12 +618,25 @@ private extension PodcastFilterComponent {
     
     func createButton(title: String, color: UIColor, bgColor: UIColor, action: Selector, withShadow: Bool = false) -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.setTitleColor(color, for: .normal)
-        button.backgroundColor = bgColor
+        
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.title = title
+            configuration.baseBackgroundColor = bgColor
+            configuration.baseForegroundColor = color
+            configuration.cornerStyle = .medium
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12)
+            button.configuration = configuration
+        } else {
+            // iOS 14 ve altında eski yöntemi kullan
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+            button.setTitleColor(color, for: .normal)
+            button.backgroundColor = bgColor
+            button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+        }
+        
         button.layer.cornerRadius = 8
-        button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
         
         if withShadow {
             button.layer.shadowColor = UIColor.black.cgColor
