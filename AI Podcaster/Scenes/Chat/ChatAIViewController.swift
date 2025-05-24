@@ -129,7 +129,7 @@ private extension ChatAIViewController {
             target: self,
             action: #selector(clearChatTapped)
         )
-        clearButton.tintColor = UIColor(red: 0.3, green: 0.3, blue: 0.8, alpha: 1.0)
+        clearButton.tintColor = UIColor(named: "anaTemaRenk")
         navigationItem.rightBarButtonItem = clearButton
     }
     

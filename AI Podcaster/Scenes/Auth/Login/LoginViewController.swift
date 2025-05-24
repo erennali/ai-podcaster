@@ -23,7 +23,7 @@ class LoginViewController: UIViewController {
     private lazy var lostPasswordButton: UIButton = {
         let button = UIButton()
         button.setTitle("Forgot Password?", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(UIColor(named: "anaTemaRenk"), for: .normal)
         button.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         return button
     }()
@@ -48,7 +48,7 @@ class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = UIColor(named: "anaTemaRenk")
         button.layer.cornerRadius = 8
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         return button

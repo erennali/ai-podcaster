@@ -14,6 +14,8 @@ class RegisterViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.keyboardDismissMode = .onDrag
+        scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     
@@ -24,9 +26,25 @@ class RegisterViewController: UIViewController {
     
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "app_logo") // Logo
-        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "MyAppIcon")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 50
+        imageView.layer.borderWidth = 1.5
+        imageView.layer.borderColor = UIColor(named: "anaTemaRenk")?.withAlphaComponent(0.3).cgColor
         return imageView
+    }()
+    
+    private lazy var logoContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        // Move shadow properties to container view
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
+        view.layer.shadowRadius = 8
+        view.layer.shadowOpacity = 0.15
+        view.layer.masksToBounds = false
+        return view
     }()
     
     private lazy var titleLabel: UILabel = {
@@ -83,7 +101,7 @@ class RegisterViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Create Account", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = UIColor(named: "anaTemaRenk")
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
@@ -98,7 +116,7 @@ class RegisterViewController: UIViewController {
         )
         attributedTitle.append(NSAttributedString(
             string: "Sign In",
-            attributes: [.foregroundColor: UIColor.systemBlue]
+            attributes: [.foregroundColor: UIColor(named: "anaTemaRenk") ?? .systemBlue]
         ))
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
@@ -117,7 +135,7 @@ class RegisterViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        configureView()
         setupViewModel()
     }
     
@@ -126,25 +144,124 @@ class RegisterViewController: UIViewController {
         setupKeyboardObservers()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Scroll view'ı en üste taşı
+        DispatchQueue.main.async { [weak self] in
+            self?.scrollView.setContentOffset(.zero, animated: false)
+        }
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         removeKeyboardObservers()
     }
     
     // MARK: - Setup
-    private func setupUI() {
+    private func setupViewModel() {
+        viewModel.delegate = self
+        
+        [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach {
+            $0.delegate = self
+        }
+    }
+    
+    // MARK: - Actions
+    @objc private func registerButtonTapped() {
+        guard let password = passwordTextField.text,
+              let confirmPassword = confirmPasswordTextField.text else {
+            showErrorAlert(message: "Please fill in all fields")
+            return
+        }
+        
+        if password != confirmPassword {
+            showErrorAlert(message: "Passwords do not match")
+            return
+        }
+        
+        viewModel.updateName(nameTextField.text ?? "")
+        viewModel.updateEmail(emailTextField.text ?? "")
+        viewModel.updatePassword(password)
+        viewModel.register()
+    }
+    
+    @objc private func loginButtonTapped() {
+        let loginVC = LoginViewController()
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
+    // MARK: - Keyboard Handling
+    private func setupKeyboardObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func removeKeyboardObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        
+        let keyboardHeight = keyboardSize.height
+        let safeAreaBottom = view.safeAreaInsets.bottom
+        let adjustedKeyboardHeight = keyboardHeight - safeAreaBottom
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: adjustedKeyboardHeight, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        // Aktif metin alanının görünür kalmasını sağla
+        if let activeField = [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField].first(where: { $0.isFirstResponder }) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                guard let self = self else { return }
+                let activeFieldFrame = activeField.convert(activeField.bounds, to: self.scrollView)
+                let targetRect = CGRect(x: 0, y: activeFieldFrame.origin.y - 20, width: self.scrollView.frame.width, height: activeFieldFrame.height + 40)
+                self.scrollView.scrollRectToVisible(targetRect, animated: true)
+            }
+        }
+    }
+    
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
+    }
+}
+
+// MARK: - UI Configuration
+extension RegisterViewController {
+    func configureView() {
         view.backgroundColor = .systemBackground
         title = "Register"
         
-        setupScrollView()
-        setupTextFields()
-        setupConstraints()
+        addViews()
+        configureLayout()
+        setupTapGesture()
     }
     
-    private func setupScrollView() {
+    private func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    func addViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
+        [logoContainerView, titleLabel, subtitleLabel, nameTextField, emailTextField,
+         passwordTextField, confirmPasswordTextField, registerButton, loginButton, activityIndicator].forEach {
+            contentView.addSubview($0)
+        }
+        
+        logoContainerView.addSubview(logoImageView)
+    }
+    
+    func configureLayout() {
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -152,33 +269,21 @@ class RegisterViewController: UIViewController {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(view)
+            make.height.greaterThanOrEqualTo(view.safeAreaLayoutGuide).priority(.low)
         }
-    }
-    
-    private func setupTextFields() {
-        [nameTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach {
-            $0.delegate = self
-        }
-    }
-    
-    private func setupViewModel() {
-        viewModel.delegate = self
-    }
-    
-    private func setupConstraints() {
-        [logoImageView, titleLabel, subtitleLabel, nameTextField, emailTextField,
-         passwordTextField, confirmPasswordTextField, registerButton, loginButton, activityIndicator].forEach {
-            contentView.addSubview($0)
+        
+        logoContainerView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(40)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(100)
         }
         
         logoImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(40)
-            make.centerX.equalToSuperview()
-            make.width.height.equalTo(80)
+            make.edges.equalToSuperview()
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(20)
+            make.top.equalTo(logoContainerView.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
@@ -226,53 +331,6 @@ class RegisterViewController: UIViewController {
         activityIndicator.snp.makeConstraints { make in
             make.center.equalTo(registerButton)
         }
-    }
-    
-    // MARK: - Actions
-    @objc private func registerButtonTapped() {
-        guard let password = passwordTextField.text,
-              let confirmPassword = confirmPasswordTextField.text else {
-            showErrorAlert(message: "Please fill in all fields")
-            return
-        }
-        
-        if password != confirmPassword {
-            showErrorAlert(message: "Passwords do not match")
-            return
-        }
-        
-        viewModel.updateName(nameTextField.text ?? "")
-        viewModel.updateEmail(emailTextField.text ?? "")
-        viewModel.updatePassword(password)
-        viewModel.register()
-    }
-    
-    @objc private func loginButtonTapped() {
-        let loginVC = LoginViewController()
-        navigationController?.pushViewController(loginVC, animated: true)
-    }
-    
-    // MARK: - Keyboard Handling
-    private func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    private func removeKeyboardObservers() {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc private func keyboardWillShow(notification: NSNotification) {
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
-        
-        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-        scrollView.contentInset = contentInsets
-        scrollView.scrollIndicatorInsets = contentInsets
-    }
-    
-    @objc private func keyboardWillHide(notification: NSNotification) {
-        scrollView.contentInset = .zero
-        scrollView.scrollIndicatorInsets = .zero
     }
 }
 
