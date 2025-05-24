@@ -12,6 +12,29 @@ class LoginViewController: UIViewController {
 
     private let viewModel = LoginViewModel()
     
+    private lazy var logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "MyAppIcon")
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 50
+        imageView.layer.borderWidth = 1.5
+        imageView.layer.borderColor = UIColor(named: "anaTemaRenk")?.withAlphaComponent(0.3).cgColor
+        return imageView
+    }()
+    
+    private lazy var logoContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 4)
+        view.layer.shadowRadius = 8
+        view.layer.shadowOpacity = 0.15
+        view.layer.masksToBounds = false
+        return view
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Login"
@@ -83,7 +106,7 @@ class LoginViewController: UIViewController {
    }
 
 }
-
+// MARK: - View Configuration
 extension LoginViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
@@ -91,21 +114,34 @@ extension LoginViewController {
         configureLayout()
     }
     func addViews() {
+        view.addSubview(logoContainerView)
         view.addSubview(titleLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         view.addSubview(loginButton)
         view.addSubview(lostPasswordButton)
+        
+        logoContainerView.addSubview(logoImageView)
     }
     
     func configureLayout() {
-       titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(100)
+        logoContainerView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
             make.centerX.equalToSuperview()
-           make.height.equalTo(50)
+            make.width.height.equalTo(100)
+        }
+        
+        logoImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(logoContainerView.snp.bottom).offset(20)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(50)
         }
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(200)
+            make.top.equalTo(titleLabel.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }

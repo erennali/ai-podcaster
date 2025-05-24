@@ -38,7 +38,7 @@ class RegisterViewController: UIViewController {
     private lazy var logoContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        // Move shadow properties to container view
+        
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOffset = CGSize(width: 0, height: 4)
         view.layer.shadowRadius = 8
@@ -232,7 +232,6 @@ class RegisterViewController: UIViewController {
 extension RegisterViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
-        title = "Register"
         
         addViews()
         configureLayout()
