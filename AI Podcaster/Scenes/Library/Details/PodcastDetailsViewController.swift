@@ -247,13 +247,30 @@ class PodcastDetailsViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         setupNotifications()
+        
+        // Uygulama arka plana geçince AVSpeech'in çalışmaya devam etmesini sağla
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        
+        // Uygulama ön plana gelince AVSpeech'in durumunu UI'a yansıt
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAppWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isPlaying {
-            stopPlayback()
-        }
+        // Artık burda durdurma işlemi yapmıyoruz, böylece başka sayfaya geçilse bile devam edecek
+        // if isPlaying {
+        //     stopPlayback()
+        // }
         removeNotifications()
     }
     
@@ -273,10 +290,34 @@ class PodcastDetailsViewController: UIViewController {
             name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"),
             object: nil
         )
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.removeObserver(
+            self,
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
     
     @objc func speechDidFinish() {
         isPlaying = false
+        updatePlaybackUI()
+    }
+    
+    @objc func handleAppDidEnterBackground() {
+        // Burada özel işlemler yapılabilir, örneğin log tutma
+        print("App entered background, speech will continue")
+    }
+    
+    @objc func handleAppWillEnterForeground() {
+        // Ön plana gelince UI durumunu güncelle
+        let speechService = AVSpeechService.shared
+        isPlaying = speechService.synthesizer.isSpeaking
         updatePlaybackUI()
     }
 }
@@ -455,7 +496,8 @@ private extension PodcastDetailsViewController {
         if speechService.synthesizer.isPaused {
             speechService.resume()
         } else {
-            speechService.speak(text: viewModel.podcast.content)
+            // Podcast başlığını doğrudan podcast modelinden alarak gönder
+            speechService.speak(text: viewModel.podcast.content, title: viewModel.podcast.title)
         }
         
         isPlaying = true

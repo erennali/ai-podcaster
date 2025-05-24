@@ -295,12 +295,13 @@ private extension PodcastsCell {
         if isPlaying {
             stopSpeech()
         } else {
-            startSpeech(with: podcast.content)
+            startSpeech(with: podcast)
         }
     }
     
-    func startSpeech(with text: String) {
-        AVSpeechService.shared.speak(text: text)
+    func startSpeech(with podcast: Podcast) {
+        // Podcast başlığını ve içeriğini birlikte göndererek seslendirme yap
+        AVSpeechService.shared.speak(text: podcast.content, title: podcast.title)
         isPlaying = true
         updatePlayButtonState()
         

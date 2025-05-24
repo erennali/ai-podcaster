@@ -7,15 +7,18 @@
 
 import UIKit
 import FirebaseCore
+import AVFoundation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
+        
+        // Uygulama başlatıldığında ses çalma kontrollerini aktif et
+        setupAudioSession()
+        
         return true
     }
 
@@ -33,6 +36,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-
+    // Arka planda ses çalma için genel audio session kurulumu
+    private func setupAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            // Uzaktan kontrolleri etkinleştir
+            UIApplication.shared.beginReceivingRemoteControlEvents()
+        } catch {
+            print("Failed to setup audio session: \(error.localizedDescription)")
+        }
+    }
+    
+    // Uygulama arka plana geçtiğinde çağrılır
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        // AVSpeechService'in arka plan görevinin sürmesini sağla
+        if AVSpeechService.shared.synthesizer.isSpeaking {
+            print("App entered background with active speech")
+        }
+    }
 }
 

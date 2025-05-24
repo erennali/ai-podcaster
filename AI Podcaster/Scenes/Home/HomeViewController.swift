@@ -8,13 +8,6 @@
 import UIKit
 import SnapKit
 
-/*!!!!
-
-
-- arka plana alınınca da avspeach devam etmeli
-- mypodcast te app giriş yapılı değilse hata dönüyor o kontrolu creatpodcast gibi yap(chatai da da)
-
-!!! */
 
 class HomeViewController: UIViewController {
     

@@ -65,8 +65,25 @@ final class CreaterPodcastsViewModel: NSObject {
         
         delegate?.didUpdateUIState(isLoading: true)
         
-        let podcastPrompt = "Create a podcast content that I can convert into an audio file by typing it into the text to speech AI tool in the subject \(prompt), with a reading time \(duration) minutes, with a style \(style). Write the podcast content directly and only in paragraphs, don't write anything else. Only 1 person will voice the podcast, write accordingly. Answer in \(language)."
-        
+        let podcastPrompt = """
+        Sen profesyonel bir podcast içerik yazarısın. Bana aşağıdaki kriterlere uygun bir podcast senaryosu hazırla:
+
+        KONU: \(prompt)
+        SÜRE: \(duration) dakika (yaklaşık \(duration * 150) kelime)
+        ÜSLUp: \(style)
+        DİL: \(language)
+
+        YAZIM KURALLARI:
+        - Sadece TEK KİŞİLİK anlatım için yaz (monolog formatında)
+        - Sadece paragraf halinde yaz, başlık, liste veya ek açıklama ekleme
+        - Doğrudan içeriği yaz, giriş metni veya açıklama yapma
+        - Akıcı, doğal konuşma dili kullan
+        - Dinleyiciye hitap eden, kişisel bir ton benimse
+        - Geçişleri ve bağlantıları sorunsuz yap
+        - Belirtilen süreye uygun kelime sayısında tut
+
+        İçeriği hemen başlat: 
+        """
         googleAIService.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
             DispatchQueue.main.async {
                 self?.delegate?.didUpdateUIState(isLoading: false)
