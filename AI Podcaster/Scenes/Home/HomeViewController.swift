@@ -11,11 +11,8 @@ import SnapKit
 /*!!!!
 
 
-- filter butonlar tıklanıldığı belli olmuyor, tıklanıldığı belli olsun
 - arka plana alınınca da avspeach devam etmeli
 - mypodcast te app giriş yapılı değilse hata dönüyor o kontrolu creatpodcast gibi yap(chatai da da)
-- aichat de response textfield yetmiyor
-
 
 !!! */
 

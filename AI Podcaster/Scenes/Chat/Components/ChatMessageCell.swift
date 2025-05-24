@@ -19,6 +19,7 @@ final class ChatMessageCell: UICollectionViewCell {
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 16)
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
@@ -60,6 +61,7 @@ final class ChatMessageCell: UICollectionViewCell {
     // MARK: - Configuration
     func configure(with message: ChatMessage) {
         messageLabel.text = message.text
+        messageLabel.sizeToFit()
         timestampLabel.text = formatTimestamp(message.timestamp)
         
         if message.isFromUser {
@@ -87,14 +89,26 @@ final class ChatMessageCell: UICollectionViewCell {
     // MARK: - Static Methods
     static func sizeForMessage(_ message: ChatMessage, maxWidth: CGFloat) -> CGSize {
         let bubbleMaxWidth = maxWidth - 32 // Leave 16px margin on each side
-        let labelWidth = bubbleMaxWidth - 28 // Subtract padding (14 * 2)
         
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.text = message.text
-        label.numberOfLines = 0
+        let effectiveBubbleWidth = message.isFromUser ? bubbleMaxWidth - 60 : bubbleMaxWidth - 20
+        let labelWidth = effectiveBubbleWidth - 28 // Subtract padding (14 * 2)
         
-        let labelSize = label.sizeThatFits(CGSize(width: labelWidth, height: CGFloat.greatestFiniteMagnitude))
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let textRect = message.text.boundingRect(
+            with: CGSize(width: labelWidth, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: attributes,
+            context: nil
+        )
+        
+        let labelSize = CGSize(width: ceil(textRect.width), height: ceil(textRect.height))
         let bubbleHeight = labelSize.height + 20 // Add padding (10 * 2)
         
         return CGSize(width: maxWidth, height: bubbleHeight + 24) // +24 for timestamp space
@@ -131,8 +145,8 @@ private extension ChatMessageCell {
         bubbleView.snp.remakeConstraints { make in
             make.top.equalToSuperview().inset(4)
             make.leading.equalToSuperview().inset(16)
-            make.trailing.lessThanOrEqualToSuperview().inset(40)
-            make.width.greaterThanOrEqualTo(60)
+            make.trailing.lessThanOrEqualToSuperview().inset(20)
+            make.width.greaterThanOrEqualTo(100)
         }
         
         timestampLabel.snp.remakeConstraints { make in
