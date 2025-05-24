@@ -151,7 +151,7 @@ class PodcastsCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         if isPlaying {
-            stopSpeech()
+            pauseOrStopSpeech()
         }
     }
     
@@ -292,35 +292,68 @@ private extension PodcastsCell {
     @objc func togglePlayPause() {
         guard let podcast = podcast else { return }
         
+        let speechService = AVSpeechService.shared
+        
         if isPlaying {
-            stopSpeech()
+            // Çalıyor durumda, durdur
+            speechService.pause()
+            isPlaying = false
+            updatePlayButtonState()
+            
+            // Observer'ı kaldır (gereksizse)
+            removeObserver()
         } else {
-            startSpeech(with: podcast)
+            // Çalmıyor durumda, ya resume yap ya da baştan başlat
+            if speechService.synthesizer.isPaused {
+                // Duraklatılmış, devam ettir
+                speechService.resume()
+            } else {
+                // Hiç başlamamış veya tamamlanmış, baştan başlat
+                speechService.speak(text: podcast.content, title: podcast.title)
+            }
+            isPlaying = true
+            updatePlayButtonState()
+            
+            // Speech tamamlandığında bildirim almak için observer ekle
+            addObserver()
         }
     }
     
-    func startSpeech(with podcast: Podcast) {
-        // Podcast başlığını ve içeriğini birlikte göndererek seslendirme yap
-        AVSpeechService.shared.speak(text: podcast.content, title: podcast.title)
-        isPlaying = true
-        updatePlayButtonState()
+    // Tamamen durdurmak için (cell yeniden kullanıldığında veya ihtiyaç olduğunda)
+    func pauseOrStopSpeech() {
+        let speechService = AVSpeechService.shared
         
-        // Register for speech completion notification
-        NotificationCenter.default.addObserver(self, 
-                                              selector: #selector(speechDidFinish), 
-                                              name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
-                                              object: nil)
-    }
-    
-    func stopSpeech() {
-        AVSpeechService.shared.stop()
+        if speechService.synthesizer.isSpeaking {
+            speechService.pause() // Veya speechService.stop() kullanılabilir, duruma göre
+        }
+        
         isPlaying = false
         updatePlayButtonState()
         
-        // Remove observer
-        NotificationCenter.default.removeObserver(self, 
-                                                name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
-                                                object: nil)
+        // Observer'ı kaldır
+        removeObserver()
+    }
+    
+    // Observer ekleme/kaldırma işlemlerini ayrı metodlarda topla
+    private func addObserver() {
+        // Önceki observer'ı temizle
+        removeObserver()
+        
+        // Yeni observer ekle
+        NotificationCenter.default.addObserver(
+            self, 
+            selector: #selector(speechDidFinish), 
+            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
+            object: nil
+        )
+    }
+    
+    private func removeObserver() {
+        NotificationCenter.default.removeObserver(
+            self, 
+            name: NSNotification.Name("AVSpeechSynthesizerDidFinishSpeechUtterance"), 
+            object: nil
+        )
     }
     
     @objc func speechDidFinish() {
