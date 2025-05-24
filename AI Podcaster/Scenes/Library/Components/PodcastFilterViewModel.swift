@@ -32,8 +32,16 @@ final class PodcastFilterViewModel {
     // MARK: - Public Methods
     func setupWithPodcasts(_ podcasts: [Podcast]) {
         allPodcasts = podcasts
+        
+        // Get available styles and languages from podcasts
         availableStyles = filterService.getAvailableStyles(from: podcasts)
         availableLanguages = filterService.getAvailableLanguages(from: podcasts)
+        
+        // Log the available options for debugging
+        print("Available styles: \(availableStyles)")
+        print("Available languages: \(availableLanguages)")
+        
+        // Notify delegate about the available options
         delegate?.didUpdateAvailableOptions(styles: availableStyles, languages: availableLanguages)
     }
     
@@ -48,6 +56,8 @@ final class PodcastFilterViewModel {
         } else {
             currentConfiguration.filterOptions.selectedStyles.insert(style)
         }
+        
+        print("Style filter toggled: \(style). Selected styles: \(currentConfiguration.filterOptions.selectedStyles)")
         delegate?.didUpdateConfiguration(currentConfiguration)
     }
     
@@ -57,11 +67,20 @@ final class PodcastFilterViewModel {
         } else {
             currentConfiguration.filterOptions.selectedLanguages.insert(language)
         }
+        
+        print("Language filter toggled: \(language). Selected languages: \(currentConfiguration.filterOptions.selectedLanguages)")
         delegate?.didUpdateConfiguration(currentConfiguration)
     }
     
     func updateDurationFilter(_ durationRange: DurationRange?) {
         currentConfiguration.filterOptions.selectedDurationRange = durationRange
+        
+        if let range = durationRange {
+            print("Duration filter updated: \(range.displayName)")
+        } else {
+            print("Duration filter cleared")
+        }
+        
         delegate?.didUpdateConfiguration(currentConfiguration)
     }
     

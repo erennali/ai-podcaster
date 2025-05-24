@@ -73,8 +73,8 @@ final class PodcastFilterComponent: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViewModel()
         configureView()
+        setupViewModel()
         setupInitialFilters()
         updateUI()
     }
@@ -254,14 +254,14 @@ private extension PodcastFilterComponent {
 // MARK: - UI Updates
 private extension PodcastFilterComponent {
     func updateUI() {
-        // Update sort controls
+        // Update sort controls based on current configuration
         let configuration = filterViewModel.currentConfiguration
         let sortType = configuration.sortType
         
-        // Update type control
+        // 1. Update sort type segmented control (Date/Title)
         sortSegmentedControl.selectedSegmentIndex = filterViewModel.isSortTypeDate ? 0 : 1
         
-        // Update order control - daha temiz ve ViewModel'e bağlı
+        // 2. Update sort order segmented control with appropriate titles and selection
         sortOrderSegmentedControl.removeAllSegments()
         let segmentTitles = filterViewModel.getSortSegmentTitles()
         
@@ -269,7 +269,7 @@ private extension PodcastFilterComponent {
             sortOrderSegmentedControl.insertSegment(withTitle: title, at: index, animated: false)
         }
         
-        // Segment indeksini ayarla
+        // 3. Set selected segment based on current sort order
         switch sortType {
         case .date(let order):
             sortOrderSegmentedControl.selectedSegmentIndex = order == .newest ? 0 : 1
@@ -277,11 +277,11 @@ private extension PodcastFilterComponent {
             sortOrderSegmentedControl.selectedSegmentIndex = order == .aToZ ? 0 : 1
         }
         
-        // Update reset button state
+        // 4. Update reset button state based on whether filters are active
         resetButton.isEnabled = filterViewModel.hasActiveFilters
         resetButton.alpha = filterViewModel.hasActiveFilters ? 1.0 : 0.5
         
-        // Refresh filter buttons
+        // 5. Update all filter buttons to reflect current selection state
         refreshFilterButtons()
     }
 }
@@ -292,7 +292,7 @@ private extension PodcastFilterComponent {
         let stackView = type == .style ? styleStackView : languageStackView
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        // Butonları içeren bir kaydırma görünümü oluştur
+        // Create a scrollable horizontal layout for the filter buttons
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
@@ -303,8 +303,12 @@ private extension PodcastFilterComponent {
         horizontalStackView.distribution = .fill
         
         scrollView.addSubview(horizontalStackView)
+        horizontalStackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.height.equalToSuperview()
+        }
         
-        // Add buttons to stack
+        // Add buttons to horizontal stack
         for item in items {
             let button = createFilterButton(title: item) { [weak self] in
                 switch type {
@@ -324,14 +328,10 @@ private extension PodcastFilterComponent {
             horizontalStackView.addArrangedSubview(button)
         }
         
+        // Add the scrollView to the main stackView
         stackView.addArrangedSubview(scrollView)
         
-        // Layout
-        horizontalStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.height.equalToSuperview()
-        }
-        
+        // Set the height of the scrollView
         scrollView.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
@@ -353,7 +353,7 @@ private extension PodcastFilterComponent {
                 let newRange = currentRange == range ? nil : range
                 self.filterViewModel.updateDurationFilter(newRange)
                 
-                // Arayüzü hemen güncelle - buton rengini değiştirmek için
+                // Immediately update UI to change button color
                 self.updateUI()
             }
             
@@ -369,7 +369,7 @@ private extension PodcastFilterComponent {
         // Add clear button
         let clearButton = createFilterButton(title: "Clear", isSpecial: true) { [weak self] in
             self?.filterViewModel.updateDurationFilter(nil)
-            // Clear butonuna basıldığında da güncelle
+            // Update UI when clear button is pressed
             self?.updateUI()
         }
         durationStackView.addArrangedSubview(clearButton)
@@ -386,53 +386,18 @@ private extension PodcastFilterComponent {
     
     func createFilterButton(title: String, isSpecial: Bool = false, action: @escaping () -> Void) -> UIButton {
         let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         
-        // iOS 15 ve üzerinde UIButtonConfiguration kullan
-        if #available(iOS 15.0, *) {
-            var configuration: UIButton.Configuration
-            
-            if isSpecial {
-                configuration = UIButton.Configuration.filled()
-                configuration.baseBackgroundColor = .systemRed.withAlphaComponent(0.1)
-                configuration.baseForegroundColor = .systemRed
-            } else {
-                configuration = UIButton.Configuration.filled()
-                configuration.baseBackgroundColor = .secondarySystemBackground
-                configuration.baseForegroundColor = .systemIndigo
-            }
-            
-            configuration.cornerStyle = .medium
-            configuration.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-            configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-                var outgoing = incoming
-                outgoing.font = .systemFont(ofSize: 14, weight: .medium)
-                return outgoing
-            }
-            
-            button.configuration = configuration
-        } else {
-            // iOS 14 ve altı için eski yöntemi kullan
-            button.setTitle(title, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-            button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
-            
-            if isSpecial {
-                button.setTitleColor(.systemRed, for: .normal)
-                button.backgroundColor = .systemRed.withAlphaComponent(0.1)
-            } else {
-                button.backgroundColor = .secondarySystemBackground
-                button.setTitleColor(.systemIndigo, for: .normal)
-            }
-        }
-        
-        // Her iki durumda da geçerli olan özellikler
-        button.layer.cornerRadius = 8
-        button.layer.borderWidth = 1
-        
+        // Set initial appearance
         if isSpecial {
-            // Özel buton için ek özellikler
+            button.setTitleColor(.systemRed, for: .normal)
+            button.backgroundColor = .systemRed.withAlphaComponent(0.1)
+            button.layer.borderColor = UIColor.systemRed.withAlphaComponent(0.2).cgColor
         } else {
-            // Normal butonlar için ek özellikler
+            button.setTitleColor(.systemIndigo, for: .normal)
+            button.backgroundColor = .secondarySystemBackground
             button.layer.shadowColor = UIColor.black.cgColor
             button.layer.shadowOffset = CGSize(width: 0, height: 1)
             button.layer.shadowOpacity = 0.05
@@ -440,15 +405,11 @@ private extension PodcastFilterComponent {
             button.layer.borderColor = UIColor.systemGray4.cgColor
         }
         
-        // iOS 14 altında setTitle, iOS 15+ için configuration kullanıldığı için
-        // burada tekrar setTitle gerekli olabilir
-        if #available(iOS 15.0, *) {
-            // iOS 15'te configuration içinde zaten ayarlanıyor
-        } else {
-            button.setTitle(title, for: .normal)
-        }
+        // Common settings
+        button.layer.cornerRadius = 8
+        button.layer.borderWidth = 1
         
-        // Action
+        // Add action
         button.addAction(UIAction { _ in action() }, for: .touchUpInside)
         
         // Constraints
@@ -464,19 +425,12 @@ private extension PodcastFilterComponent {
 // MARK: - Button Styling
 private extension PodcastFilterComponent {
     func updateButtonAppearance(_ button: UIButton, isSelected: Bool) {
-        let backgroundColor: UIColor = isSelected ? .systemIndigo : .secondarySystemBackground
-        let textColor: UIColor = isSelected ? .white : .systemIndigo
-        let borderColor: CGColor = isSelected ? UIColor.systemIndigo.cgColor : UIColor.systemGray4.cgColor
-        let shadowOpacity: Float = isSelected ? 0.15 : 0.05
-        let shadowRadius: CGFloat = isSelected ? 4 : 2
-        
-        button.backgroundColor = backgroundColor
-        button.setTitleColor(textColor, for: .normal)
-        button.layer.borderColor = borderColor
-        button.layer.shadowOpacity = shadowOpacity
-        button.layer.shadowRadius = shadowRadius
+        button.backgroundColor = isSelected ? .systemIndigo : .secondarySystemBackground
+        button.setTitleColor(isSelected ? .white : .systemIndigo, for: .normal)
+        button.layer.borderColor = isSelected ? UIColor.systemIndigo.cgColor : UIColor.systemGray4.cgColor
+        button.layer.shadowOpacity = isSelected ? 0.15 : 0.05
+        button.layer.shadowRadius = isSelected ? 4 : 2
     }
-    
 }
 
 // MARK: - Actions
@@ -511,63 +465,37 @@ private extension PodcastFilterComponent {
 // MARK: - Button Refresh
 private extension PodcastFilterComponent {
     func refreshFilterButtons() {
-        // Her filtre bölümünü tek bir yardımcı fonksiyonla güncelle
-        refreshButtonsInSection(styleStackView, languageStackView, durationStackView)
-    }
-    
-    func refreshButtonsInSection(_ styleStack: UIStackView, _ languageStack: UIStackView, _ durationStack: UIStackView) {
-        // Tüm butonları bul ve güncelle
-        findAndUpdateButtons(in: styleStack) { button, title in
-            updateButtonAppearance(button, isSelected: filterViewModel.isStyleSelected(title))
-        }
-        
-        findAndUpdateButtons(in: languageStack) { button, title in
-            updateButtonAppearance(button, isSelected: filterViewModel.isLanguageSelected(title))
-        }
-        
-        // Duration butonlarını güncelle
-        findAndUpdateButtons(in: durationStack) { button, title in
-            if title == "Clear" { return }
-            
-            // DurationRange'i title'a göre bul ve seçili mi kontrol et
-            let matchingRange = DurationRange.allRanges.first { range in 
-                range.displayName == title
-            }
-            
-            if let range = matchingRange {
-                let isSelected = filterViewModel.isDurationRangeSelected(range)
-                print("Duration button '\(title)' selected: \(isSelected)") // Debug için
-                updateButtonAppearance(button, isSelected: isSelected)
-            }
-        }
-    }
-    
-    func findAndUpdateButtons(in containerView: UIView, handler: (UIButton, String) -> Void) {
-        // Butonları bul
-        for subview in containerView.subviews {
-            // Doğrudan buton
-            if let button = subview as? UIButton, let title = button.title(for: .normal) {
-                handler(button, title)
-                continue
-            }
-            
-            // Stack view içindeki butonlar
-            if let stackView = subview as? UIStackView {
-                for arrangedView in stackView.arrangedSubviews {
-                    if let button = arrangedView as? UIButton, let title = button.title(for: .normal) {
-                        handler(button, title)
-                    } else {
-                        // Daha derin gezinme
-                        findAndUpdateButtons(in: arrangedView, handler: handler)
+        // Update style buttons
+        styleStackView.subviews.forEach { subview in
+            if let scrollView = subview as? UIScrollView {
+                for case let button as UIButton in scrollView.subviews.flatMap({ $0.subviews }) {
+                    if let title = button.title(for: .normal) {
+                        updateButtonAppearance(button, isSelected: filterViewModel.isStyleSelected(title))
                     }
                 }
-                continue
             }
-            
-            // Scroll view içindeki butonlar
+        }
+        
+        // Update language buttons
+        languageStackView.subviews.forEach { subview in
             if let scrollView = subview as? UIScrollView {
-                for scrollSubview in scrollView.subviews {
-                    findAndUpdateButtons(in: scrollSubview, handler: handler)
+                for case let button as UIButton in scrollView.subviews.flatMap({ $0.subviews }) {
+                    if let title = button.title(for: .normal) {
+                        updateButtonAppearance(button, isSelected: filterViewModel.isLanguageSelected(title))
+                    }
+                }
+            }
+        }
+        
+        // Update duration buttons
+        durationStackView.subviews.forEach { subview in
+            if let stackView = subview as? UIStackView {
+                for case let button as UIButton in stackView.arrangedSubviews {
+                    if let title = button.title(for: .normal), title != "Clear" {
+                        if let range = DurationRange.allRanges.first(where: { $0.displayName == title }) {
+                            updateButtonAppearance(button, isSelected: filterViewModel.isDurationRangeSelected(range))
+                        }
+                    }
                 }
             }
         }

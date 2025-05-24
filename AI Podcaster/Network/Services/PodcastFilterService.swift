@@ -51,17 +51,23 @@ private extension PodcastFilterService {
     }
     
     func passesStyleFilter(_ podcast: Podcast, _ filterOptions: FilterOptions) -> Bool {
+        // If no styles are selected, don't filter by style (pass all)
         guard !filterOptions.selectedStyles.isEmpty else { return true }
+        // Only pass podcasts with styles that are in the selected styles set
         return filterOptions.selectedStyles.contains(podcast.style)
     }
     
     func passesLanguageFilter(_ podcast: Podcast, _ filterOptions: FilterOptions) -> Bool {
+        // If no languages are selected, don't filter by language (pass all)
         guard !filterOptions.selectedLanguages.isEmpty else { return true }
+        // Only pass podcasts with languages that are in the selected languages set
         return filterOptions.selectedLanguages.contains(podcast.language)
     }
     
     func passesDurationFilter(_ podcast: Podcast, _ filterOptions: FilterOptions) -> Bool {
+        // If no duration range is selected, don't filter by duration (pass all)
         guard let durationRange = filterOptions.selectedDurationRange else { return true }
+        // Only pass podcasts with duration in the selected range
         return podcast.minutes >= durationRange.min && podcast.minutes <= durationRange.max
     }
     
