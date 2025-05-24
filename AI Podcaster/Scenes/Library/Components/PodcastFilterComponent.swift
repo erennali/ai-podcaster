@@ -352,6 +352,9 @@ private extension PodcastFilterComponent {
                 let currentRange = self.filterViewModel.currentConfiguration.filterOptions.selectedDurationRange
                 let newRange = currentRange == range ? nil : range
                 self.filterViewModel.updateDurationFilter(newRange)
+                
+                // Arayüzü hemen güncelle - buton rengini değiştirmek için
+                self.updateUI()
             }
             
             // Set initial selection state
@@ -366,6 +369,8 @@ private extension PodcastFilterComponent {
         // Add clear button
         let clearButton = createFilterButton(title: "Clear", isSpecial: true) { [weak self] in
             self?.filterViewModel.updateDurationFilter(nil)
+            // Clear butonuna basıldığında da güncelle
+            self?.updateUI()
         }
         durationStackView.addArrangedSubview(clearButton)
         
@@ -479,27 +484,50 @@ private extension PodcastFilterComponent {
             updateButtonAppearance(button, isSelected: filterViewModel.isLanguageSelected(title))
         }
         
+        // Duration butonlarını güncelle
         findAndUpdateButtons(in: durationStack) { button, title in
             if title == "Clear" { return }
-            if let range = DurationRange.allRanges.first(where: { $0.displayName == title }) {
-                updateButtonAppearance(button, isSelected: filterViewModel.isDurationRangeSelected(range))
+            
+            // DurationRange'i title'a göre bul ve seçili mi kontrol et
+            let matchingRange = DurationRange.allRanges.first { range in 
+                range.displayName == title
+            }
+            
+            if let range = matchingRange {
+                let isSelected = filterViewModel.isDurationRangeSelected(range)
+                print("Duration button '\(title)' selected: \(isSelected)") // Debug için
+                updateButtonAppearance(button, isSelected: isSelected)
             }
         }
     }
     
     func findAndUpdateButtons(in containerView: UIView, handler: (UIButton, String) -> Void) {
         // Butonları bul
-        containerView.subviews.forEach { view in
+        for subview in containerView.subviews {
             // Doğrudan buton
-            if let button = view as? UIButton, let title = button.title(for: .normal) {
+            if let button = subview as? UIButton, let title = button.title(for: .normal) {
                 handler(button, title)
+                continue
             }
-            // Diğer container'lar
-            else if let stack = view as? UIStackView {
-                stack.arrangedSubviews.forEach { findAndUpdateButtons(in: $0, handler: handler) }
+            
+            // Stack view içindeki butonlar
+            if let stackView = subview as? UIStackView {
+                for arrangedView in stackView.arrangedSubviews {
+                    if let button = arrangedView as? UIButton, let title = button.title(for: .normal) {
+                        handler(button, title)
+                    } else {
+                        // Daha derin gezinme
+                        findAndUpdateButtons(in: arrangedView, handler: handler)
+                    }
+                }
+                continue
             }
-            else if let scroll = view as? UIScrollView {
-                scroll.subviews.forEach { findAndUpdateButtons(in: $0, handler: handler) }
+            
+            // Scroll view içindeki butonlar
+            if let scrollView = subview as? UIScrollView {
+                for scrollSubview in scrollView.subviews {
+                    findAndUpdateButtons(in: scrollSubview, handler: handler)
+                }
             }
         }
     }

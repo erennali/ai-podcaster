@@ -80,7 +80,10 @@ final class PodcastFilterViewModel {
     }
     
     func isDurationRangeSelected(_ range: DurationRange) -> Bool {
-        return currentConfiguration.filterOptions.selectedDurationRange == range
+        if let selectedRange = currentConfiguration.filterOptions.selectedDurationRange {
+            return selectedRange.min == range.min && selectedRange.max == range.max
+        }
+        return false
     }
     
     func getCurrentSortDisplayName() -> String {
