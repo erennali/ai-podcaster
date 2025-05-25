@@ -45,7 +45,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         
         Task {
-            await NotificationManager.shared.updateNotificationStatus()
+            // Uygulama aktif olduğunda bildirim durumunu kontrol et ve gerekirse güncelle
+            await NotificationManager.shared.handleNotificationStatusChange()
+            
             NotificationCenter.default.post(name: .didReturnFromSettings, object: nil)
         }
     }

@@ -19,6 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Uygulama başlatıldığında ses çalma kontrollerini aktif et
         setupAudioSession()
         
+        // Bildirim durumunu kontrol et ve gerekirse izin iste
+        checkNotificationStatus()
+        
         return true
     }
 
@@ -54,6 +57,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // AVSpeechService'in arka plan görevinin sürmesini sağla
         if AVSpeechService.shared.synthesizer.isSpeaking {
             print("App entered background with active speech")
+        }
+    }
+
+    // Bildirim durumunu kontrol et
+    private func checkNotificationStatus() {
+        Task {
+            let notificationManager = NotificationManager.shared
+            
+            await notificationManager.updateNotificationStatus()
+            
+            // ilk açılış ise izin iste
+            if !notificationManager.isRequested {
+                do {
+                    try await notificationManager.requestNotificationPermissionWithAsync()
+                } catch {
+                    print("Bildirim izni isteme hatası: \(error)")
+                }
+            } 
+            // Eğer bildirim izni zaten verilmişse ama bildirimler zamanlanmamışsa
+            else if notificationManager.isAuthorized {
+                await notificationManager.scheduleDailyNotification()
+            }
         }
     }
 }
