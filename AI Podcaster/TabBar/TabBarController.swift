@@ -30,35 +30,35 @@ private extension TabBarController {
     //CTRL-M
     func setupTabs () {
         let homeVC = createNav(
-            with: "Home",
+            with: NSLocalizedString("HomeTabBar", comment: "Home tab title"),
             and: UIImage(systemName: "house.fill"),
             viewController: HomeViewController()
         )
         let searchVC = createNav(
-            with: "Chat",
+            with: NSLocalizedString("ChatTabBar", comment: "Chat tab title"),
             and: UIImage(systemName: "ellipsis.message.fill"),
             viewController: ChatAIViewController()
         )
         let createrPodcast = createNav(
-            with: "Create Podcast",
+            with: NSLocalizedString("CreatePodcastTabBar", comment: "Create podcast tab title"),
             and: UIImage(systemName: "plus.square"),
             viewController: CreaterPodcastsViewController()
         )
         let libraryVC = createNav(
-            with: "Library",
+            with: NSLocalizedString("LibraryTabBar", comment: "Library tab title"),
             and: UIImage(systemName: "music.note"),
             viewController: PodcastsViewController()
         )
        
         let profileVC = createNav(
-            with: "Profile",
+            with: NSLocalizedString("ProfileTabBar", comment: "Profile tab title"),
             and: UIImage(systemName: "person.crop.circle.fill"),
             viewController: ProfileViewController()
         )
         
         if SceneDelegate.loginUser == false {
             let registerVC = createNav(
-                with: "Register",
+                with: NSLocalizedString("RegisterTabBar", comment: "Register tab title"),
                 and: UIImage(systemName: "person.fill"),
                 viewController: RegisterViewController()
             )

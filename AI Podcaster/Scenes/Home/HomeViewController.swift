@@ -168,7 +168,6 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
-        title = "Home"
         
         addViews()
         configureLayout()

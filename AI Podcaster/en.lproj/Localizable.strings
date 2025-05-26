@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  AI Podcaster
+
+  Created by Eren Ali Koca on 26.05.2025.
+  
+*/
+
+"HomeTabBar" = "Home";
+"ChatTabBar" = "Chat";
+"CreatePodcastTabBar" = "Create Podcast";
+"LibraryTabBar" = "Library";
+"ProfileTabBar" = "Profile";
+"RegisterTabBar" = "Register";
