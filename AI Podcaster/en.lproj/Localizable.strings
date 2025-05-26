@@ -6,9 +6,25 @@
   
 */
 
+//MARK: TabBar
 "HomeTabBar" = "Home";
 "ChatTabBar" = "Chat";
 "CreatePodcastTabBar" = "Create Podcast";
 "LibraryTabBar" = "Library";
 "ProfileTabBar" = "Profile";
 "RegisterTabBar" = "Register";
+
+//MARK: Home VC
+
+"podcastTitle" = "Chat about podcast";
+"podcastChatDescription" = "AI Chat";
+"podcastTitle2" = "Create a new podcast";
+"podcastChatDescription2" = "AI Production";
+
+"welcomeMotivation" = "Have you read the word of the day?";
+"dailyMotivation" = "Motivation of the day";
+
+"welcomeText" = "Welcome";
+
+"createdPodcastText" = "Number of podcasts created: ";
+"greatText" = "You're doing well!";

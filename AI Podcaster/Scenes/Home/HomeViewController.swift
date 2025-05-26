@@ -34,8 +34,8 @@ class HomeViewController: UIViewController {
         }()
         
         private let collections = [
-            WelcomeCollectionView(title: "Podcast hakkında sohbet et", description: "AI Sohbet", imageName: "background3", destinationType: .chat),
-            WelcomeCollectionView(title: "Yeni bir podcast oluştur", description: "AI Üretim", imageName: "background2", destinationType: .create)
+            WelcomeCollectionView(title: NSLocalizedString("podcastTitle", comment: ""), description: NSLocalizedString("podcastChatDescription", comment: ""), imageName: "background3", destinationType: .chat),
+            WelcomeCollectionView(title: NSLocalizedString("podcastTitle2", comment: ""), description: NSLocalizedString("podcastChatDescription2", comment: ""), imageName: "background2", destinationType: .create)
         ]
     
     private lazy var welcomeSecondLabel: UILabel = {
@@ -43,7 +43,7 @@ class HomeViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 16)
         label.textColor = .label
         label.numberOfLines = 0
-        label.text = "Günün sözünü okudun mu?"
+        label.text = NSLocalizedString("welcomeMotivation", comment: "")
         return label
     }()
         // MARK: - Card View Components
@@ -60,7 +60,7 @@ class HomeViewController: UIViewController {
             label.font = .systemFont(ofSize: 19, weight: .semibold)
             label.textColor = .white
             label.numberOfLines = 2
-            label.text = "Günün Motivasyonu"
+            label.text = NSLocalizedString("dailyMotivation", comment: "")
             return label
         }()
         private let cardContentLabel: UILabel = {
@@ -109,7 +109,7 @@ class HomeViewController: UIViewController {
         
         private func updateWelcomeMessage() {
             let userName = viewModel.getUserName()
-            welcomeTitle.text = "Welcome \(userName)"
+            welcomeTitle.text = "\(NSLocalizedString("welcomeText", comment: "")) \(userName)"
         }
         
         private func updateMotivationText() {
@@ -121,7 +121,7 @@ class HomeViewController: UIViewController {
         }
     private func updatePodcastCountView() {
          let podcastCount = viewModel.getPodcastCount()
-            podcastCountLabel.text = "Oluşturulan Podcast Sayısı: \(podcastCount)\n\nİyi gidiyorsun!"
+            podcastCountLabel.text = "\(NSLocalizedString("createdPodcastText", comment: "")) \(podcastCount)\n\n\(NSLocalizedString("greatText", comment: ""))"
     }
         
         

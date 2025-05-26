@@ -6,6 +6,8 @@
   
 */
 
+
+//MARK: TabBar
 "HomeTabBar" = "Ana Sayfa";
 "ChatTabBar" = "Sohbet";
 "CreatePodcastTabBar" = "Ana Sayfa";
@@ -14,3 +16,17 @@
 "RegisterTabBar" = "Kayıt Ol";
 
 
+//MARK: Home VC
+
+"podcastTitle" = "Podcast hakkında sohbet et";
+"podcastChatDescription" = "AI Sohbet";
+"podcastTitle2" = "Yeni bir podcast oluştur";
+"podcastChatDescription2" = "AI Üretim";
+
+"welcomeMotivation" = "Günün sözünü okudun mu?";
+"dailyMotivation" = "Günün Motivasyonu";
+
+"welcomeText" = "Hoşgeldin";
+
+"createdPodcastText" = "Oluşturulan Podcast Sayısı: ";
+"greatText" = "İyi gidiyorsun!";
