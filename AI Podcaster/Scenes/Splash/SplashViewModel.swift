@@ -17,19 +17,30 @@ protocol SplashViewModelDelegate: AnyObject {
 final class SplashViewModel: @unchecked Sendable {
     
     weak var delegate: SplashViewModelDelegate?
+    private let homeViewModel = HomeViewModel()
     
     func loadInitialData() {
-        // Önce self referansını dışarı alalım
         let delegate = self.delegate
-        
         Task {
-            // FirebaseService'deki fetchUserData() fonksiyonu hata fırlatmıyor
             await FirebaseService.shared.fetchUserData()
             
-            // Main thread'e geçiş yapalım
-            await MainActor.run {
-                delegate?.didFinishLoading()
+            if homeViewModel.shouldFetchMotivation() {
+                GoogleAIService.shared.fetchDailyMotivation { [weak self] result in
+                    switch result {
+                    case .success(let text):
+                        self?.homeViewModel.updateDailyMotivation(text)
+                    case .failure:
+                        break // Hata olursa eski motivasyon gösterilir
+                    }
+                    DispatchQueue.main.async {
+                        delegate?.didFinishLoading()
+                    }
+                }
+            } else {
+                await MainActor.run {
+                    delegate?.didFinishLoading()
+                }
             }
         }
     }
-} 
+}

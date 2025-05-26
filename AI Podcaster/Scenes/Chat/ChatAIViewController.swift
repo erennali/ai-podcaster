@@ -76,6 +76,9 @@ final class ChatAIViewController: UIViewController {
         setupViewModel()
         setupKeyboardObservers()
         loadInitialData()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -203,6 +206,10 @@ private extension ChatAIViewController {
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

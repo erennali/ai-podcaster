@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
     
     private let viewModel = HomeViewModel()
     
+    // MARK: - UI Components
     private let welcomeTitle: UILabel = {
             let label = UILabel()
             label.font = .boldSystemFont(ofSize: 24)
@@ -35,7 +36,42 @@ class HomeViewController: UIViewController {
             WelcomeCollectionView(title: "Podcast hakkında sohbet et", description: "AI Sohbet", imageName: "background3", destinationType: .chat),
             WelcomeCollectionView(title: "Yeni bir podcast oluştur", description: "AI Üretim", imageName: "background2", destinationType: .create)
         ]
-        
+    
+    private lazy var welcomeSecondLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 16)
+        label.textColor = .label
+        label.numberOfLines = 0
+        label.text = "Günün sözünü okudun mu?"
+        return label
+    }()
+        // MARK: - Card View Components
+        private let cardView: UIView = {
+            let view = UIView()
+            view.backgroundColor = UIColor(named: "anaTemaRenk")
+            view.layer.cornerRadius = 12
+            view.clipsToBounds = true
+            return view
+        }()
+    
+        private let cardTitleLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 19, weight: .semibold)
+            label.textColor = .white
+            label.numberOfLines = 2
+            label.text = "Günün Motivasyonu"
+            return label
+        }()
+        private let cardContentLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 13)
+            label.textColor = .white
+            label.text = "Başarı, düştüğün her seferinde bir kez daha ayağa kalkabilme cesaretindir. Hedeflerine odaklan, geçmişin seni değil, geleceğin seni tanımlasın."
+            label.numberOfLines = 0
+            return label
+        }()
+    
+        // MARK: - Lifecycle Methods
         override func viewDidLoad() {
             super.viewDidLoad()
             
@@ -45,11 +81,13 @@ class HomeViewController: UIViewController {
             
             configureView()
             updateWelcomeMessage()
+            updateMotivationText()
         }
         
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
             updateWelcomeMessage()
+            updateMotivationText()
         }
         
         private func updateWelcomeMessage() {
@@ -57,9 +95,18 @@ class HomeViewController: UIViewController {
             welcomeTitle.text = "Welcome \(userName)"
         }
         
+        private func updateMotivationText() {
+            if let motivation = viewModel.dailyMotivation {
+                cardContentLabel.text = motivation
+            } else {
+                cardContentLabel.text = "Başarı, düştüğün her seferinde bir kez daha ayağa kalkabilme cesaretindir. Hedeflerine odaklan, geçmişin seni değil, geleceğin seni tanımlasın."
+            }
+        }
+        
         
     }
 
+// MARK: - UICollectionView Delegate and DataSource
     extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
         
         func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -85,20 +132,18 @@ class HomeViewController: UIViewController {
             
             switch selectedCollection.destinationType {
             case .chat:
-                // Sohbet sekmesine geçiş yapma
-                tabBarController.selectedIndex = 1  // Chat sekmesi için kullanılan indeks
+                tabBarController.selectedIndex = 1
                 
             case .create:
-                // Podcast oluşturma sekmesine geçiş yapma
-                tabBarController.selectedIndex = 2  // Create Podcast sekmesi için kullanılan indeks
+                tabBarController.selectedIndex = 2
                 
             case .details:
-                // Diğer durumlar
                 break
             }
         }
 }
 
+// MARK: - View Configuration
 extension HomeViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
@@ -110,6 +155,10 @@ extension HomeViewController {
     func addViews() {
         view.addSubview(welcomeTitle)
         view.addSubview(collectionView)
+        view.addSubview(cardView)
+        view.addSubview(welcomeSecondLabel)
+        cardView.addSubview(cardTitleLabel)
+        cardView.addSubview(cardContentLabel)
     }
     func configureLayout() {
         welcomeTitle.snp.makeConstraints { make in
@@ -122,5 +171,31 @@ extension HomeViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(160)
         }
+        welcomeSecondLabel.snp.makeConstraints { make in
+            make.top.equalTo(cardView.snp.top).offset(-34)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+        cardView.snp.makeConstraints { make in
+            make.top.equalTo(collectionView.snp.bottom).offset(96)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.width.equalTo(370)
+            make.height.equalTo(210)
+        }
+        
+        cardTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(16)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
+        cardContentLabel.snp.makeConstraints { make in
+            make.top.equalTo(cardTitleLabel.snp.bottom).offset(16)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
+        }
     }
+}
+
+#Preview {
+    HomeViewController()
 }
