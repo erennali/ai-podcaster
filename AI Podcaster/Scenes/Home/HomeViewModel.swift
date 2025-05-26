@@ -12,6 +12,7 @@ class HomeViewModel {
     private let motivationKey = "dailyMotivationText"
     private let motivationDateKey = "dailyMotivationDate"
     private let motivationRefreshHour = 9 // Sabah 9'da yenilenecek
+    private let firebaseService = FirebaseService.shared
     
     var dailyMotivation: String? {
         UserDefaults.standard.string(forKey: motivationKey)
@@ -48,10 +49,18 @@ class HomeViewModel {
     }
     
     func getUserName() -> String {
-        if let userData = FirebaseService.shared.getUserData(),
+        if let userData = firebaseService.getUserData(),
            let name = userData["name"] as? String {
             return name
         }
         return "User"
     }
+    func getPodcastCount() -> Int {
+        if let userData2 = firebaseService.getUserData(),
+           let podcastCount = userData2["podcastCount"] as? Int {
+            return podcastCount
+        }
+        return 0
+    }
+    
 }

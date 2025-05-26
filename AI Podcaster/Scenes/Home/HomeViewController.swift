@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
     
     private let viewModel = HomeViewModel()
     
+    
     // MARK: - UI Components
     private let welcomeTitle: UILabel = {
             let label = UILabel()
@@ -70,6 +71,21 @@ class HomeViewController: UIViewController {
             label.numberOfLines = 0
             return label
         }()
+    private let podcastCountCardView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(named: "anaTemaRenk")
+        view.layer.cornerRadius = 12
+        view.clipsToBounds = true
+        return view
+    }()
+    private let podcastCountLabel: UILabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = .white
+        label.numberOfLines = 0
+            return label
+        }()
+    
     
         // MARK: - Lifecycle Methods
         override func viewDidLoad() {
@@ -82,6 +98,7 @@ class HomeViewController: UIViewController {
             configureView()
             updateWelcomeMessage()
             updateMotivationText()
+            updatePodcastCountView()
         }
         
         override func viewWillAppear(_ animated: Bool) {
@@ -102,6 +119,10 @@ class HomeViewController: UIViewController {
                 cardContentLabel.text = "Başarı, düştüğün her seferinde bir kez daha ayağa kalkabilme cesaretindir. Hedeflerine odaklan, geçmişin seni değil, geleceğin seni tanımlasın."
             }
         }
+    private func updatePodcastCountView() {
+         let podcastCount = viewModel.getPodcastCount()
+            podcastCountLabel.text = "Oluşturulan Podcast Sayısı: \(podcastCount)\n\nİyi gidiyorsun!"
+    }
         
         
     }
@@ -159,6 +180,8 @@ extension HomeViewController {
         view.addSubview(welcomeSecondLabel)
         cardView.addSubview(cardTitleLabel)
         cardView.addSubview(cardContentLabel)
+        view.addSubview(podcastCountCardView)
+        podcastCountCardView.addSubview(podcastCountLabel)
     }
     func configureLayout() {
         welcomeTitle.snp.makeConstraints { make in
@@ -189,9 +212,19 @@ extension HomeViewController {
             make.trailing.equalToSuperview().offset(-16)
         }
         cardContentLabel.snp.makeConstraints { make in
-            make.top.equalTo(cardTitleLabel.snp.bottom).offset(16)
+            make.top.equalTo(cardTitleLabel.snp.bottom).offset(21)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
+        }
+        podcastCountCardView.snp.makeConstraints { make in
+            make.top.equalTo(cardView.snp.bottom).offset(26)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.width.equalTo(370)
+            make.height.equalTo(90)
+        }
+        podcastCountLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
         }
     }
 }
