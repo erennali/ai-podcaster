@@ -17,7 +17,6 @@
 
 
 //MARK: Home VC
-
 "podcastTitle" = "Podcast hakkında sohbet et";
 "podcastChatDescription" = "AI Sohbet";
 "podcastTitle2" = "Yeni bir podcast oluştur";
@@ -30,3 +29,22 @@
 
 "createdPodcastText" = "Oluşturulan Podcast Sayısı: ";
 "greatText" = "İyi gidiyorsun!";
+
+
+//MARK: ChatAI
+
+//VC
+"startChattingText" = "Akıllı Podcast asistanınla sohbet etmeye başla!";
+"clearChat" = "Sohbeti Sil";
+"areYouSureDelete" = "Tüm mesajları silmek istediğinizden emin misiniz?";
+"cancel" = "İptal";
+"delete" = "Sil";
+"error" = "Hata";
+
+//VM
+"mustLogin" = "Mesaj göndermek için giriş yapmalısın!";
+"welcomeAIResponse" = "Merhaba! Ben senin Akıllı Podcast asistanınım. Podcast konuları, içerik oluşturma, hikaye anlatımı ve ses içeriği konusunda sana yardımcı olabilirim. Sana nasıl yardımcı olabilirim?";
+"tryAgain" = "Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.";
+
+//ChatInputView
+"typeMessage" = "Mesajınızı yazın...";

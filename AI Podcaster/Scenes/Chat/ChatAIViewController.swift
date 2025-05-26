@@ -44,7 +44,7 @@ final class ChatAIViewController: UIViewController {
         view.isHidden = true
         
         let label = UILabel()
-        label.text = "Start chatting with your AI Podcast assistant!"
+        label.text = NSLocalizedString("startChattingText", comment: "")
         label.textAlignment = .center
         label.textColor = .systemGray2
         label.font = .systemFont(ofSize: 18, weight: .medium)
@@ -96,7 +96,6 @@ private extension ChatAIViewController {
     
     func setupView() {
         view.backgroundColor = .systemBackground
-        title = "AI Chat"
         
         addViews()
         configureLayout()
@@ -166,13 +165,13 @@ private extension ChatAIViewController {
     
     @objc func clearChatTapped() {
         let alert = UIAlertController(
-            title: "Clear Chat",
-            message: "Are you sure you want to delete all messages?",
+            title: NSLocalizedString("clearChat", comment: ""),
+            message: NSLocalizedString("areYouSureDelete", comment: ""),
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("delete", comment: ""), style: .destructive) { [weak self] _ in
             self?.viewModel.clearChat()
         })
         
@@ -227,7 +226,7 @@ private extension ChatAIViewController {
     }
     
     func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("error", comment: ""), message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

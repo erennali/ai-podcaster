@@ -45,7 +45,7 @@ final class ChatViewModel: ChatViewModelProtocol {
     func sendMessage(_ text: String) {
         
         if !SceneDelegate.loginUser {
-            delegate?.didFailWithError("You must be logged in to send messages.")
+            delegate?.didFailWithError(NSLocalizedString("mustLogin", comment: ""))
             return
         }
         
@@ -70,7 +70,7 @@ final class ChatViewModel: ChatViewModelProtocol {
     
     func loadInitialMessages() {
         let welcomeMessage = ChatMessage(
-            text: "Hello! I'm your AI Podcast assistant. I can help you with podcast topics, content creation, storytelling, and audio content. How can I assist you?",
+            text: NSLocalizedString("welcomeAIResponse", comment: ""),
             isFromUser: false
         )
         addMessage(welcomeMessage)
@@ -108,7 +108,7 @@ private extension ChatViewModel {
             
         case .failure(let error):
             let errorMessage = ChatMessage(
-                text: "I'm sorry, an error occurred. Please try again.",
+                text: NSLocalizedString("tryAgain", comment: ""),
                 isFromUser: false
             )
             addMessage(errorMessage)

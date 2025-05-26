@@ -14,8 +14,8 @@
 "ProfileTabBar" = "Profile";
 "RegisterTabBar" = "Register";
 
-//MARK: Home VC
 
+//MARK: Home VC
 "podcastTitle" = "Chat about podcast";
 "podcastChatDescription" = "AI Chat";
 "podcastTitle2" = "Create a new podcast";
@@ -28,3 +28,22 @@
 
 "createdPodcastText" = "Number of podcasts created: ";
 "greatText" = "You're doing well!";
+
+
+//MARK: ChatAI
+
+//VC
+"startChattingText" = "Start chatting with your AI Podcast assistant!";
+"clearChat" = "Clear Chat";
+"areYouSureDelete" = "Are you sure you want to delete all messages?";
+"cancel" = "Cancel";
+"delete" = "Delete";
+"error" = "Error";
+
+//VM
+"mustLogin" = "You must be logged in to send messages.";
+"welcomeAIResponse" = "Hello! I'm your AI Podcast assistant. I can help you with podcast topics, content creation, storytelling, and audio content. How can I assist you?";
+"tryAgain" = "I'm sorry, an error occurred. Please try again.";
+
+//ChatInputView
+"typeMessage" = "Type your message...";

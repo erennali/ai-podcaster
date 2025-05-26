@@ -39,7 +39,7 @@ final class ChatInputView: UIView {
         textView.layer.borderColor = UIColor.systemGray4.cgColor
         textView.textContainerInset = UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)
         textView.isScrollEnabled = false
-        textView.text = "Type your message..."
+        textView.text = NSLocalizedString("typeMessage", comment: "")
         textView.textColor = .systemGray3
         textView.delegate = self
         return textView
@@ -87,7 +87,7 @@ final class ChatInputView: UIView {
     func clearText() {
         textView.text = ""
         textView.textColor = .systemGray3
-        textView.text = "Type your message..."
+        textView.text = NSLocalizedString("typeMessage", comment: "")
         sendButton.isEnabled = false
         updateTextViewHeight()
     }
@@ -161,7 +161,7 @@ extension ChatInputView: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Type your message..."
+            textView.text = NSLocalizedString("typeMessage", comment: "")
             textView.textColor = .systemGray3
         }
     }
