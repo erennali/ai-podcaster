@@ -26,24 +26,7 @@ final class CreaterPodcastsViewController: UIViewController {
         let view = UIView()
         return view
     }()
-    
-    private lazy var headerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemIndigo.withAlphaComponent(0.1)
-        view.layer.cornerRadius = 16
-        return view
-    }()
-    
-    
-    private lazy var headerLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Create Your AI Podcast"
-        label.font = .systemFont(ofSize: 22, weight: .bold)
-        label.textColor = .systemIndigo
-        label.textAlignment = .center
-        return label
-    }()
-    
+
     private lazy var promptContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
@@ -106,7 +89,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var durationLabel: UILabel = {
         let label = UILabel()
-        label.text = "Duration: 5 minutes"
+        label.text = "Duration: 5 minutes~"
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .secondaryLabel
         return label
@@ -418,11 +401,7 @@ private extension CreaterPodcastsViewController {
     func addViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        
-        // Header
-        contentView.addSubview(headerView)
-        headerView.addSubview(headerLabel)
-        
+
         // Prompt Section
         contentView.addSubview(promptContainer)
         promptContainer.addSubview(promptLabel)
@@ -466,19 +445,9 @@ private extension CreaterPodcastsViewController {
             make.width.equalToSuperview()
         }
         
-        // Header
-        headerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        headerLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16)
-        }
-        
         // Prompt Section
         promptContainer.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom).offset(16)
+            make.top.equalToSuperview().offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
         

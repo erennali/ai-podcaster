@@ -69,7 +69,7 @@ final class CreaterPodcastsViewModel: NSObject {
         Sen profesyonel bir podcast içerik yazarısın. Bana aşağıdaki kriterlere uygun bir podcast senaryosu hazırla:
 
         KONU: \(prompt)
-        SÜRE: \(duration) dakika (yaklaşık \(duration * 250) kelime)
+        SÜRE: \(duration) dakika (yaklaşık \(duration * 350) kelime)
         ÜSLUp: \(style)
         DİL: \(language)
 
