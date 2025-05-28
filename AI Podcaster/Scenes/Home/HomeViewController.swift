@@ -15,6 +15,13 @@ class HomeViewController: UIViewController {
     
     
     // MARK: - UI Components
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+    
     private let welcomeTitle: UILabel = {
             let label = UILabel()
             label.font = .boldSystemFont(ofSize: 24)
@@ -120,12 +127,14 @@ class HomeViewController: UIViewController {
             }
         }
     private func updatePodcastCountView() {
-         let podcastCount = viewModel.getPodcastCount()
-            podcastCountLabel.text = "\(NSLocalizedString("createdPodcastText", comment: "")) \(podcastCount)\n\n\(NSLocalizedString("greatText", comment: ""))"
-    }
+        let podcastCount: () = viewModel.getPodcastCount(completion: { count in
+            DispatchQueue.main.async {
+                self.podcastCountLabel.text = "\(NSLocalizedString("createdPodcastText", comment: "")) \(count)\n\n\(NSLocalizedString("greatText", comment: ""))"
+            }
+        })
         
         
-    }
+    }}
 
 // MARK: - UICollectionView Delegate and DataSource
     extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -173,18 +182,26 @@ extension HomeViewController {
         configureLayout()
     }
     func addViews() {
-        view.addSubview(welcomeTitle)
-        view.addSubview(collectionView)
-        view.addSubview(cardView)
-        view.addSubview(welcomeSecondLabel)
+        view.addSubview(scrollView)
+        
+        scrollView.addSubview(welcomeTitle)
+        scrollView.addSubview(collectionView)
+        scrollView.addSubview(welcomeSecondLabel)
+        scrollView.addSubview(cardView)
+        scrollView.addSubview(podcastCountCardView)
+        
         cardView.addSubview(cardTitleLabel)
         cardView.addSubview(cardContentLabel)
-        view.addSubview(podcastCountCardView)
         podcastCountCardView.addSubview(podcastCountLabel)
     }
     func configureLayout() {
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+            make.width.equalToSuperview()
+        }
+        
         welcomeTitle.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            make.top.equalToSuperview().offset(16)
             make.leading.equalToSuperview().offset(16)
         }
         
@@ -193,16 +210,16 @@ extension HomeViewController {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(160)
         }
+        
         welcomeSecondLabel.snp.makeConstraints { make in
-            make.top.equalTo(cardView.snp.top).offset(-34)
+            make.top.equalTo(collectionView.snp.bottom).offset(32)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
         }
+        
         cardView.snp.makeConstraints { make in
-            make.top.equalTo(collectionView.snp.bottom).offset(96)
+            make.top.equalTo(welcomeSecondLabel.snp.bottom).offset(30)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.width.equalTo(370)
-            make.height.equalTo(210)
         }
         
         cardTitleLabel.snp.makeConstraints { make in
@@ -210,17 +227,22 @@ extension HomeViewController {
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
         }
+        
         cardContentLabel.snp.makeConstraints { make in
             make.top.equalTo(cardTitleLabel.snp.bottom).offset(21)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-16)
         }
+        
         podcastCountCardView.snp.makeConstraints { make in
             make.top.equalTo(cardView.snp.bottom).offset(26)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.width.equalTo(370)
+            make.width.equalTo(view.snp.width).offset(-32)
             make.height.equalTo(90)
+            make.bottom.equalToSuperview().offset(-20) // Scroll view için alt boşluk
         }
+        
         podcastCountLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.leading.trailing.equalToSuperview().inset(16)

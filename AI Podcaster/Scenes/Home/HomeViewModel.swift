@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseAuth
 
 class HomeViewModel {
     
@@ -13,6 +15,7 @@ class HomeViewModel {
     private let motivationDateKey = "dailyMotivationDate"
     private let motivationRefreshHour = 9 // Sabah 9'da yenilenecek
     private let firebaseService = FirebaseService.shared
+    private let firestore = Firestore.firestore()
     
     var dailyMotivation: String? {
         UserDefaults.standard.string(forKey: motivationKey)
@@ -55,12 +58,21 @@ class HomeViewModel {
         }
         return "User"
     }
-    func getPodcastCount() -> Int {
-        if let userData2 = firebaseService.getUserData(),
-           let podcastCount = userData2["podcastCount"] as? Int {
-            return podcastCount
+
+    func getPodcastCount(completion: @escaping (Int) -> Void) {
+        let userId = Auth.auth().currentUser?.uid ?? ""
+        
+        firestore.collection("users").document(userId).collection("podcasts").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching podcasts: \(error.localizedDescription)")
+                completion(0)
+                return
+            }
+            
+            let podcastCount = snapshot?.documents.count ?? 0
+            completion(podcastCount)
         }
-        return 0
     }
+    
     
 }

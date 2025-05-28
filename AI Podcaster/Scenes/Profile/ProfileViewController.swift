@@ -103,7 +103,6 @@ class ProfileViewController: UIViewController {
     }
     
     private func configureView() {
-        title = "Profile"
         view.backgroundColor = .systemBackground
         navigationItem.largeTitleDisplayMode = .always
         

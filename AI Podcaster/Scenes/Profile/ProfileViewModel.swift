@@ -20,7 +20,7 @@ class ProfileViewModel {
             let name = userData["name"] as? String ?? ""
             let email = userData["email"] as? String ?? ""
             
-            // Fetch actual podcast count from Firestore
+           
             fetchPodcastCount(name: name, email: email)
         }
     }

@@ -391,7 +391,6 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
 private extension CreaterPodcastsViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
-        title = "Create Podcast"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         addViews()
