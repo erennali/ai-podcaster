@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BA34C2D52DC0CC44005915FE /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = BA34C2D42DC0CC44005915FE /* ElevenLabsSDK */; };
+		BA49E6192DEC8FA2006492AC /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA49E6182DEC8FA2006492AC /* StoreKit.framework */; };
 		BA538B9E2DEC79660028C9A7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = BA538B9D2DEC79660028C9A7 /* RevenueCat */; };
 		BA538BA02DEC79660028C9A7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA538B9F2DEC79660028C9A7 /* RevenueCatUI */; };
 		BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BED2DBE86DA00827F7C /* Alamofire */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BA49E6182DEC8FA2006492AC /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		BAC316902DBE41350066DF0D /* AI Podcaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AI Podcaster.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -59,16 +61,26 @@
 				BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */,
 				BA538BA02DEC79660028C9A7 /* RevenueCatUI in Frameworks */,
 				BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */,
+				BA49E6192DEC8FA2006492AC /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BA49E6172DEC8FA2006492AC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BA49E6182DEC8FA2006492AC /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BAC316872DBE41350066DF0D = {
 			isa = PBXGroup;
 			children = (
 				BAC316922DBE41350066DF0D /* AI Podcaster */,
+				BA49E6172DEC8FA2006492AC /* Frameworks */,
 				BAC316912DBE41350066DF0D /* Products */,
 			);
 			sourceTree = "<group>";
