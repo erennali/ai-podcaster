@@ -1,10 +1,12 @@
 import UIKit
 import StoreKit
 import SafariServices
+import RevenueCat
 
 protocol SettingsViewControllerProtocol: AnyObject {
     func updateSwitchValue(_ value: Bool)
     func openAppSettings()
+    func updateSubscriptionStatusLabel(_ text: String)
 }
 
 final class SettingsViewController: UIViewController {
@@ -12,6 +14,7 @@ final class SettingsViewController: UIViewController {
     
     private let viewModel: SettingsViewModel
     private let themeKey = "selectedTheme"
+    private let iapService = IAPService.shared
     
     // MARK: Properties
     private lazy var tableView: UITableView = {
@@ -23,6 +26,7 @@ final class SettingsViewController: UIViewController {
     }()
     
     private var notificationSwitch: UISwitch?
+    private var subscriptionStatusLabel: UILabel?
     
     private let appVersionLabel: UILabel = {
         let label = UILabel()
@@ -47,8 +51,19 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        
+        // Add observer for subscription status changes
+        NotificationCenter.default.addObserver(self, selector: #selector(subscriptionStatusChanged), name: .subscriptionStatusChanged, object: nil)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateSubscriptionStatus()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: Objective Methods
@@ -58,6 +73,10 @@ final class SettingsViewController: UIViewController {
     }
     func didToggleNotification(_ sender: UISwitch) {
         viewModel.updateNotificationStatus(isOn: sender.isOn)
+    }
+    
+    func subscriptionStatusChanged() {
+        updateSubscriptionStatus()
     }
 }
     
@@ -99,6 +118,10 @@ private extension SettingsViewController {
             deleteAccount()
         case .privacyPolicy , .termsOfUse :
             openUrl("https://google.com")
+        case .subscription:
+            showPaywall()
+        case .restorePurchases:
+            restorePurchases()
         default : break
         }
     }
@@ -132,6 +155,35 @@ private extension SettingsViewController {
         present(safariVC, animated: true)
     }
     
+    func showPaywall() {
+        let paywallVC = PaywallViewController()
+        paywallVC.modalPresentationStyle = .fullScreen
+        present(paywallVC, animated: true)
+    }
+    
+    func restorePurchases() {
+        viewModel.restorePurchases { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.showAlert(title: "Başarılı", message: "Satın alımlarınız başarıyla geri yüklendi.")
+                case .failure(let error):
+                    self?.showAlert(title: "Hata", message: "Satın alımlarınız geri yüklenirken bir hata oluştu: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Tamam", style: .default))
+        present(alert, animated: true)
+    }
+    
+    func updateSubscriptionStatus() {
+        let status = viewModel.getSubscriptionStatusText()
+        subscriptionStatusLabel?.text = status
+    }
 }
     
 // MARK: - UITableViewDelegate
@@ -177,9 +229,17 @@ extension SettingsViewController: UITableViewDataSource {
             viewModel.fetchNotificationStatus{switcher.isOn = $0 }
             switcher.addTarget(self, action: #selector(didToggleNotification(_:)), for: .valueChanged)
             cell.accessoryView = switcher
-        case .deleteAccount:
+        case .subscription:
+            // Subscription status label
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 13)
+            label.textColor = .secondaryLabel
+            label.text = viewModel.getSubscriptionStatusText()
+            subscriptionStatusLabel = label
+            
+            cell.accessoryView = label
             cell.accessoryType = .disclosureIndicator
-        case .rateApp, .privacyPolicy, .termsOfUse:
+        case .deleteAccount, .rateApp, .privacyPolicy, .termsOfUse, .restorePurchases:
             cell.accessoryType = .disclosureIndicator
         }
         return cell
@@ -195,18 +255,24 @@ extension SettingsViewController: SettingsViewControllerProtocol {
         }
     }
     
-    func openAppSettings() {
-            if let settingsURL = URL(
-                string: UIApplication.openSettingsURLString
-            ),UIApplication.shared
-                .canOpenURL(settingsURL){ DispatchQueue.main.async {
-                    UIApplication.shared.open(
-                        settingsURL,
-                        options: [:],
-                        completionHandler: nil
-                    )
-                }
-            }
-                
+    func updateSubscriptionStatusLabel(_ text: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.subscriptionStatusLabel?.text = text
         }
+    }
+    
+    func openAppSettings() {
+        if let settingsURL = URL(
+            string: UIApplication.openSettingsURLString
+        ),UIApplication.shared
+            .canOpenURL(settingsURL){ DispatchQueue.main.async {
+                UIApplication.shared.open(
+                    settingsURL,
+                    options: [:],
+                    completionHandler: nil
+                )
+            }
+        }
+            
+    }
 }

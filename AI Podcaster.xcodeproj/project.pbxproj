@@ -15,10 +15,14 @@
 		BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5B12DC15DB30025399E /* FirebaseFirestore */; };
 		BABAC5B42DC15DB30025399E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5B32DC15DB30025399E /* FirebaseStorage */; };
 		BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = BAC317392DBE56500066DF0D /* SnapKit */; };
+		BAC61F492DE72D7F004F0109 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = BAC61F482DE72D7F004F0109 /* RevenueCat */; };
+		BAC61F4B2DE72D7F004F0109 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAC61F4A2DE72D7F004F0109 /* RevenueCatUI */; };
+		BAC61F4E2DE72DA6004F0109 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAC61F4D2DE72DA6004F0109 /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BAC316902DBE41350066DF0D /* AI Podcaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AI Podcaster.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAC61F4D2DE72DA6004F0109 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,9 +56,12 @@
 				BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */,
 				BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */,
 				BABAC5B02DC15DB30025399E /* FirebaseCore in Frameworks */,
+				BAC61F492DE72D7F004F0109 /* RevenueCat in Frameworks */,
 				BABAC5B42DC15DB30025399E /* FirebaseStorage in Frameworks */,
 				BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */,
+				BAC61F4B2DE72D7F004F0109 /* RevenueCatUI in Frameworks */,
 				BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */,
+				BAC61F4E2DE72DA6004F0109 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				BAC316922DBE41350066DF0D /* AI Podcaster */,
+				BAC61F4C2DE72DA6004F0109 /* Frameworks */,
 				BAC316912DBE41350066DF0D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -75,6 +83,14 @@
 				BAC316902DBE41350066DF0D /* AI Podcaster.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BAC61F4C2DE72DA6004F0109 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BAC61F4D2DE72DA6004F0109 /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -105,6 +121,8 @@
 				BABAC5AF2DC15DB30025399E /* FirebaseCore */,
 				BABAC5B12DC15DB30025399E /* FirebaseFirestore */,
 				BABAC5B32DC15DB30025399E /* FirebaseStorage */,
+				BAC61F482DE72D7F004F0109 /* RevenueCat */,
+				BAC61F4A2DE72D7F004F0109 /* RevenueCatUI */,
 			);
 			productName = "AI Podcaster";
 			productReference = BAC316902DBE41350066DF0D /* AI Podcaster.app */;
@@ -141,6 +159,7 @@
 				BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */,
 				BA34C2D32DC0CC44005915FE /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
 				BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				BAC61F472DE72D7F004F0109 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BAC316912DBE41350066DF0D /* Products */;
@@ -428,6 +447,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		BAC61F472DE72D7F004F0109 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.25.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -470,6 +497,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAC317382DBE56500066DF0D /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		BAC61F482DE72D7F004F0109 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAC61F472DE72D7F004F0109 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		BAC61F4A2DE72D7F004F0109 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAC61F472DE72D7F004F0109 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

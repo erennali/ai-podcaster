@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 
 
+
 class SplashViewController: UIViewController {
 
     // MARK: - Properties
@@ -111,7 +112,4 @@ extension SplashViewController: SplashViewModelDelegate {
     }
 }
 
-#Preview {
-    SplashViewController()
-}
 

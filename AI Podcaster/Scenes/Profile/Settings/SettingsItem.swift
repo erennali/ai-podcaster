@@ -14,6 +14,8 @@ enum SettingsItemType {
     case rateApp
     case privacyPolicy
     case termsOfUse
+    case subscription
+    case restorePurchases
 }
 
 struct SettingsItem {
@@ -32,6 +34,10 @@ struct SettingsSection {
         ]),
         SettingsSection(title: "Notifications", items: [
             SettingsItem(title: "Notification", iconName: "bell.fill", type: .notification),
+        ]),
+        SettingsSection(title: "Premium", items: [
+            SettingsItem(title: "Üyelik Planları", iconName: "crown.fill", type: .subscription),
+            SettingsItem(title: "Satın Alımları Geri Yükle", iconName: "arrow.clockwise", type: .restorePurchases),
         ]),
         SettingsSection(title: "Rate Us", items: [
             SettingsItem(title: "Rate Us", iconName: "star.fill", type: .rateApp),

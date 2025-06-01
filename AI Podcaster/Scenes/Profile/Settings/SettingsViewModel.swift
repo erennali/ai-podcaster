@@ -8,6 +8,7 @@
 import Foundation
 import UserNotifications
 import FirebaseAuth
+import RevenueCat
 
 class SettingsViewModel {
     
@@ -15,11 +16,13 @@ class SettingsViewModel {
     var sections = SettingsSection.sections
     private let themeKey = "selectedTheme"
     private var notificationManager: NotificationManager = .shared
+    private let iapService = IAPService.shared
     
     weak var delegate: SettingsViewControllerProtocol?
     
     init() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleReturnFromSettings), name: .didReturnFromSettings, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(subscriptionStatusChanged), name: .subscriptionStatusChanged, object: nil)
     }
     
 }
@@ -61,6 +64,37 @@ extension SettingsViewModel {
                 print("User deleted successfully.")
             }
         }
+    }
+    
+    func getSubscriptionStatusText() -> String {
+        if iapService.isPremiumUser() {
+            let subscriptionType = iapService.getSubscriptionType()
+            switch subscriptionType {
+            case .premium:
+                return "Aylık Premium"
+            case .pro:
+                return "Sınırsız Premium"
+            case .free:
+                return "Free"
+            }
+        } else {
+            return "Free"
+        }
+    }
+    
+    func restorePurchases(completion: @escaping (Result<Void, Error>) -> Void) {
+        iapService.restorePurchases { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    @objc func subscriptionStatusChanged() {
+        delegate?.updateSubscriptionStatusLabel(getSubscriptionStatusText())
     }
 }
 

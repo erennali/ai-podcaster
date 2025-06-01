@@ -21,6 +21,13 @@ struct NetworkConstants {
         
         return elevenLabsApiKey
     }
+    static var revenueCatApiKey: String {
+        guard let revenueCatApiKey = EnvironmentManager.shared.getRevenueCatAPIKey() else {
+            fatalError("REVENUE_CAT_API_KEY bulunamadı. Lütfen .env dosyasını kontrol edin.")
+        }
+        
+        return revenueCatApiKey
+    }
     
     static let baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=\(apiKey)"
 }
