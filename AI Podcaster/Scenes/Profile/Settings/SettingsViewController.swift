@@ -156,20 +156,37 @@ private extension SettingsViewController {
     }
     
     func showPaywall() {
-        // RevenueCat'in paywall'unu kullan
-        let revenueCatPaywallVC = RevenueCatPaywallViewController()
-        revenueCatPaywallVC.modalPresentationStyle = .fullScreen
-        present(revenueCatPaywallVC, animated: true)
+        // Use the SwiftUI paywall implementation for a better UI experience
+        RevenueCatPaywallView.present(from: self)
     }
     
     func restorePurchases() {
+        // Show loading indicator
+        let loadingAlert = UIAlertController(title: nil, message: "Satın alımlar geri yükleniyor...", preferredStyle: .alert)
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = .medium
+        loadingIndicator.startAnimating()
+        
+        loadingAlert.view.addSubview(loadingIndicator)
+        present(loadingAlert, animated: true)
+        
+        // Attempt to restore purchases
         viewModel.restorePurchases { [weak self] result in
             DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.showAlert(title: "Başarılı", message: "Satın alımlarınız başarıyla geri yüklendi.")
-                case .failure(let error):
-                    self?.showAlert(title: "Hata", message: "Satın alımlarınız geri yüklenirken bir hata oluştu: \(error.localizedDescription)")
+                // Dismiss loading indicator
+                loadingAlert.dismiss(animated: true) {
+                    // Show result
+                    switch result {
+                    case .success:
+                        if self?.iapService.isPremiumUser() == true {
+                            self?.showAlert(title: "Başarılı", message: "Satın alımlarınız başarıyla geri yüklendi.")
+                        } else {
+                            self?.showAlert(title: "Bilgi", message: "Hesabınızda aktif bir abonelik bulunamadı.")
+                        }
+                    case .failure(let error):
+                        self?.showAlert(title: "Hata", message: "Satın alımlarınız geri yüklenirken bir hata oluştu: \(error.localizedDescription)")
+                    }
                 }
             }
         }
@@ -263,17 +280,17 @@ extension SettingsViewController: SettingsViewControllerProtocol {
     }
     
     func openAppSettings() {
-        if let settingsURL = URL(
-            string: UIApplication.openSettingsURLString
-        ),UIApplication.shared
-            .canOpenURL(settingsURL){ DispatchQueue.main.async {
-                UIApplication.shared.open(
-                    settingsURL,
-                    options: [:],
-                    completionHandler: nil
-                )
+            if let settingsURL = URL(
+                string: UIApplication.openSettingsURLString
+            ),UIApplication.shared
+                .canOpenURL(settingsURL){ DispatchQueue.main.async {
+                    UIApplication.shared.open(
+                        settingsURL,
+                        options: [:],
+                        completionHandler: nil
+                    )
+                }
             }
+                
         }
-            
-    }
 }
