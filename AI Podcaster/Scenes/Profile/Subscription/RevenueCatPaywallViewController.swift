@@ -1,6 +1,7 @@
 import UIKit
 import RevenueCat
 import RevenueCatUI
+import SnapKit
 
 final class RevenueCatPaywallViewController: UIViewController {
     
@@ -39,13 +40,11 @@ final class RevenueCatPaywallViewController: UIViewController {
     private func setupLoadingIndicator() {
         loadingIndicator = UIActivityIndicatorView(style: .large)
         loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(loadingIndicator)
         
-        NSLayoutConstraint.activate([
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     private func setupCloseButton() {
@@ -61,17 +60,15 @@ final class RevenueCatPaywallViewController: UIViewController {
         closeButton.layer.shadowOpacity = 0.2
         closeButton.layer.shadowRadius = 2
         
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         
         view.addSubview(closeButton)
         
-        NSLayoutConstraint.activate([
-            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            closeButton.widthAnchor.constraint(equalToConstant: 36),
-            closeButton.heightAnchor.constraint(equalToConstant: 36)
-        ])
+        closeButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
+            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-16)
+            make.width.height.equalTo(36)
+        }
     }
     
     @objc private func closeButtonTapped() {
@@ -126,9 +123,10 @@ final class RevenueCatPaywallViewController: UIViewController {
         
         // Add the paywall as a child view controller
         addChild(paywallVC)
-        paywallVC.view.frame = view.bounds
-        paywallVC.view.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
         view.addSubview(paywallVC.view)
+        paywallVC.view.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         paywallVC.didMove(toParent: self)
         
         // Save reference

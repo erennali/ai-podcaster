@@ -156,8 +156,10 @@ private extension SettingsViewController {
     }
     
     func showPaywall() {
-        // Use the SwiftUI paywall implementation for a better UI experience
-        RevenueCatPaywallView.present(from: self)
+        // Use the UIKit paywall implementation
+        let paywallVC = RevenueCatPaywallViewController()
+        paywallVC.modalPresentationStyle = .fullScreen
+        present(paywallVC, animated: true)
     }
     
     func restorePurchases() {
