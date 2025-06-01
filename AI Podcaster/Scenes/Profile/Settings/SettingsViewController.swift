@@ -156,9 +156,10 @@ private extension SettingsViewController {
     }
     
     func showPaywall() {
-        let paywallVC = PaywallViewController()
-        paywallVC.modalPresentationStyle = .fullScreen
-        present(paywallVC, animated: true)
+        // RevenueCat'in paywall'unu kullan
+        let revenueCatPaywallVC = RevenueCatPaywallViewController()
+        revenueCatPaywallVC.modalPresentationStyle = .fullScreen
+        present(revenueCatPaywallVC, animated: true)
     }
     
     func restorePurchases() {
