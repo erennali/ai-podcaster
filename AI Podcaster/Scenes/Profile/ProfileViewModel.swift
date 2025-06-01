@@ -13,15 +13,29 @@ class ProfileViewModel {
     weak var delegate: ProfileViewModelDelegate?
     private let firebaseService = FirebaseService.shared
     private let firestore = Firestore.firestore()
+    private let iapService = IAPService.shared
     
     // MARK: - Public Methods
     func loadUserData() {
-        if let userData = firebaseService.getUserData() {
-            let name = userData["name"] as? String ?? ""
-            let email = userData["email"] as? String ?? ""
+        Task {
+            // Firebase'den kullanıcı verilerini güncel olarak al
+            await firebaseService.fetchUserData()
             
-           
-            fetchPodcastCount(name: name, email: email)
+            if let userData = firebaseService.getUserData() {
+                let name = userData["name"] as? String ?? ""
+                let email = userData["email"] as? String ?? ""
+                
+                // Premium durumunu RevenueCat'ten kontrol et
+                let isPremiumFromRevenueCat = iapService.isPremiumUser()
+                
+                // Firebase ile RevenueCat arasında uyumsuzluk varsa güncelle
+                let isPremiumFromFirebase = userData["isPremium"] as? Bool ?? false
+                if isPremiumFromRevenueCat != isPremiumFromFirebase {
+                    iapService.updatePremiumStatusInFirebase()
+                }
+                
+                fetchPodcastCount(name: name, email: email)
+            }
         }
     }
     

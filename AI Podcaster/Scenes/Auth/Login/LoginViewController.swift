@@ -99,6 +99,12 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .white
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,6 +119,10 @@ class LoginViewController: UIViewController {
 
     @objc func loginButtonTapped() {
         guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        // Show loading state
+        setLoadingState(true)
+        
         viewModel.login(email: email, password: password)
     }
     
@@ -126,6 +136,18 @@ class LoginViewController: UIViewController {
        alert.addAction(UIAlertAction(title: "OK", style: .default))
        present(alert, animated: true)
    }
+
+    private func setLoadingState(_ isLoading: Bool) {
+        if isLoading {
+            loginButton.setTitle("", for: .normal)
+            loginButton.isEnabled = false
+            activityIndicator.startAnimating()
+        } else {
+            loginButton.setTitle("Login", for: .normal)
+            loginButton.isEnabled = true
+            activityIndicator.stopAnimating()
+        }
+    }
 
 }
 // MARK: - View Configuration
@@ -145,6 +167,7 @@ extension LoginViewController {
         view.addSubview(lostPasswordButton)
         
         logoContainerView.addSubview(logoImageView)
+        loginButton.addSubview(activityIndicator)
     }
     
     func configureLayout() {
@@ -184,6 +207,9 @@ extension LoginViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(50)
         }
+        activityIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
         lostPasswordButton.snp.makeConstraints { make in
             make.top.equalTo(loginButton.snp.bottom).offset(16)
             make.centerX.equalToSuperview()
@@ -195,6 +221,7 @@ extension LoginViewController {
 // MARK: - LoginViewModelDelegate
 extension LoginViewController: LoginViewModelDelegate {
     func didLoginSuccessfully() {
+        setLoadingState(false)
         let splashVC = SplashViewController()
         if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
             sceneDelegate.changeRootViewController(splashVC)
@@ -202,6 +229,7 @@ extension LoginViewController: LoginViewModelDelegate {
     }
     
     func didFailToLogin(with error: String) {
+        setLoadingState(false)
         showErrorAlert(message: error)
     }
     

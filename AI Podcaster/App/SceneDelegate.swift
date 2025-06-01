@@ -29,8 +29,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let currentUser = Auth.auth().currentUser
         if currentUser != nil {
             SceneDelegate.loginUser = true
+            
+            // Kullanıcı oturum açmışsa, RevenueCat entegrasyonunu yapılandır
+            configureRevenueCatForLoggedInUser()
         }
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -60,7 +62,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        NotificationCenter.default.post(name: .didReturnFromSettings, object: nil)
+        
+        // Uygulamaya geri dönüldüğünde kullanıcı kimliğini ve abonelik durumunu güncelleyelim
+        if SceneDelegate.loginUser {
+            configureRevenueCatForLoggedInUser()
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -68,7 +74,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
+    
     func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
         guard let window = self.window else {
             return
@@ -88,9 +94,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
+    // Temayı uygula
     private func applyTheme(to window: UIWindow) {
-        let themeMode = UserDefaults.standard.integer(forKey: themeKey)
-        switch themeMode {
+        let savedTheme = UserDefaults.standard.integer(forKey: themeKey)
+        
+        switch savedTheme {
         case 1:
             window.overrideUserInterfaceStyle = .light
         case 2:
@@ -99,5 +107,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.overrideUserInterfaceStyle = .unspecified
         }
     }
+    
+    // Kullanıcı oturum açtığında RevenueCat entegrasyonunu yapılandır
+    private func configureRevenueCatForLoggedInUser() {
+        // IAPService'i yeniden yapılandır - bu, RevenueCat ile kullanıcı kimliğini eşleştirecek
+        IAPService.shared.configure()
+    }
+}
+
+// MARK: - Notification Names
+extension Notification.Name {
+    static let authStateChanged = Notification.Name("authStateChanged")
 }
 

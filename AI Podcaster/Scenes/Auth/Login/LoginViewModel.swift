@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseAuth
+import RevenueCat
 
 protocol LoginViewModelDelegate: AnyObject {
     func didLoginSuccessfully()
@@ -18,6 +19,7 @@ protocol LoginViewModelDelegate: AnyObject {
 class LoginViewModel {
     
     weak var delegate: LoginViewModelDelegate?
+    private let iapService = IAPService.shared
     
     func login(email: String, password: String) {
         guard !email.isEmpty, !password.isEmpty else {
@@ -33,6 +35,10 @@ class LoginViewModel {
             
             // User is signed in
             SceneDelegate.loginUser = true
+            
+            // RevenueCat ile kullanıcı kimliğini eşleştir
+            self?.configureRevenueCat()
+            
             self?.delegate?.didLoginSuccessfully()
         }
     }
@@ -50,6 +56,26 @@ class LoginViewModel {
             }
             
             self?.delegate?.didSendPasswordReset()
+        }
+    }
+    
+    // RevenueCat entegrasyonunu yapılandır
+    private func configureRevenueCat() {
+        // IAPService'i yeniden yapılandır - bu, RevenueCat ile kullanıcı kimliğini eşleştirecek
+        iapService.configure()
+        
+        // Abonelik durumunu hemen kontrol et
+        iapService.fetchCustomerInfo { [weak self] (customerInfo, error) in
+            if let error = error {
+                print("Kullanıcı bilgileri alınamadı: \(error.localizedDescription)")
+                return
+            }
+            
+            // Premium durumunu güncelle
+            if customerInfo != nil {
+                // Bildirim gönder ve UI'yı güncelle
+                NotificationCenter.default.post(name: .subscriptionStatusChanged, object: nil)
+            }
         }
     }
 } 

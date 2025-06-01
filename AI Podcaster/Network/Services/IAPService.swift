@@ -1,6 +1,8 @@
 import Foundation
 import RevenueCat
 import Combine
+import FirebaseAuth
+import FirebaseFirestore
 
 final class IAPService: NSObject, PurchasesDelegate {
     
@@ -32,6 +34,9 @@ final class IAPService: NSObject, PurchasesDelegate {
         // RevenueCat configuration (Already done in AppDelegate)
         Purchases.shared.delegate = self
         
+        // Kullanıcı kimliğini RevenueCat ile eşleştirelim
+        setupUserIdentity()
+        
         // Fetch initial data
         fetchCustomerInfo()
         fetchOfferings()
@@ -41,6 +46,9 @@ final class IAPService: NSObject, PurchasesDelegate {
     func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
         self.customerInfo = customerInfo
         checkAndUpdateNonRenewingStatus(customerInfo: customerInfo)
+        
+        // Premium durumunu Firebase'e kaydet
+        updatePremiumStatusInFirebase()
         
         // Notify subscription status changed
         NotificationCenter.default.post(name: .subscriptionStatusChanged, object: nil)
@@ -55,6 +63,8 @@ final class IAPService: NSObject, PurchasesDelegate {
             self?.customerInfo = info
             if let info = info {
                 self?.checkAndUpdateNonRenewingStatus(customerInfo: info)
+                // Premium durumunu Firebase'e kaydet
+                self?.updatePremiumStatusInFirebase()
             }
             completion?(info, error)
         }
@@ -94,6 +104,9 @@ final class IAPService: NSObject, PurchasesDelegate {
             self?.customerInfo = customerInfo
             self?.checkAndUpdateNonRenewingStatus(customerInfo: customerInfo)
             
+            // Premium durumunu Firebase'e kaydet
+            self?.updatePremiumStatusInFirebase()
+            
             // Notify subscription status changed
             NotificationCenter.default.post(name: .subscriptionStatusChanged, object: nil)
             
@@ -102,6 +115,9 @@ final class IAPService: NSObject, PurchasesDelegate {
     }
     
     func restorePurchases(completion: @escaping (Result<CustomerInfo, Error>) -> Void) {
+        // Önce mevcut kullanıcı kimliğini kontrol edelim ve eşleştirelim
+        setupUserIdentity()
+        
         Purchases.shared.restorePurchases { [weak self] (customerInfo, error) in
             if let error = error {
                 print("Restore failed: \(error.localizedDescription)")
@@ -118,6 +134,9 @@ final class IAPService: NSObject, PurchasesDelegate {
             // Update customer info and check non-renewing status
             self?.customerInfo = customerInfo
             self?.checkAndUpdateNonRenewingStatus(customerInfo: customerInfo)
+            
+            // Premium durumunu Firebase'e kaydet
+            self?.updatePremiumStatusInFirebase()
             
             // Notify subscription status changed
             NotificationCenter.default.post(name: .subscriptionStatusChanged, object: nil)
@@ -139,6 +158,56 @@ final class IAPService: NSObject, PurchasesDelegate {
             return .pro
         } else {
             return .free
+        }
+    }
+    
+    // MARK: - User Identity Management
+    
+    /// Firebase Auth kullanıcı kimliğini RevenueCat ile eşleştirir
+    private func setupUserIdentity() {
+        if let user = Auth.auth().currentUser {
+            // Kullanıcı kimliğini RevenueCat'e bildir
+            Purchases.shared.logIn(user.uid) { [weak self] (customerInfo, created, error) in
+                if let error = error {
+                    print("RevenueCat login error: \(error.localizedDescription)")
+                    return
+                }
+                
+                self?.customerInfo = customerInfo
+                if let customerInfo = customerInfo {
+                    self?.checkAndUpdateNonRenewingStatus(customerInfo: customerInfo)
+                    print("RevenueCat user identity set: \(user.uid), new user: \(created)")
+                    
+                    // Kullanıcı kimliği eşleştirildikten sonra Firebase'i güncelle
+                    self?.updatePremiumStatusInFirebase()
+                }
+            }
+        }
+    }
+    
+    // MARK: - Firebase Integration
+    
+    /// Premium durumunu Firebase'e kaydeder
+    func updatePremiumStatusInFirebase() {
+        guard let user = Auth.auth().currentUser else {
+            print("Firebase oturumu yok, premium durumu güncellenemedi")
+            return
+        }
+        
+        let isPremium = isPremiumUser()
+        let subscriptionType = getSubscriptionType().rawValue
+        
+        let db = Firestore.firestore()
+        db.collection("users").document(user.uid).updateData([
+            "isPremium": isPremium,
+            "subscriptionType": subscriptionType,
+            "subscriptionUpdatedAt": FieldValue.serverTimestamp()
+        ]) { error in
+            if let error = error {
+                print("Premium durumu Firebase'e kaydedilemedi: \(error.localizedDescription)")
+            } else {
+                print("Premium durumu Firebase'e başarıyla kaydedildi: \(isPremium ? "Premium" : "Free")")
+            }
         }
     }
     
