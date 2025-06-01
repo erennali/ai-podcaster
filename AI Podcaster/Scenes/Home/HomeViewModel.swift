@@ -59,8 +59,25 @@ class HomeViewModel {
         return "User"
     }
 
+//    func getPodcastCount(completion: @escaping (Int) -> Void) {
+//        let userId = Auth.auth().currentUser?.uid ?? ""
+//        
+//        firestore.collection("users").document(userId).collection("podcasts").getDocuments { snapshot, error in
+//            if let error = error {
+//                print("Error fetching podcasts: \(error.localizedDescription)")
+//                completion(0)
+//                return
+//            }
+//            
+//            let podcastCount = snapshot?.documents.count ?? 0
+//            completion(podcastCount)
+//        }
+//    }
     func getPodcastCount(completion: @escaping (Int) -> Void) {
-        let userId = Auth.auth().currentUser?.uid ?? ""
+        guard let userId = Auth.auth().currentUser?.uid, !userId.isEmpty else {
+            completion(0)
+            return
+        }
         
         firestore.collection("users").document(userId).collection("podcasts").getDocuments { snapshot, error in
             if let error = error {
