@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		BA34C2D52DC0CC44005915FE /* ElevenLabsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = BA34C2D42DC0CC44005915FE /* ElevenLabsSDK */; };
+		BA538B9E2DEC79660028C9A7 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = BA538B9D2DEC79660028C9A7 /* RevenueCat */; };
+		BA538BA02DEC79660028C9A7 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA538B9F2DEC79660028C9A7 /* RevenueCatUI */; };
 		BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BED2DBE86DA00827F7C /* Alamofire */; };
 		BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = BA7A9BF92DBE8A5600827F7C /* GoogleGenerativeAI */; };
 		BABAC5AE2DC15DB30025399E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BABAC5AD2DC15DB30025399E /* FirebaseAuth */; };
@@ -52,8 +54,10 @@
 				BA7A9BFA2DBE8A5600827F7C /* GoogleGenerativeAI in Frameworks */,
 				BAC3173A2DBE56500066DF0D /* SnapKit in Frameworks */,
 				BABAC5B02DC15DB30025399E /* FirebaseCore in Frameworks */,
+				BA538B9E2DEC79660028C9A7 /* RevenueCat in Frameworks */,
 				BABAC5B42DC15DB30025399E /* FirebaseStorage in Frameworks */,
 				BA7A9BEE2DBE86DA00827F7C /* Alamofire in Frameworks */,
+				BA538BA02DEC79660028C9A7 /* RevenueCatUI in Frameworks */,
 				BABAC5B22DC15DB30025399E /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,6 +109,8 @@
 				BABAC5AF2DC15DB30025399E /* FirebaseCore */,
 				BABAC5B12DC15DB30025399E /* FirebaseFirestore */,
 				BABAC5B32DC15DB30025399E /* FirebaseStorage */,
+				BA538B9D2DEC79660028C9A7 /* RevenueCat */,
+				BA538B9F2DEC79660028C9A7 /* RevenueCatUI */,
 			);
 			productName = "AI Podcaster";
 			productReference = BAC316902DBE41350066DF0D /* AI Podcaster.app */;
@@ -141,6 +147,7 @@
 				BA7A9BF82DBE8A5600827F7C /* XCRemoteSwiftPackageReference "deprecated-generative-ai-swift" */,
 				BA34C2D32DC0CC44005915FE /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */,
 				BABAC5AC2DC15DB30025399E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				BA538B9C2DEC79660028C9A7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BAC316912DBE41350066DF0D /* Products */;
@@ -396,6 +403,14 @@
 				kind = branch;
 			};
 		};
+		BA538B9C2DEC79660028C9A7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.25.3;
+			};
+		};
 		BA7A9BEC2DBE86DA00827F7C /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -435,6 +450,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BA34C2D32DC0CC44005915FE /* XCRemoteSwiftPackageReference "ElevenLabsSwift" */;
 			productName = ElevenLabsSDK;
+		};
+		BA538B9D2DEC79660028C9A7 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA538B9C2DEC79660028C9A7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		BA538B9F2DEC79660028C9A7 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA538B9C2DEC79660028C9A7 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
 		};
 		BA7A9BED2DBE86DA00827F7C /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
