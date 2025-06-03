@@ -111,6 +111,9 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         configureView()
         setupViewModel()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupViewModel() {
@@ -129,6 +132,10 @@ class LoginViewController: UIViewController {
     @objc func forgotPasswordTapped() {
         guard let email = emailTextField.text else { return }
         viewModel.resetPassword(email: email)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     private func showErrorAlert(message: String) {
@@ -168,6 +175,7 @@ extension LoginViewController {
         
         logoContainerView.addSubview(logoImageView)
         loginButton.addSubview(activityIndicator)
+        
     }
     
     func configureLayout() {
