@@ -36,6 +36,28 @@ class ProfileViewController: UIViewController {
         return imageView
     }()
     
+    private lazy var premiumBadge: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(named: "anaTemaRenk")
+        view.layer.cornerRadius = 16
+        view.isHidden = true
+        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.white.cgColor
+        
+        let label = UILabel()
+        label.text = "PRO"
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = .white
+        label.textAlignment = .center
+        
+        view.addSubview(label)
+        label.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 2, left: 8, bottom: 2, right: 8))
+        }
+        
+        return view
+    }()
+    
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 24, weight: .bold)
@@ -94,6 +116,19 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         setupViewModel()
         configureView()
+        
+        // Abonelik durum değişikliklerini dinle
+        NotificationCenter.default.addObserver(self, selector: #selector(subscriptionStatusChanged), name: .subscriptionStatusChanged, object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadUserData()
+        updatePremiumStatus()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup
@@ -113,6 +148,7 @@ class ProfileViewController: UIViewController {
     private func addViews() {
         view.addSubview(containerView)
         containerView.addSubview(profileImageView)
+        containerView.addSubview(premiumBadge)
         containerView.addSubview(nameLabel)
         containerView.addSubview(emailLabel)
         
@@ -133,6 +169,12 @@ class ProfileViewController: UIViewController {
             make.top.equalTo(containerView).offset(20)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
+        }
+        
+        premiumBadge.snp.makeConstraints { make in
+            make.bottom.equalTo(profileImageView.snp.bottom).offset(-5)
+            make.trailing.equalTo(profileImageView.snp.trailing).offset(5)
+            make.width.height.equalTo(42)
         }
         
         nameLabel.snp.makeConstraints { make in
@@ -172,6 +214,12 @@ class ProfileViewController: UIViewController {
         }
     }
     
+    // MARK: - Premium Status
+    private func updatePremiumStatus() {
+        let isPremium = IAPService.shared.isPremiumUser()
+        premiumBadge.isHidden = !isPremium
+    }
+    
     // MARK: - Actions
     @objc private func settingsButtonTapped() {
         let settingsVC = SettingsViewController()
@@ -192,6 +240,10 @@ class ProfileViewController: UIViewController {
         
         present(alert, animated: true)
     }
+    
+    @objc private func subscriptionStatusChanged() {
+        updatePremiumStatus()
+    }
 }
 
 // MARK: - ProfileViewModelDelegate
@@ -200,6 +252,7 @@ extension ProfileViewController: ProfileViewModelDelegate {
         nameLabel.text = name
         emailLabel.text = email
         podcastsCountView.updateValue("\(podcastCount)")
+        updatePremiumStatus()
     }
     
     func signOutDidComplete() {

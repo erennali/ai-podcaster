@@ -1,0 +1,141 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "F72C02DE",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : false,
+      "internalID" : "6746690566",
+      "localizations" : [
+        {
+          "description" : "AI podcast magic. Smart recs. Lifetime.",
+          "displayName" : "PodMind AI",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "YZ podcast sihri. Akıllı öneri. Sınırsız.",
+          "displayName" : "PodZeka",
+          "locale" : "tr"
+        }
+      ],
+      "productID" : "subscription_lifetime",
+      "referenceName" : "Lifetime subscription",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6746488755",
+    "_developerTeamID" : "BL2S55ZXWN",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 770478050.723032,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21695456",
+      "localizations" : [
+
+      ],
+      "name" : "Podcaster AI - Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6746489519",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "YZ podcast sihri. Akıllı öneri. Aylık.",
+              "displayName" : "PodZeka",
+              "locale" : "tr"
+            },
+            {
+              "description" : "AI podcast magic. Smart recs. Monthly.",
+              "displayName" : "PodMind AI",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.erenalikoca.AI_Podcaster.Monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly",
+          "subscriptionGroupID" : "21695456",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

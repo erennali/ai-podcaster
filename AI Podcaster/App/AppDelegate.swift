@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseCore
 import AVFoundation
+import RevenueCat
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Uygulama başlatıldığında ses çalma kontrollerini aktif et
         setupAudioSession()
+         
+        // RevenueCat konfigürasyonu
+        Purchases.configure(withAPIKey: NetworkConstants.revenueCatApiKey)
+        Purchases.debugLogsEnabled = true
+        
+        // IAPService'i konfigüre et
+        IAPService.shared.configure()
         
         // Bildirim durumunu kontrol et ve gerekirse izin iste
         checkNotificationStatus()

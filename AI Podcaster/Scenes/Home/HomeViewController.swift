@@ -106,6 +106,8 @@ class HomeViewController: UIViewController {
             updateWelcomeMessage()
             updateMotivationText()
             updatePodcastCountView()
+            
+            showPaywall()
         }
         
         override func viewWillAppear(_ animated: Bool) {
@@ -169,6 +171,14 @@ class HomeViewController: UIViewController {
                 
             case .details:
                 break
+            }
+        }
+        
+        func showPaywall() {
+            if !IAPService.shared.isPremiumUser() {
+                let paywallVC = RevenueCatPaywallViewController()
+                paywallVC.modalPresentationStyle = .fullScreen
+                present(paywallVC, animated: true)
             }
         }
 }
@@ -250,6 +260,4 @@ extension HomeViewController {
     }
 }
 
-#Preview {
-    HomeViewController()
-}
+

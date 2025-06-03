@@ -18,6 +18,7 @@ final class CreaterPodcastsViewModel: NSObject {
     let speechService: AVSpeechService
     private var currentText: String?
     private let db = Firestore.firestore()
+    private let subscriptionService: UserSubscriptionServiceProtocol
     
     weak var delegate: CreaterPodcastsViewModelDelegate?
     
@@ -44,9 +45,12 @@ final class CreaterPodcastsViewModel: NSObject {
     ]
     
     // MARK: - Initialization
-    init(googleAIService: GoogleAIService = .shared, speechService: AVSpeechService = .shared) {
+    init(googleAIService: GoogleAIService = .shared, 
+         speechService: AVSpeechService = .shared,
+         subscriptionService: UserSubscriptionServiceProtocol = UserSubscriptionService.shared) {
         self.googleAIService = googleAIService
         self.speechService = speechService
+        self.subscriptionService = subscriptionService
         super.init()
     }
     
@@ -63,37 +67,52 @@ final class CreaterPodcastsViewModel: NSObject {
             return
         }
         
-        delegate?.didUpdateUIState(isLoading: true)
-        
-        let podcastPrompt = """
-        Sen profesyonel bir podcast içerik yazarısın. Bana aşağıdaki kriterlere uygun bir podcast senaryosu hazırla:
+        // Check subscription status before proceeding
+        subscriptionService.isFreePremiumFeatureAccessible { [weak self] canAccess, message in
+            guard let self = self else { return }
+            
+            if let message = message {
+                self.delegate?.didShowAlert(message: message)
+            }
+            
+            if !canAccess {
+                self.delegate?.didShowError("Your 7-day free trial has expired. Please upgrade to continue using this feature.")
+                return
+            }
+            
+            // Continue with original implementation if user has access
+            self.delegate?.didUpdateUIState(isLoading: true)
+            
+            let podcastPrompt = """
+            Sen profesyonel bir podcast içerik yazarısın. Bana aşağıdaki kriterlere uygun bir podcast senaryosu hazırla:
 
-        KONU: \(prompt)
-        SÜRE: \(duration) dakika (yaklaşık \(duration * 350) kelime)
-        ÜSLUp: \(style)
-        DİL: \(language)
+            KONU: \(prompt)
+            SÜRE: \(duration) dakika (yaklaşık \(duration * 350) kelime)
+            ÜSLUp: \(style)
+            DİL: \(language)
 
-        YAZIM KURALLARI:
-        - Sadece TEK KİŞİLİK anlatım için yaz (monolog formatında)
-        - Sadece paragraf halinde yaz, başlık, liste veya ek açıklama ekleme
-        - Doğrudan içeriği yaz, giriş metni veya açıklama yapma
-        - Akıcı, doğal konuşma dili kullan
-        - Dinleyiciye hitap eden, kişisel bir ton benimse
-        - Geçişleri ve bağlantıları sorunsuz yap
-        - Belirtilen süreye uygun kelime sayısında tut
+            YAZIM KURALLARI:
+            - Sadece TEK KİŞİLİK anlatım için yaz (monolog formatında)
+            - Sadece paragraf halinde yaz, başlık, liste veya ek açıklama ekleme
+            - Doğrudan içeriği yaz, giriş metni veya açıklama yapma
+            - Akıcı, doğal konuşma dili kullan
+            - Dinleyiciye hitap eden, kişisel bir ton benimse
+            - Geçişleri ve bağlantıları sorunsuz yap
+            - Belirtilen süreye uygun kelime sayısında tut
 
-        İçeriği hemen başlat: 
-        """
-        googleAIService.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.delegate?.didUpdateUIState(isLoading: false)
-                
-                switch result {
-                case .success(let response):
-                    self?.currentText = response
-                    self?.delegate?.didUpdateResponse(response)
-                case .failure(let error):
-                    self?.delegate?.didShowError(error.localizedDescription)
+            İçeriği hemen başlat: 
+            """
+            self.googleAIService.generateAIResponse(prompt: podcastPrompt) { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.delegate?.didUpdateUIState(isLoading: false)
+                    
+                    switch result {
+                    case .success(let response):
+                        self?.currentText = response
+                        self?.delegate?.didUpdateResponse(response)
+                    case .failure(let error):
+                        self?.delegate?.didShowError(error.localizedDescription)
+                    }
                 }
             }
         }
