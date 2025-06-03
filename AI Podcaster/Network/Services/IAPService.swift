@@ -147,14 +147,36 @@ final class IAPService: NSObject, PurchasesDelegate {
     
     // MARK: - Subscription Status
     func isPremiumUser() -> Bool {
+        // Check if monthly subscription is active
+        if let activeSubscriptions = customerInfo?.activeSubscriptions,
+           activeSubscriptions.contains(monthlyProductID) {
+            return true
+        }
+        
         // Check if user has premium entitlement or active lifetime purchase
         return customerInfo?.entitlements[premiumEntitlementID]?.isActive == true || isYearlyNonRenewingActive
     }
     
     func getSubscriptionType() -> AppUser.SubscriptionType {
-        if customerInfo?.entitlements[premiumEntitlementID]?.isActive == true {
+        // Detaylı loglama ekleyelim
+        print("Entitlement durumu: \(customerInfo?.entitlements[premiumEntitlementID]?.isActive)")
+        print("Aktif abonelikler: \(customerInfo?.activeSubscriptions ?? [])")
+        print("Ömür boyu abonelik durumu: \(isYearlyNonRenewingActive)")
+        
+        // Aylık abonelik kontrolü
+        if let activeSubscriptions = customerInfo?.activeSubscriptions,
+           activeSubscriptions.contains(monthlyProductID) {
+            print("Aylık abonelik tespit edildi")
             return .premium
-        } else if isYearlyNonRenewingActive {
+        }
+        // Premium entitlement kontrolü
+        else if customerInfo?.entitlements[premiumEntitlementID]?.isActive == true {
+            print("Premium entitlement aktif")
+            return .premium
+        }
+        // Ömür boyu abonelik kontrolü
+        else if isYearlyNonRenewingActive {
+            print("Ömür boyu abonelik aktif")
             return .pro
         } else {
             return .free
@@ -194,19 +216,21 @@ final class IAPService: NSObject, PurchasesDelegate {
             return
         }
         
-        let isPremium = isPremiumUser()
-        let subscriptionType = getSubscriptionType().rawValue
+        
+        let subscriptionType = getSubscriptionType()
+        
+        print("Firebase'e yazılıyor - isPremium: \(subscriptionType), subscriptionType: \(subscriptionType)")
         
         let db = Firestore.firestore()
         db.collection("users").document(user.uid).updateData([
-            "isPremium": isPremium,
-            "subscriptionType": subscriptionType,
+            "isPremium": subscriptionType.rawValue,
+            "subscriptionType": subscriptionType.rawValue,
             "subscriptionUpdatedAt": FieldValue.serverTimestamp()
         ]) { error in
             if let error = error {
                 print("Premium durumu Firebase'e kaydedilemedi: \(error.localizedDescription)")
             } else {
-                print("Premium durumu Firebase'e başarıyla kaydedildi: \(isPremium ? "Premium" : "Free")")
+                print("Premium durumu Firebase'e başarıyla kaydedildi: \(subscriptionType)")
             }
         }
     }

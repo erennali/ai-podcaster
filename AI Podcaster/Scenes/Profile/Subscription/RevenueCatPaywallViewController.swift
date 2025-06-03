@@ -27,9 +27,8 @@ final class RevenueCatPaywallViewController: UIViewController {
         
         // Setup loading indicator
         setupLoadingIndicator()
-        
-        // Setup close button
-        setupCloseButton()
+    
+        //setupCloseButton()
         
         // Load offerings
         loadingIndicator.startAnimating()
@@ -46,35 +45,7 @@ final class RevenueCatPaywallViewController: UIViewController {
             make.center.equalToSuperview()
         }
     }
-    
-    private func setupCloseButton() {
-        let closeButton = UIButton(type: .system)
-        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        
-        // Make button more visible and touchable
-        closeButton.backgroundColor = .systemGray6
-        closeButton.tintColor = .systemGray
-        closeButton.layer.cornerRadius = 18
-        closeButton.layer.shadowColor = UIColor.black.cgColor
-        closeButton.layer.shadowOffset = CGSize(width: 0, height: 1)
-        closeButton.layer.shadowOpacity = 0.2
-        closeButton.layer.shadowRadius = 2
-        
-        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
-        
-        view.addSubview(closeButton)
-        
-        closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
-            make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-16)
-            make.width.height.equalTo(36)
-        }
-    }
-    
-    @objc private func closeButtonTapped() {
-        dismiss(animated: true)
-    }
-    
+
     // MARK: - RevenueCat Integration
     private func loadOfferings() {
         Purchases.shared.getOfferings { [weak self] offerings, error in
