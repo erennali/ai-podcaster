@@ -32,13 +32,16 @@ final class ChatViewModel: ChatViewModelProtocol {
     // MARK: - Properties
     weak var delegate: ChatViewModelDelegate?
     private let chatService: ChatServiceProtocol
+    private let subscriptionService: UserSubscriptionServiceProtocol
     
     private(set) var messages: [ChatMessage] = []
     private(set) var currentState: ChatState = .idle
     
     // MARK: - Initialization
-    init(chatService: ChatServiceProtocol = ChatService()) {
+    init(chatService: ChatServiceProtocol = ChatService(),
+         subscriptionService: UserSubscriptionServiceProtocol = UserSubscriptionService.shared) {
         self.chatService = chatService
+        self.subscriptionService = subscriptionService
     }
     
     // MARK: - Public Methods
@@ -59,11 +62,35 @@ final class ChatViewModel: ChatViewModelProtocol {
         // Update state to loading
         updateState(.loading)
         
-        
-        // Send message to AI service
-        chatService.sendMessageWithHistory(text, history: messages) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.handleAIResponse(result)
+        // Check subscription status before proceeding
+        subscriptionService.isFreePremiumFeatureAccessible { [weak self] canAccess, message in
+            guard let self = self else { return }
+            
+            if let message = message {
+                // If there's a message about trial days left, we can show it as a message
+                if message.contains("day") && message.contains("trial") {
+                    let infoMessage = ChatMessage(text: message, isFromUser: false)
+                    self.addMessage(infoMessage)
+                }
+            }
+            
+            if !canAccess {
+                // Trial expired, show message and stop
+                self.updateState(.idle)
+                let errorMessage = ChatMessage(
+                    text: "Your 7-day free trial has expired. Please upgrade to premium to continue using this feature.",
+                    isFromUser: false
+                )
+                self.addMessage(errorMessage)
+                self.delegate?.didFailWithError("Free trial expired")
+                return
+            }
+            
+            // Continue with original implementation
+            self.chatService.sendMessageWithHistory(text, history: self.messages) { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.handleAIResponse(result)
+                }
             }
         }
     }
