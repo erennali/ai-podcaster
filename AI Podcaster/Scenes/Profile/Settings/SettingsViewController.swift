@@ -156,6 +156,10 @@ private extension SettingsViewController {
     }
     
     func showPaywall() {
+        if IAPService.shared.isPremiumUser() {
+            showAlert(title: "Bilgi", message: "Zaten premium üyesiniz.")
+            return
+        }
         // Use the UIKit paywall implementation
         let paywallVC = RevenueCatPaywallViewController()
         paywallVC.modalPresentationStyle = .fullScreen
