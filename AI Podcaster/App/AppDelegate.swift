@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Bildirim durumunu kontrol et ve gerekirse izin iste
         checkNotificationStatus()
         
+        
         return true
     }
 

@@ -50,6 +50,7 @@ class GoogleAIService {
     func fetchDailyMotivation(completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = """
         Günlük motivasyon mesajı oluştur: 50-60 kelime arasında, kişisel gelişim odaklı, pozitif ve ilham verici bir söz yaz. Başarı, hedefler, öz güven, azim, değişim, cesaret gibi temalardan birini seç. Günlük hayatta uygulanabilir, duygusal bağ kuran, akılda kalıcı bir mesaj olsun. Sadece motivasyon metnini döndür, ek açıklama yapma. Her çağrıda benzersiz içerik üret.
+            - \(SceneDelegate.appLanguageName) dilinde yaz.
         """
         generateAIResponse(prompt: prompt, completion: completion)
     }

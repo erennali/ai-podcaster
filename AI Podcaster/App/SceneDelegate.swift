@@ -13,6 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     static var loginUser: Bool = false
     private let themeKey = "selectedTheme"
+    static let appLanguageName = Locale.current.localizedString(forLanguageCode: Locale.current.language.languageCode?.identifier ?? "en") ?? "English"
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
@@ -32,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             // Kullanıcı oturum açmışsa, RevenueCat entegrasyonunu yapılandır
             configureRevenueCatForLoggedInUser()
-        }
+        } 
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

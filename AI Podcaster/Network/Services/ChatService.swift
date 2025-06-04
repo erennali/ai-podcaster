@@ -79,9 +79,10 @@ private extension ChatService {
         - Provide professional advice related to the podcast world
         - Offer creative and inspiring suggestions
         - Explain technical topics in simple and understandable terms
-        - Respond in English
+        - Respond in  \(SceneDelegate.appLanguageName)
         - Use a friendly and helpful tone
         - Do NOT use ** or any markdown formatting for bold or emphasis
+        
         
         Keep your response to a maximum of 120 words.
         """
@@ -110,11 +111,11 @@ private extension ChatService {
         - Provide consistent responses considering the previous conversation
         - Give expert advice on podcast topics
         - Offer creative and inspiring suggestions
-        - Respond in English
+        - Respond in  \(SceneDelegate.appLanguageName)
         - Use a friendly and helpful tone
         - Do NOT use ** or any markdown formatting for bold or emphasis
         
         Keep your response to a maximum of 120 words.
         """
     }
-} 
+}
