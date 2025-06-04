@@ -14,7 +14,7 @@ class SearchViewController: UIViewController {
     
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
-        controller.searchBar.placeholder = "Search your podcasts..."
+        controller.searchBar.placeholder = NSLocalizedString("searchPodcasts", comment: "")
         controller.obscuresBackgroundDuringPresentation = false
         controller.searchBar.delegate = self
         return controller
@@ -34,7 +34,7 @@ class SearchViewController: UIViewController {
     
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
-        label.text = "Search for podcasts"
+        label.text = NSLocalizedString("searchForPodcasts", comment: "")
         label.textAlignment = .center
         label.textColor = .secondaryLabel
         label.font = .systemFont(ofSize: 16)
@@ -54,7 +54,7 @@ class SearchViewController: UIViewController {
     
     private func configureView() {
         view.backgroundColor = .systemBackground
-        title = "Search"
+        title = NSLocalizedString("search", comment: "")
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         
@@ -78,11 +78,11 @@ class SearchViewController: UIViewController {
         let isSearching = !(searchController.searchBar.text?.isEmpty ?? true)
         
         if isSearching && !hasResults {
-            emptyStateLabel.text = "No podcasts found"
+            emptyStateLabel.text = NSLocalizedString("noPodcastsFound", comment: "")
             emptyStateLabel.isHidden = false
             tableView.isHidden = true
         } else if !isSearching {
-            emptyStateLabel.text = "Search for podcasts"
+            emptyStateLabel.text = NSLocalizedString("searchForPodcasts", comment: "")
             emptyStateLabel.isHidden = false
             tableView.isHidden = true
         } else {
@@ -138,7 +138,7 @@ extension SearchViewController: SearchViewModelDelegate {
     }
     
     func didFailToSearch(with error: String) {
-        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("error", comment: ""), message: error, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

@@ -47,3 +47,69 @@
 
 //ChatInputView
 "typeMessage" = "Type your message...";
+
+//MARK: Settings
+"premiumPlans" = "Premium Plans";
+"restorePurchases" = "Restore Purchases";
+"appTheme" = "App Theme";
+"notification" = "Notifications";
+"rateUs" = "Rate Us";
+"deleteAccount" = "Delete Account";
+"privacyPolicy" = "Privacy Policy";
+"termsOfUse" = "Terms of Use";
+
+"auto" = "Auto";
+"dark" = "Dark";
+"light" = "Light";
+
+//MARK: Profile
+"settings" = "Settings";
+"signOut" = "Sign Out";
+"podcasts" = "Podcasts";
+
+//MARK: Library
+"noPodcastsFilter" = "No podcasts match your filters.\nTry adjusting your filter settings.";
+"noPodcastsYet" = "No podcasts yet.\nCreate your first podcast from the Create tab!";
+
+//MARK: PodcastsCell
+"minutes" = "min";
+
+//MARK: SearchVC
+"searchPodcasts" = "Search your podcasts...";
+"searchForPodcasts" = "Search for podcasts";
+"search" = "Search";
+"noPodcastsFound" = "No podcasts found";
+
+//MARK: PodcastsDetails VC
+"content" = "Content";
+"readyToPlay" = "Ready to play";
+"deletePodcast" = "Delete Podcast";
+"playing" = "Playing";
+"paused" = "Paused";
+"areYouSure" = "Are you sure you want to delete this podcast? This action cannot be undone.";
+"success" = "Success";
+"podcastDeleted" = "Podcast deleted successfully";
+"failedToDeletePodcast" = "Failed to delete podcast!";
+
+//Podcastsfilter VM
+"newest" = "Newest First";
+"oldest" = "Oldest First";
+"a-z" = "A-Z";
+"z-a" = "Z-A";
+"custom" = "Custom";
+"technical" = "Technical";
+"companion" = "Companion";
+"fun" = "Fun";
+"professional" = "Professional";
+
+//Component
+"filterSort" = "Filter & Sort";
+"reset" = "Reset";
+"done" = "Done";
+"sortBy" = "Sort By";
+"style" = "Style";
+"language" = "Language";
+"duration" = "Duration";
+"date" = "Date";
+"title" = "Title";
+"clear" = "Clear";

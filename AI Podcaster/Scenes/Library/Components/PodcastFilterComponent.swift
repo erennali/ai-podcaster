@@ -22,17 +22,17 @@ final class PodcastFilterComponent: UIViewController {
     private lazy var scrollView = createScrollView()
     private lazy var contentView = UIView()
     private lazy var headerView = createHeaderView()
-    private lazy var titleLabel = createLabel(text: "Filter & Sort", fontSize: 20, weight: .bold)
+    private lazy var titleLabel = createLabel(text: NSLocalizedString("filterSort", comment: ""), fontSize: 20, weight: .bold)
     
     private lazy var resetButton = createButton(
-        title: "Reset",
+        title: NSLocalizedString("reset", comment: ""),
         color: .systemRed,
         bgColor: .systemRed.withAlphaComponent(0.1),
         action: #selector(resetButtonTapped)
     )
     
     private lazy var doneButton = createButton(
-        title: "Done",
+        title: NSLocalizedString("done", comment: ""),
         color: .white,
         bgColor: .systemIndigo,
         action: #selector(doneButtonTapped),
@@ -40,19 +40,19 @@ final class PodcastFilterComponent: UIViewController {
     )
     
     // Filter Sections
-    private lazy var sortSectionView = createSectionView(title: "Sort By")
-    private lazy var styleSectionView = createSectionView(title: "Style")
-    private lazy var languageSectionView = createSectionView(title: "Language")
-    private lazy var durationSectionView = createSectionView(title: "Duration")
+    private lazy var sortSectionView = createSectionView(title: NSLocalizedString("sortBy", comment: ""))
+    private lazy var styleSectionView = createSectionView(title: NSLocalizedString("style", comment: ""))
+    private lazy var languageSectionView = createSectionView(title: NSLocalizedString("language", comment: ""))
+    private lazy var durationSectionView = createSectionView(title: NSLocalizedString("duration", comment: ""))
     
     // Controls
     private lazy var sortSegmentedControl = createSegmentedControl(
-        items: ["Date", "Title"],
+        items: [NSLocalizedString("date", comment: ""), NSLocalizedString("title", comment: "")],
         action: #selector(sortTypeChanged)
     )
     
     private lazy var sortOrderSegmentedControl = createSegmentedControl(
-        items: ["Newest First", "Oldest First"],
+        items: [NSLocalizedString("newest", comment: ""), NSLocalizedString("oldest", comment: "")],
         action: #selector(sortOrderChanged)
     )
     
@@ -367,7 +367,7 @@ private extension PodcastFilterComponent {
         durationStackView.addArrangedSubview(horizontalContainer)
         
         // Add clear button
-        let clearButton = createFilterButton(title: "Clear", isSpecial: true) { [weak self] in
+        let clearButton = createFilterButton(title: NSLocalizedString("clear", comment: ""), isSpecial: true) { [weak self] in
             self?.filterViewModel.updateDurationFilter(nil)
             // Update UI when clear button is pressed
             self?.updateUI()
@@ -491,7 +491,7 @@ private extension PodcastFilterComponent {
         durationStackView.subviews.forEach { subview in
             if let stackView = subview as? UIStackView {
                 for case let button as UIButton in stackView.arrangedSubviews {
-                    if let title = button.title(for: .normal), title != "Clear" {
+                    if let title = button.title(for: .normal), title != NSLocalizedString("clear", comment: "") {
                         if let range = DurationRange.allRanges.first(where: { $0.displayName == title }) {
                             updateButtonAppearance(button, isSelected: filterViewModel.isDurationRangeSelected(range))
                         }

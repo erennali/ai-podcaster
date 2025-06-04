@@ -48,3 +48,69 @@
 
 //ChatInputView
 "typeMessage" = "Mesajınızı yazın...";
+
+//MARK: Settings
+"premiumPlans" = "Üyelik Planları";
+"restorePurchases" = "Satın Alımları Geri Yükle";
+"appTheme" = "Tema";
+"notification" = "Bildirimler";
+"rateUs" = "Bizi Değerlendir";
+"deleteAccount" = "Hesabı Sil";
+"privacyPolicy" = "Gizlilik Politikası";
+"termsOfUse" = "Kullanım Şartları";
+
+"auto" = "Cihaz";
+"light" = "Açık";
+"dark" = "Koyu";
+
+//MARK: Profile
+"settings" = "Ayarlar";
+"signOut" = "Çıkış Yap";
+"podcasts" = "Podcastler";
+
+//MARK: Library
+"noPodcastsFilter" = "Filtrelerinizle eşleşen podcast yok.\nFiltre ayarlarınızı değiştirmeyi deneyin";
+"noPodcastsYet" = "Henüz podcast bulunamadı.\nPodcast oluşturmak için 'Oluştur' sekmesine gidin!";
+
+//MARK: PodcastsCell
+"minutes" = "dk";
+
+//MARK: Search VC
+"searchPodcasts" = "Podcastlerinizi arayın...";
+"searchForPodcasts" = "Podcast Arayın";
+"search" = "Ara";
+"noPodcastsFound" = "Podcast bulunamadı.";
+
+//MARK: PodcastsDetails VC
+"content" = "İçerik";
+"readyToPlay" = "Oynamaya Hazır";
+"deletePodcast" = "Podcast'i Sil";
+"playing" = "Oynatılıyor";
+"paused" = "Duraklatıldı";
+"areYouSure" = "Bu podcast'i silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.";
+"success" = "Başarılı";
+"podcastDeleted" = "Podcast başarıyla silindi.";
+"failedToDeletePodcast" = "Podcast silinemedi!";
+
+//Podcastsfilter VM
+"newest" = "En Yeni";
+"oldest" = "En Eski";
+"a-z" = "A-Z";
+"z-a" = "Z-A";
+"custom" = "Özel";
+"technical" = "Teknik";
+"companion" = "Yardımcı";
+"fun" = "Eğlenceli";
+"professional" = "Profesyonel";
+
+//Component
+"filterSort" = "Filtrele & Sırala";
+"reset" = "Sıfırla";
+"done" = "Tamam";
+"sortBy" = "Sırala";
+"style" = "Stil";
+"language" = "Dil";
+"duration" = "Süre";
+"date" = "Tarih";
+"title" = "Başlık";
+"clear" = "Temizle";

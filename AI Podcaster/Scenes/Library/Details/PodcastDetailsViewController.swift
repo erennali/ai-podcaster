@@ -126,7 +126,7 @@ class PodcastDetailsViewController: UIViewController {
     private lazy var contentTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.text = "Content"
+        label.text = NSLocalizedString("content", comment: "")
         label.textAlignment = .left
         return label
     }()
@@ -203,7 +203,7 @@ class PodcastDetailsViewController: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = .secondaryLabel
-        label.text = "Ready to play"
+        label.text = NSLocalizedString("readyToPlay", comment: "")
         label.textAlignment = .center
         return label
     }()
@@ -215,7 +215,7 @@ class PodcastDetailsViewController: UIViewController {
         config.cornerStyle = .large
         config.baseBackgroundColor = .systemRed
         config.baseForegroundColor = .white
-        config.title = "Delete Podcast"
+        config.title = NSLocalizedString("deletePodcast", comment: "")
         config.image = UIImage(systemName: "trash")
         config.imagePadding = 8
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
@@ -468,7 +468,7 @@ private extension PodcastDetailsViewController {
         contentLabel.text = viewModel.podcast.content
         languageLabel.text = viewModel.podcast.language
         styleLabel.text = viewModel.podcast.style
-        minutesLabel.text = "\(viewModel.podcast.minutes) min"
+        minutesLabel.text = "\(viewModel.podcast.minutes) \(NSLocalizedString("minutes", comment: ""))"
         
         // Format created date
         let dateFormatter = DateFormatter()
@@ -517,29 +517,29 @@ private extension PodcastDetailsViewController {
         speechService.stop()
         
         isPlaying = false
-        statusLabel.text = "Ready to play"
+        statusLabel.text = NSLocalizedString("readyToPlay", comment: "")
         playPauseButton.setImage(UIImage(systemName: "play.circle.fill"), for: .normal)
     }
     
     func updatePlaybackUI() {
         if isPlaying {
             playPauseButton.setImage(UIImage(systemName: "pause.circle.fill"), for: .normal)
-            statusLabel.text = "Playing..."
+            statusLabel.text = NSLocalizedString("playing", comment: "")
         } else {
             playPauseButton.setImage(UIImage(systemName: "play.circle.fill"), for: .normal)
-            statusLabel.text = "Paused"
+            statusLabel.text = NSLocalizedString("paused", comment: "")
         }
     }
     
     @objc func deletePodcast() {
         let alert = UIAlertController(
-            title: "Delete Podcast",
-            message: "Are you sure you want to delete this podcast? This action cannot be undone.",
+            title: NSLocalizedString("deletePodcast", comment: ""),
+            message: NSLocalizedString("areYouSure", comment: ""),
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("delete", comment: ""), style: .destructive) { [weak self] _ in
             self?.performDelete()
         })
         
@@ -563,8 +563,8 @@ private extension PodcastDetailsViewController {
     
     func showSuccessAlert() {
         let alert = UIAlertController(
-            title: "Success",
-            message: "Podcast deleted successfully",
+            title: NSLocalizedString("success", comment: ""),
+            message: NSLocalizedString("podcastDeleted", comment: ""),
             preferredStyle: .alert
         )
         
@@ -577,8 +577,8 @@ private extension PodcastDetailsViewController {
     
     func showErrorAlert(message: String) {
         let alert = UIAlertController(
-            title: "Error",
-            message: "Failed to delete podcast: \(message)",
+            title: NSLocalizedString("error", comment: ""),
+            message: "\(NSLocalizedString("failedToDeletePodcast", comment: "")): \(message)",
             preferredStyle: .alert
         )
         

@@ -159,8 +159,10 @@ extension PodcastsViewController: PodcastsViewControllerProtocol {
     private func showEmptyStateMessage() {
         let messageLabel = UILabel()
         let message = viewModel.hasActiveFilters ?
-            "No podcasts match your filters.\nTry adjusting your filter settings." :
-            "No podcasts yet.\nCreate your first podcast from the Create tab!"
+        NSLocalizedString("noPodcastsFilters", comment: "")
+             :
+        NSLocalizedString("noPodcastsYet", comment: "")
+            
         
         messageLabel.text = message
         messageLabel.textColor = .secondaryLabel
@@ -231,7 +233,7 @@ extension PodcastsViewController: PodcastsViewModelDelegate {
     
     func didShowError(_ error: String) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+            let alert = UIAlertController(title: NSLocalizedString("error", comment: ""), message: error, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(alert, animated: true)
         }

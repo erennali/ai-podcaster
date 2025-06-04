@@ -243,7 +243,7 @@ extension SettingsViewController: UITableViewDataSource {
         
         switch item.type {
         case .theme:
-            let segmentControl = UISegmentedControl(items: ["Auto", "Light", "Dark"])
+            let segmentControl = UISegmentedControl(items: [NSLocalizedString("auto", comment: ""), NSLocalizedString("light", comment: ""),NSLocalizedString("dark", comment: "")])
             segmentControl.selectedSegmentIndex = viewModel.fetchThemeMode()
             segmentControl.addTarget(self, action: #selector(didChangeTheme(_:)), for: .valueChanged)
             cell.accessoryView = segmentControl

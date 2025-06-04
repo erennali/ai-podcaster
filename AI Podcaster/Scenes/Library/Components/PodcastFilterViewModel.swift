@@ -131,6 +131,6 @@ final class PodcastFilterViewModel {
     }
     
     func getSortSegmentTitles() -> [String] {
-        return isSortTypeDate ? ["Newest First", "Oldest First"] : ["A to Z", "Z to A"]
+        return isSortTypeDate ? [NSLocalizedString("newest", comment: ""), NSLocalizedString("oldest", comment: "")] : [NSLocalizedString("a-z", comment: ""), NSLocalizedString("z-a", comment: "")]
     }
 } 

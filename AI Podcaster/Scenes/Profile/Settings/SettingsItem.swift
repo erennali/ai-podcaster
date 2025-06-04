@@ -30,24 +30,24 @@ struct SettingsSection {
     
     static let sections: [SettingsSection] = [
         SettingsSection(title: "Appearance", items: [
-            SettingsItem(title: "App Theme", iconName: "circle.righthalf.filled", type: .theme),
+            SettingsItem(title: NSLocalizedString("appTheme", comment: ""), iconName: "circle.righthalf.filled", type: .theme),
         ]),
         SettingsSection(title: "Notifications", items: [
-            SettingsItem(title: "Notification", iconName: "bell.fill", type: .notification),
+            SettingsItem(title: NSLocalizedString("notification", comment: ""), iconName: "bell.fill", type: .notification),
         ]),
         SettingsSection(title: "Premium", items: [
-            SettingsItem(title: "Üyelik Planları", iconName: "crown.fill", type: .subscription),
-            SettingsItem(title: "Satın Alımları Geri Yükle", iconName: "arrow.clockwise", type: .restorePurchases),
+            SettingsItem(title: NSLocalizedString("premiumPlans", comment: ""), iconName: "crown.fill", type: .subscription),
+            SettingsItem(title: NSLocalizedString("restorePurchases", comment: ""), iconName: "arrow.clockwise", type: .restorePurchases),
         ]),
         SettingsSection(title: "Rate Us", items: [
-            SettingsItem(title: "Rate Us", iconName: "star.fill", type: .rateApp),
+            SettingsItem(title: NSLocalizedString("rateUs", comment: ""), iconName: "star.fill", type: .rateApp),
         ]),
         SettingsSection(title: "Delete Account", items: [
-            SettingsItem(title: "Delete Account", iconName: "person.crop.circle.fill.badge.minus", type: .deleteAccount),
+            SettingsItem(title: NSLocalizedString("deleteAccount", comment: ""), iconName: "person.crop.circle.fill.badge.minus", type: .deleteAccount),
         ]),
         SettingsSection(title: "Legal", items: [
-            SettingsItem(title: "Privacy Policy", iconName: "text.document.fill", type: .privacyPolicy),
-            SettingsItem(title: "Terms of Use", iconName: "checkmark.shield.fill", type: .termsOfUse),
+            SettingsItem(title: NSLocalizedString("privacyPolicy", comment: ""), iconName: "text.document.fill", type: .privacyPolicy),
+            SettingsItem(title: NSLocalizedString("termsOfUse", comment: ""), iconName: "checkmark.shield.fill", type: .termsOfUse),
         ])
     ]
 }

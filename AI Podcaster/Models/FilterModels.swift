@@ -23,8 +23,8 @@ enum DateSortOrder: String, CaseIterable {
 }
 
 enum TitleSortOrder: String, CaseIterable {
-    case aToZ = "A to Z"
-    case zToA = "Z to A"
+    case aToZ = "A-Z"
+    case zToA = "Z-A"
     
     var displayName: String {
         return self.rawValue
@@ -72,13 +72,13 @@ struct DurationRange {
     var displayName: String {
         switch self {
         case DurationRange.short:
-            return "5-6 min"
+            return "5-6 \(NSLocalizedString("minutes", comment: ""))"
         case DurationRange.medium:
-            return "7-8 min"
+            return "7-8 \(NSLocalizedString("minutes", comment: ""))"
         case DurationRange.long:
-            return "9-10 min"
+            return "9-10 \(NSLocalizedString("minutes", comment: ""))"
         default:
-            return "Custom (\(min)-\(max) min)"
+            return "\(NSLocalizedString("ozel", comment: "")) (\(min)-\(max) \(NSLocalizedString("minutes", comment: "")))"
         }
     }
 }
@@ -119,7 +119,7 @@ struct PodcastFilterConfiguration {
 // MARK: - Predefined Options
 struct PodcastOptions {
     // CreaterPodcastsViewController'dan alınan gerçek style seçenekleri
-    static let availableStyles = ["Technical", "Fun", "Professional", "Companion"]
+    static let availableStyles = [NSLocalizedString("technical", comment: ""), NSLocalizedString("fun", comment: ""), NSLocalizedString("professional", comment: ""), NSLocalizedString("companion", comment: "")]
     
     // CreaterPodcastsViewModel'dan alınan gerçek language seçenekleri
     static let availableLanguages = [

@@ -81,7 +81,7 @@ class ProfileViewController: UIViewController {
     }()
     
     private lazy var podcastsCountView: StatView = {
-        let view = StatView(title: "Podcasts", value: "0")
+        let view = StatView(title: NSLocalizedString("podcasts", comment: ""), value: "0")
         return view
     }()
     
@@ -89,7 +89,7 @@ class ProfileViewController: UIViewController {
         let button = UIButton(type: .system)
         let configuration = UIButton.Configuration.filled()
         button.configuration = configuration
-        button.setTitle("Settings", for: .normal)
+        button.setTitle(NSLocalizedString("settings", comment: ""), for: .normal)
         button.setImage(UIImage(systemName: "gear"), for: .normal)
         button.tintColor = .white
         button.layer.cornerRadius = 12
@@ -102,7 +102,7 @@ class ProfileViewController: UIViewController {
         let button = UIButton(type: .system)
         let configuration = UIButton.Configuration.bordered()
         button.configuration = configuration
-        button.setTitle("Sign Out", for: .normal)
+        button.setTitle(NSLocalizedString("signOut", comment: ""), for: .normal)
         button.setImage(UIImage(systemName: "arrow.right.circle"), for: .normal)
         button.tintColor = .systemRed
         button.layer.cornerRadius = 12

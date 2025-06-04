@@ -204,7 +204,7 @@ extension PodcastsCell {
         self.podcast = podcast
         titleLabel.text = podcast.title
         contentLabel.text = podcast.content
-        minutesLabel.text = "\(podcast.minutes) min"
+        minutesLabel.text = "\(podcast.minutes) \(NSLocalizedString("minutes", comment: ""))"
         styleLabel.text = podcast.style
         languageLabel.text = podcast.language
         

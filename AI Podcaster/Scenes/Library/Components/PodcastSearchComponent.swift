@@ -28,7 +28,7 @@ final class PodcastSearchComponent: UIView {
     // MARK: - UI Components
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
-        controller.searchBar.placeholder = "Search your podcasts..."
+        controller.searchBar.placeholder = NSLocalizedString("searchPodcasts", comment: "")
         controller.obscuresBackgroundDuringPresentation = false
         controller.searchBar.delegate = self
         controller.hidesNavigationBarDuringPresentation = false
@@ -49,7 +49,7 @@ final class PodcastSearchComponent: UIView {
     
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
-        label.text = "No podcasts found"
+        label.text = NSLocalizedString("noPodcastsFound", comment: "")
         label.textAlignment = .center
         label.textColor = .secondaryLabel
         label.font = .systemFont(ofSize: 16)
@@ -207,7 +207,7 @@ extension PodcastSearchComponent: SearchViewModelDelegate {
     
     func didFailToSearch(with error: String) {
         loadingIndicator.stopAnimating()
-        emptyStateLabel.text = "Error: \(error)"
+        emptyStateLabel.text = "\(NSLocalizedString("error", comment: "")): \(error)"
         emptyStateLabel.isHidden = false
         searchResultsTableView.isHidden = true
     }
