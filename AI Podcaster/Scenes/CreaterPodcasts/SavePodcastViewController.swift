@@ -16,7 +16,7 @@ final class SavePodcastViewController: UIViewController {
     // MARK: - UI Components
     private lazy var titleTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter Podcast Title"
+        textField.placeholder = NSLocalizedString("enterPodcastTitle", comment: "")
         textField.borderStyle = .roundedRect
         textField.font = .systemFont(ofSize: 16)
         return textField
@@ -24,7 +24,7 @@ final class SavePodcastViewController: UIViewController {
     
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Save", for: .normal)
+        button.setTitle(NSLocalizedString("save", comment: ""), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
@@ -73,7 +73,7 @@ final class SavePodcastViewController: UIViewController {
     
     @objc private func saveButtonTapped() {
         guard let title = titleTextField.text, !title.isEmpty else {
-            showAlert(message: "Please enter a title for your podcast")
+            showAlert(message: NSLocalizedString("pleaseEnterTitle", comment: ""))
             return
         }
         
@@ -83,8 +83,8 @@ final class SavePodcastViewController: UIViewController {
     }
     
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("warning", comment: ""), message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-} 
+}

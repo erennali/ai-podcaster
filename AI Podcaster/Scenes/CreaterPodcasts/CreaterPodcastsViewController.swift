@@ -42,7 +42,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var promptLabel: UILabel = {
         let label = UILabel()
-        label.text = "Podcast Topic"
+        label.text = NSLocalizedString("podcastTopic", comment: "")
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .label
         return label
@@ -50,7 +50,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var promptTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Enter podcast topic or question"
+        textField.placeholder = NSLocalizedString("enterPodcastTopic", comment: "")
         textField.font = .systemFont(ofSize: 16)
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .systemGray6
@@ -73,7 +73,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var settingsLabel: UILabel = {
         let label = UILabel()
-        label.text = "Podcast Settings"
+        label.text = NSLocalizedString("podcastSettings", comment: "")
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .label
         return label
@@ -89,7 +89,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var durationLabel: UILabel = {
         let label = UILabel()
-        label.text = "Duration: 5 minutes~"
+        label.text = NSLocalizedString("duration5Minutes", comment: "")
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .secondaryLabel
         return label
@@ -116,14 +116,14 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var styleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Style"
+        label.text = NSLocalizedString("style", comment: "")
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .secondaryLabel
         return label
     }()
     
     private lazy var styleSegmentedControl: UISegmentedControl = {
-        let items = ["Technical", "Fun", "Professional", "Companion"]
+        let items = [NSLocalizedString("technical", comment: ""), NSLocalizedString("fun", comment: ""), NSLocalizedString("professional", comment: ""), NSLocalizedString("companion", comment: "")]
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.selectedSegmentTintColor = .systemIndigo
@@ -141,7 +141,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var languageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Language"
+        label.text = NSLocalizedString("language", comment: "")
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textColor = .secondaryLabel
         return label
@@ -180,7 +180,7 @@ final class CreaterPodcastsViewController: UIViewController {
         config.cornerStyle = .large
         config.baseBackgroundColor = .systemIndigo
         config.baseForegroundColor = .white
-        config.title = "Create Podcast"
+        config.title = NSLocalizedString("CreatePodcastTabBar", comment: "")
         config.image = UIImage(systemName: "wand.and.stars")
         config.imagePadding = 8
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
@@ -201,7 +201,7 @@ final class CreaterPodcastsViewController: UIViewController {
         config.cornerStyle = .large
         config.baseBackgroundColor = .systemGreen
         config.baseForegroundColor = .white
-        config.title = "Play"
+        config.title = NSLocalizedString("play", comment: "")
         config.image = UIImage(systemName: "play.fill")
         config.imagePadding = 8
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
@@ -231,7 +231,7 @@ final class CreaterPodcastsViewController: UIViewController {
     
     private lazy var outputLabel: UILabel = {
         let label = UILabel()
-        label.text = "Podcast Content"
+        label.text = "Podcast \(NSLocalizedString("content", comment: ""))"
         label.font = .systemFont(ofSize: 16, weight: .semibold)
         label.textColor = .label
         return label
@@ -255,7 +255,7 @@ final class CreaterPodcastsViewController: UIViewController {
         config.cornerStyle = .large
         config.baseBackgroundColor = .systemBlue
         config.baseForegroundColor = .white
-        config.title = "Save Podcast"
+        config.title = NSLocalizedString("savePodcast", comment: "")
         config.image = UIImage(systemName: "arrow.down.doc.fill")
         config.imagePadding = 8
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(scale: .medium)
@@ -292,7 +292,7 @@ final class CreaterPodcastsViewController: UIViewController {
     // MARK: - Actions
     @objc private func durationSliderValueChanged() {
         let duration = Int(durationSlider.value)
-        durationLabel.text = "Duration: \(duration) minutes"
+        durationLabel.text = "\(NSLocalizedString("duration", comment: "")): \(duration) \(NSLocalizedString("minutes", comment: ""))"
     }
     
     @objc private func createButtonTapped() {
@@ -300,7 +300,7 @@ final class CreaterPodcastsViewController: UIViewController {
         let duration = Int(durationSlider.value)
         let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
         
-        responseTextView.text = "Generating podcast content..."
+        responseTextView.text = NSLocalizedString("generatingPodcast", comment: "")
         responseTextView.textAlignment = .center
         playPauseButton.isEnabled = false
         
@@ -339,7 +339,7 @@ final class CreaterPodcastsViewController: UIViewController {
     }
     
     private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Success", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("success", comment: ""), message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
@@ -355,14 +355,14 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
     
     func didUpdatePlaybackState(isPlaying: Bool) {
         var config = playPauseButton.configuration
-        config?.title = isPlaying ? "Pause" : "Play"
+        config?.title = isPlaying ? NSLocalizedString("pause", comment: "") : NSLocalizedString("play", comment: "")
         config?.image = UIImage(systemName: isPlaying ? "pause.fill" : "play.fill")
         config?.baseBackgroundColor = isPlaying ? .systemOrange : .systemGreen
         playPauseButton.configuration = config
     }
     
     func didShowError(_ error: String) {
-        responseTextView.text = "Error: \(error)"
+        responseTextView.text = "\(NSLocalizedString("error", comment: "")): \(error)"
         playPauseButton.isEnabled = false
         saveButton.isEnabled = false
     }
@@ -370,18 +370,18 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
     func didUpdateUIState(isLoading: Bool) {
         createButton.isEnabled = !isLoading
         if isLoading {
-            responseTextView.text = "Generating podcast content..."
+            responseTextView.text = NSLocalizedString("generatingPodcast", comment: "")
         }
     }
     
     func didShowAlert(message: String) {
-        let alert = UIAlertController(title: "Warning", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("warning", comment: ""), message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
     
     func didSavePodcastSuccessfully() {
-        showAlert(message: "Podcast saved successfully!")
+        showAlert(message: NSLocalizedString("podcastSavedSuccessfully", comment: ""))
         guard let tabBarController = self.tabBarController else { return }
         tabBarController.selectedIndex = 3
     }

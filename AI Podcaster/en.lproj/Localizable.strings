@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   AI Podcaster
 
@@ -113,3 +113,24 @@
 "date" = "Date";
 "title" = "Title";
 "clear" = "Clear";
+
+//MARK: CreaterPodcasts
+"podcastTopic" = "Podcast Topic";
+"enterPodcastTopic" = "Enter podcast topic or question";
+"podcastSettings" = "Podcast Settings";
+"duration5Minutes" = "Duration: 5 minutes~";
+"play" = "Play";
+"pause" = "Pause";
+"warning" = "Warning";
+"savePodcast" = "Save Podcast";
+"generatingPodcast" = "Generating podcast content...";
+"podcastSavedSuccessfully" = "Podcast saved successfully!";
+
+"youMustLogin" = "You must be logged in to use this feature!";
+"enterQuestion" = "Please enter a question or request";
+"trialExpired" = "Your 7-day free trial has expired. Please upgrade to continue using this feature.";
+"failedSavePodcast" = "Failed to save podcast";
+
+"enterPodcastTitle" = "Enter podcast title";
+"save" = "Save";
+"pleaseEnterTitle" = "Please enter a title for your podcast";

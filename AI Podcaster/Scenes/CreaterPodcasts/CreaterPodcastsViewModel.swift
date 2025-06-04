@@ -58,12 +58,12 @@ final class CreaterPodcastsViewModel: NSObject {
     func generatePodcast(prompt: String, duration: Int, style: String, language: String) {
         
         if !SceneDelegate.loginUser {
-            delegate?.didShowAlert(message: "You must be logged in to use this feature!")
+            delegate?.didShowAlert(message: NSLocalizedString("youMustLogin", comment: ""))
             return
         }
         
         guard !prompt.isEmpty else {
-            delegate?.didShowAlert(message: "Please enter a question or request")
+            delegate?.didShowAlert(message: NSLocalizedString("enterQuestion", comment: ""))
             return
         }
         
@@ -76,7 +76,7 @@ final class CreaterPodcastsViewModel: NSObject {
             }
             
             if !canAccess {
-                self.delegate?.didShowError("Your 7-day free trial has expired. Please upgrade to continue using this feature.")
+                self.delegate?.didShowError(NSLocalizedString("trialExpired", comment: ""))
                 return
             }
             
@@ -121,7 +121,7 @@ final class CreaterPodcastsViewModel: NSObject {
     func savePodcast(id:UUID,title: String, style: String, language: String, duration: Int) {
         guard let currentText = currentText,
               let userId = Auth.auth().currentUser?.uid else {
-            delegate?.didShowError("Failed to save podcast")
+            delegate?.didShowError(NSLocalizedString("failedSavePodcast", comment: ""))
             return
         }
         

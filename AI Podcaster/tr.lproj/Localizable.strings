@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   AI Podcaster
 
@@ -10,7 +10,7 @@
 //MARK: TabBar
 "HomeTabBar" = "Ana Sayfa";
 "ChatTabBar" = "Sohbet";
-"CreatePodcastTabBar" = "Ana Sayfa";
+"CreatePodcastTabBar" = "Podcast Oluştur";
 "LibraryTabBar" = "Kütüphane";
 "ProfileTabBar" = "Profil";
 "RegisterTabBar" = "Kayıt Ol";
@@ -114,3 +114,24 @@
 "date" = "Tarih";
 "title" = "Başlık";
 "clear" = "Temizle";
+
+//MARK: CreaterPodcasts
+"podcastTopic" = "Podcast Konusu";
+"enterPodcastTopic" = "Podcast konusu veya sorusu girin";
+"podcastSettings" = "Podcast Ayarları";
+"duration5Minutes" = "Süre: 5 dakika~";
+"play" = "Oynat";
+"pause" = "Duraklat";
+"warning" = "Uyarı";
+"savePodcast" = "Podcast'i Kaydet";
+"generatingPodcast" = "Podcast içeriği oluşturuluyor...";
+"podcastSavedSuccessfully" = "Podcast başarıyla kaydedildi!";
+
+"youMustLogin" = "You must login to create a podcast";
+"enterQuestion" = "Lütfen bir soru veya istek girin";
+"trialExpired" = "7 günlük ücretsiz denemenizin süresi doldu. Bu özelliği kullanmaya devam etmek için lütfen yükseltme yapın.";
+"failedSavePodcast" = "Podcast kaydedilemedi!";
+
+"enterPodcastTitle" = "Podcast başlığı girin";
+"save" = "Kaydet";
+"pleaseEnterTitle" = "Lütfen podcast başlığı girin";
