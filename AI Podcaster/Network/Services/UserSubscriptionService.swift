@@ -43,15 +43,19 @@ final class UserSubscriptionService: UserSubscriptionServiceProtocol {
         }
         
         db.collection("users").document(userId).getDocument { snapshot, error in
-            guard error == nil, 
-                  let data = snapshot?.data(),
-                  let isPremiumString = data["isPremium"] as? String else {
+            guard error == nil,
+                  let data = snapshot?.data() else {
                 completion(.unknown)
                 return
             }
             
-            // Check if user is premium
-            if isPremiumString != "free" {
+            // Check if user is premium - handle both Boolean and String formats
+            if let isPremiumBool = data["isPremium"] as? Bool {
+                if isPremiumBool {
+                    completion(.premium)
+                    return
+                }
+            } else if let isPremiumString = data["isPremium"] as? String, isPremiumString != "free" {
                 completion(.premium)
                 return
             }
@@ -88,17 +92,20 @@ final class UserSubscriptionService: UserSubscriptionServiceProtocol {
                 
             case .freeTrial(let daysLeft):
                 // Free trial users have access, inform them of days left
-                let message = "You have \(daysLeft) day\(daysLeft == 1 ? "" : "s") left in your free trial. Don't forget to upgrade to Premium!"
+                let message = SceneDelegate.appLanguageName == "Türkçe" ?
+                    "Premium özelliklere erişiminiz var. Deneme süreniz \(daysLeft) gün sonra sona erecek." :
+                    "You have access to premium features. Your trial ends in \(daysLeft) days."
+                    
                 completion(true, message)
                 
             case .freeTrialExpired:
                 // Trial expired, no access
-                completion(false, "Your 7-day free trial has expired. Please upgrade to continue using this feature.")
+                completion(false, NSLocalizedString("trialExpired", comment: ""))
                 
             case .unknown:
                 // Unknown status, default to no access
-                completion(false, "Unable to verify subscription status. Please try again later.")
+                completion(false, NSLocalizedString("unableToSub", comment: ""))
             }
         }
     }
-} 
+}

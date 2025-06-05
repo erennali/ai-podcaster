@@ -78,11 +78,11 @@ final class ChatViewModel: ChatViewModelProtocol {
                 // Trial expired, show message and stop
                 self.updateState(.idle)
                 let errorMessage = ChatMessage(
-                    text: "Your 7-day free trial has expired. Please upgrade to premium to continue using this feature.",
+                    text: NSLocalizedString("trialExpired", comment: ""),
                     isFromUser: false
                 )
                 self.addMessage(errorMessage)
-                self.delegate?.didFailWithError("Free trial expired")
+                self.delegate?.didFailWithError(NSLocalizedString("freeTrialExpired", comment: ""))
                 return
             }
             
@@ -142,4 +142,4 @@ private extension ChatViewModel {
             delegate?.didFailWithError(error.localizedDescription)
         }
     }
-} 
+}

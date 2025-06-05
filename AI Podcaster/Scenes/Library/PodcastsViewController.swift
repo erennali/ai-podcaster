@@ -159,7 +159,7 @@ extension PodcastsViewController: PodcastsViewControllerProtocol {
     private func showEmptyStateMessage() {
         let messageLabel = UILabel()
         let message = viewModel.hasActiveFilters ?
-        NSLocalizedString("noPodcastsFilters", comment: "")
+        NSLocalizedString("noPodcastsFilter", comment: "")
              :
         NSLocalizedString("noPodcastsYet", comment: "")
             

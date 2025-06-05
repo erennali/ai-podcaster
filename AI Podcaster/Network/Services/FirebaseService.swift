@@ -45,8 +45,15 @@ class FirebaseService {
     }
     
     func getUserSubscriptionStatus() -> Bool {
-        if let userData = userData, let isPremium = userData["isPremium"] as? Bool {
-            return isPremium
+        if let userData = userData {
+            // Handle Boolean format
+            if let isPremium = userData["isPremium"] as? Bool {
+                return isPremium
+            }
+            // Handle String format as fallback
+            else if let isPremiumString = userData["isPremium"] as? String {
+                return isPremiumString != "free"
+            }
         }
         return false
     }

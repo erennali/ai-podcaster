@@ -45,6 +45,7 @@
 "mustLogin" = "Mesaj göndermek için giriş yapmalısın!";
 "welcomeAIResponse" = "Merhaba! Ben senin Akıllı Podcast asistanınım. Podcast konuları, içerik oluşturma, hikaye anlatımı ve ses içeriği konusunda sana yardımcı olabilirim. Sana nasıl yardımcı olabilirim?";
 "tryAgain" = "Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.";
+"freeTrialExpired" = "Ücretsiz deneme süresi doldu.";
 
 //ChatInputView
 "typeMessage" = "Mesajınızı yazın...";
@@ -147,7 +148,7 @@
 "generatingPodcast" = "Podcast içeriği oluşturuluyor...";
 "podcastSavedSuccessfully" = "Podcast başarıyla kaydedildi!";
 
-"youMustLogin" = "You must login to create a podcast";
+"youMustLogin" = "Podcast oluşturmak için giriş yapmalısınız!";
 "enterQuestion" = "Lütfen bir soru veya istek girin";
 "trialExpired" = "7 günlük ücretsiz denemenizin süresi doldu. Bu özelliği kullanmaya devam etmek için lütfen yükseltme yapın.";
 "failedSavePodcast" = "Podcast kaydedilemedi!";
@@ -182,5 +183,9 @@
 "notEmptyPassword" = "Parola boş olamaz!";
 "notEmptyName" = "İsim boş olamaz!";
 "passwordMinLength" = "Parola en az 6 karakter olmalıdır!";
+
+//MARK: UserSubscription
+"unableToSub" = "Abonelik durumu doğrulanamıyor. Lütfen daha sonra tekrar deneyin.";
+
 
 
