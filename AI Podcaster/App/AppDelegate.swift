@@ -29,7 +29,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Bildirim durumunu kontrol et ve gerekirse izin iste
         checkNotificationStatus()
-        
+      
+        // Kullanıcı verilerini önceden yükle
+            Task {
+                await FirebaseService.shared.fetchUserData()
+            }
+            
+          
+           
         
         return true
     }

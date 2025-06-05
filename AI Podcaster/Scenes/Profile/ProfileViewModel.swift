@@ -17,24 +17,24 @@ class ProfileViewModel {
     
     // MARK: - Public Methods
     func loadUserData() {
-        Task {
-            // Firebase'den kullanıcı verilerini güncel olarak al
-            await firebaseService.fetchUserData()
+        if let userData = firebaseService.getUserData() {
+            let name = userData["name"] as? String ?? ""
+            let email = userData["email"] as? String ?? ""
+            let isPremiumFromFirebase = userData["isPremium"] as? Bool ?? false
+            delegate?.userDataDidUpdate(name: name, email: email, podcastCount: 0) // Podcast sayısını sıfır olarak başlat
             
-            if let userData = firebaseService.getUserData() {
-                let name = userData["name"] as? String ?? ""
-                let email = userData["email"] as? String ?? ""
-                
-                // Premium durumunu RevenueCat'ten kontrol et
-                let isPremiumFromRevenueCat = iapService.isPremiumUser()
-                
-                // Firebase ile RevenueCat arasında uyumsuzluk varsa güncelle
-                let isPremiumFromFirebase = userData["isPremium"] as? Bool ?? false
-                if isPremiumFromRevenueCat != isPremiumFromFirebase {
-                    iapService.updatePremiumStatusInFirebase()
+            fetchPodcastCount(name: name, email: email)
+        } else {
+            Task {
+                await firebaseService.fetchUserData()
+                if let userData = firebaseService.getUserData() {
+                    let name = userData["name"] as? String ?? ""
+                    let email = userData["email"] as? String ?? ""
+                    let isPremiumFromFirebase = userData["isPremium"] as? Bool ?? false
+                    delegate?.userDataDidUpdate(name: name, email: email, podcastCount: 0)
+                    
+                    fetchPodcastCount(name: name, email: email)
                 }
-                
-                fetchPodcastCount(name: name, email: email)
             }
         }
     }
