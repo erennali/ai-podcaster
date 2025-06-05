@@ -305,6 +305,8 @@ final class CreaterPodcastsViewController: UIViewController {
         playPauseButton.isEnabled = false
         
         viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle, language: selectedLanguage)
+        
+        scrollToOutputContainer()
     }
     
     @objc private func playPauseButtonTapped() {
@@ -343,6 +345,12 @@ final class CreaterPodcastsViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
+    private func scrollToOutputContainer() {
+        DispatchQueue.main.async {
+            let outputRect = self.outputContainer.convert(self.outputContainer.bounds, to: self.scrollView)
+            self.scrollView.scrollRectToVisible(outputRect, animated: true)
+        }
+    }
 }
 
 // MARK: - CreaterPodcastsViewModelDelegate
@@ -351,6 +359,8 @@ extension CreaterPodcastsViewController: CreaterPodcastsViewModelDelegate {
         responseTextView.text = response
         playPauseButton.isEnabled = true
         saveButton.isEnabled = true
+        
+        scrollToOutputContainer()
     }
     
     func didUpdatePlaybackState(isPlaying: Bool) {
