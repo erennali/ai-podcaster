@@ -57,6 +57,9 @@ class FirebaseService {
         }
         return .free
     }
+    func clearUserData() {
+        userData = nil
+    }
     
     func updateUserData(with data: [String: Any], completion: ((Error?) -> Void)? = nil) {
         guard let user = Auth.auth().currentUser else {

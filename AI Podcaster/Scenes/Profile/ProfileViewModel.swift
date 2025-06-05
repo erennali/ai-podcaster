@@ -63,10 +63,11 @@ class ProfileViewModel {
         do {
             try Auth.auth().signOut()
             UserDefaults.standard.removeObject(forKey: "userData")
+            FirebaseService.shared.clearUserData()
             SceneDelegate.loginUser = false
             delegate?.signOutDidComplete()
         } catch {
             delegate?.signOutDidFail(with: error)
         }
     }
-} 
+}
