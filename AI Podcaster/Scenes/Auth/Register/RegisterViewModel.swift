@@ -49,7 +49,7 @@ class RegisterViewModel {
             
             guard let userId = result?.user.uid else {
                 self.isLoading = false
-                self.delegate?.registrationDidFail(with: "Kullanıcı oluşturulamadı")
+                self.delegate?.registrationDidFail(with: NSLocalizedString("failCreateUser", comment: ""))
                 return
             }
             
@@ -78,34 +78,34 @@ class RegisterViewModel {
 
             } catch {
                 self.isLoading = false
-                self.delegate?.registrationDidFail(with: "Kullanıcı bilgileri kaydedilemedi: \(error.localizedDescription)")
+                self.delegate?.registrationDidFail(with: "\(NSLocalizedString("failSaveUser", comment: "")): \(error.localizedDescription)")
             }
         }
     }
     
     private func validateForm() -> Bool {
         if email.isEmpty {
-            delegate?.registrationDidFail(with: "Email adresi boş olamaz")
+            delegate?.registrationDidFail(with: NSLocalizedString("notEmptyEmail", comment: ""))
             return false
         }
         
         if !email.contains("@") {
-            delegate?.registrationDidFail(with: "Geçerli bir email adresi giriniz")
+            delegate?.registrationDidFail(with: NSLocalizedString("pleaseRealEmail", comment: ""))
             return false
         }
         
         if password.isEmpty {
-            delegate?.registrationDidFail(with: "Şifre boş olamaz")
+            delegate?.registrationDidFail(with: NSLocalizedString("notEmptyPassword", comment: ""))
             return false
         }
         
         if password.count < 6 {
-            delegate?.registrationDidFail(with: "Şifre en az 6 karakter olmalıdır")
+            delegate?.registrationDidFail(with: NSLocalizedString("passwordMinLength", comment: ""))
             return false
         }
         
         if name.isEmpty {
-            delegate?.registrationDidFail(with: "İsim boş olamaz")
+            delegate?.registrationDidFail(with: NSLocalizedString("notEmptyName", comment: ""))
             return false
         }
         

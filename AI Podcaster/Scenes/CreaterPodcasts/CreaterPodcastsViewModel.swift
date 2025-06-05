@@ -80,7 +80,6 @@ final class CreaterPodcastsViewModel: NSObject {
                 return
             }
             
-            // Continue with original implementation if user has access
             self.delegate?.didUpdateUIState(isLoading: true)
             
             let podcastPrompt = """

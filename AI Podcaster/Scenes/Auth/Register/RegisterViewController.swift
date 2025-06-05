@@ -35,7 +35,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Create Account"
+        label.text = NSLocalizedString("createAccount", comment: "")
         label.font = .systemFont(ofSize: 24, weight: .bold)
         label.textAlignment = .center
         return label
@@ -43,7 +43,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Join AI Podcaster to start creating amazing podcasts"
+        label.text = NSLocalizedString("joinAITitle", comment: "")
         label.font = .systemFont(ofSize: 16)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -53,7 +53,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var nameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Full Name"
+        textField.placeholder = NSLocalizedString("fullName", comment: "")
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 12
         textField.borderStyle = .none
@@ -67,7 +67,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var emailTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Email Address"
+        textField.placeholder = NSLocalizedString("email", comment: "")
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         textField.backgroundColor = .systemGray6
@@ -83,7 +83,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Password"
+        textField.placeholder = NSLocalizedString("password", comment: "")
         textField.isSecureTextEntry = true
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 12
@@ -98,7 +98,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var confirmPasswordTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Confirm Password"
+        textField.placeholder = NSLocalizedString("confirmPassword", comment: "")
         textField.isSecureTextEntry = true
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 12
@@ -113,7 +113,7 @@ class RegisterViewController: UIViewController {
     
     private lazy var registerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Create Account", for: .normal)
+        button.setTitle(NSLocalizedString("createAccount", comment: ""), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         button.backgroundColor = UIColor(named: "anaTemaRenk")
         button.setTitleColor(.white, for: .normal)
@@ -125,11 +125,11 @@ class RegisterViewController: UIViewController {
     private lazy var loginButton: UIButton = {
         let button = UIButton(type: .system)
         let attributedTitle = NSMutableAttributedString(
-            string: "Already have an account? ",
+            string: NSLocalizedString("alreadyHaveAccount", comment: ""),
             attributes: [.foregroundColor: UIColor.secondaryLabel]
         )
         attributedTitle.append(NSAttributedString(
-            string: "Sign In",
+            string: NSLocalizedString("signIn", comment: ""),
             attributes: [.foregroundColor: UIColor(named: "anaTemaRenk") ?? .systemBlue]
         ))
         button.setAttributedTitle(attributedTitle, for: .normal)
@@ -174,12 +174,12 @@ class RegisterViewController: UIViewController {
     @objc private func registerButtonTapped() {
         guard let password = passwordTextField.text,
               let confirmPassword = confirmPasswordTextField.text else {
-            showErrorAlert(message: "Please fill in all fields")
+            showErrorAlert(message: NSLocalizedString("pleaseFillAllFields", comment: ""))
             return
         }
         
         if password != confirmPassword {
-            showErrorAlert(message: "Passwords do not match")
+            showErrorAlert(message: NSLocalizedString("passwordNotMatch", comment: ""))
             return
         }
         
@@ -255,8 +255,8 @@ class RegisterViewController: UIViewController {
 extension RegisterViewController {
     func configureView() {
         view.backgroundColor = .systemBackground
-        title = "Register"
-        
+        title = NSLocalizedString("RegisterTabBar", comment: "")
+
         addViews()
         configureLayout()
         setupTapGesture()
@@ -386,7 +386,7 @@ extension RegisterViewController: RegisterViewModelDelegate {
     }
     
     private func showSuccessAlert() {
-        let alert = UIAlertController(title: "Success", message: "Your account has been created successfully!", preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("success", comment: ""), message: NSLocalizedString("yourAccountHasBeenCreated", comment: ""), preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
             self?.navigationController?.popToRootViewController(animated: true)
         })
@@ -394,7 +394,7 @@ extension RegisterViewController: RegisterViewModelDelegate {
     }
     
     private func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("error", comment: ""), message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

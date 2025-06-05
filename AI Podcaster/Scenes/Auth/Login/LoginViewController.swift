@@ -37,7 +37,7 @@ class LoginViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Login"
+        label.text = NSLocalizedString("login", comment: "")
         label.font = UIFont.boldSystemFont(ofSize: 32)
         label.textAlignment = .center
         return label
@@ -45,7 +45,7 @@ class LoginViewController: UIViewController {
     
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Welcome back to AI Podcaster"
+        label.text = NSLocalizedString("welcomeBack", comment: "")
         label.font = .systemFont(ofSize: 16)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -55,14 +55,14 @@ class LoginViewController: UIViewController {
     
     private lazy var lostPasswordButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Forgot Password?", for: .normal)
+        button.setTitle(NSLocalizedString("forgotPassword", comment: ""), for: .normal)
         button.setTitleColor(UIColor(named: "anaTemaRenk"), for: .normal)
         button.addTarget(self, action: #selector(forgotPasswordTapped), for: .touchUpInside)
         return button
     }()
     private lazy var emailTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Email Address"
+        textField.placeholder = NSLocalizedString("email", comment: "")
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         textField.backgroundColor = .systemGray6
@@ -77,7 +77,7 @@ class LoginViewController: UIViewController {
     
     private lazy var passwordTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Password"
+        textField.placeholder = NSLocalizedString("password", comment: "")
         textField.isSecureTextEntry = true
         textField.backgroundColor = .systemGray6
         textField.layer.cornerRadius = 12
@@ -91,7 +91,7 @@ class LoginViewController: UIViewController {
     
     private lazy var loginButton : UIButton = {
         let button = UIButton()
-        button.setTitle("Login", for: .normal)
+        button.setTitle(NSLocalizedString("login", comment: ""), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(named: "anaTemaRenk")
         button.layer.cornerRadius = 8
@@ -139,7 +139,7 @@ class LoginViewController: UIViewController {
     }
 
     private func showErrorAlert(message: String) {
-       let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+       let alert = UIAlertController(title: NSLocalizedString("error", comment: ""), message: message, preferredStyle: .alert)
        alert.addAction(UIAlertAction(title: "OK", style: .default))
        present(alert, animated: true)
    }
@@ -150,7 +150,7 @@ class LoginViewController: UIViewController {
             loginButton.isEnabled = false
             activityIndicator.startAnimating()
         } else {
-            loginButton.setTitle("Login", for: .normal)
+            loginButton.setTitle(NSLocalizedString("login", comment: ""), for: .normal)
             loginButton.isEnabled = true
             activityIndicator.stopAnimating()
         }
@@ -242,7 +242,7 @@ extension LoginViewController: LoginViewModelDelegate {
     }
     
     func didSendPasswordReset() {
-        let alert = UIAlertController(title: "Success", message: "Password reset email sent!", preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("success", comment: ""), message: NSLocalizedString("passwordReset", comment: ""), preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

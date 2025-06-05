@@ -66,6 +66,7 @@
 "settings" = "Settings";
 "signOut" = "Sign Out";
 "podcasts" = "Podcasts";
+"areYouSureSignOut" = "Are you sure you want to sign out?";
 
 //MARK: Library
 "noPodcastsFilter" = "No podcasts match your filters.\nTry adjusting your filter settings.";
@@ -134,3 +135,30 @@
 "enterPodcastTitle" = "Enter podcast title";
 "save" = "Save";
 "pleaseEnterTitle" = "Please enter a title for your podcast";
+
+//MARK: Login - Register
+"passwordReset" = "Password reset email sent!";
+"login" = "Login";
+"password" = "Password";
+"email" = "Email";
+"forgotPassword" = "Forgot Password?";
+"welcomeBack" = "Welcome back to Podcaster AI";
+"pleaseEnterEmailPassword" = "Please enter your email and password";
+"pleaseEnterEmail" = "Please enter your email";
+"createAccount" = "Create Account";
+"joinAITitle" = "Join AI Podcaster to start creating amazing podcasts";
+"fullName" = "Full Name";
+"confirmPassword" = "Confirm Password";
+"signIn" = "Sign In";
+"alreadyHaveAccount" = "Already have an account?";
+"passwordNotMatch" = "Passwords do not match";
+"pleaseFillAllFields" = "Please fill in all fields";
+"yourAccountHasBeenCreated" = "Your account has been created successfully!";
+// VM
+"failCreateUser" = "Failed to create user!";
+"failSaveUser" = "Failed to save user information!";
+"notEmptyEmail" = "Email field cannot be empty!";
+"pleaseRealEmail" = "Please enter a valid email address!";
+"notEmptyPassword" = "Password field cannot be empty!";
+"notEmptyName" = "Name field cannot be empty!";
+"passwordMinLength" = "Password must be at least 6 characters long!";

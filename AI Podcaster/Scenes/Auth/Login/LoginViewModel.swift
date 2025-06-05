@@ -23,7 +23,7 @@ class LoginViewModel {
     
     func login(email: String, password: String) {
         guard !email.isEmpty, !password.isEmpty else {
-            delegate?.didFailToLogin(with: "Please enter your email and password.")
+            delegate?.didFailToLogin(with: NSLocalizedString("pleaseEnterEmailPassword", comment: ""))
             return
         }
         
@@ -45,7 +45,7 @@ class LoginViewModel {
     
     func resetPassword(email: String) {
         guard !email.isEmpty else {
-            delegate?.didFailToSendPasswordReset(with: "Please enter your email address.")
+            delegate?.didFailToSendPasswordReset(with: NSLocalizedString("pleaseEnterEmail", comment: ""))
             return
         }
         

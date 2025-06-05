@@ -228,13 +228,13 @@ class ProfileViewController: UIViewController {
     
     @objc private func logoutButtonTapped() {
         let alert = UIAlertController(
-            title: "Sign Out",
-            message: "Are you sure you want to sign out?",
+            title: NSLocalizedString("signOut", comment: ""),
+            message: NSLocalizedString("areYouSureSignOut", comment: ""),
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("signOut", comment: ""), style: .destructive) { [weak self] _ in
             self?.viewModel.signOut()
         })
         

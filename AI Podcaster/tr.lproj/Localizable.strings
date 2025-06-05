@@ -67,6 +67,7 @@
 "settings" = "Ayarlar";
 "signOut" = "Çıkış Yap";
 "podcasts" = "Podcastler";
+"areYouSureSignOut" = "Çıkış yapmak istediğinizden emin misiniz?";
 
 //MARK: Library
 "noPodcastsFilter" = "Filtrelerinizle eşleşen podcast yok.\nFiltre ayarlarınızı değiştirmeyi deneyin";
@@ -135,3 +136,30 @@
 "enterPodcastTitle" = "Podcast başlığı girin";
 "save" = "Kaydet";
 "pleaseEnterTitle" = "Lütfen podcast başlığı girin";
+
+//MARK: Login - Register
+"passwordReset" = "Parola sıfırlama e-postası gönderildi!";
+"login" = "Giriş Yap";
+"password" = "Parola";
+"email" = "Email";
+"forgotPassword" = "Parolanızı mı unuttunuz?";
+"welcomeBack" = "Podcaster AI'ye hoş geldiniz";
+"pleaseEnterEmailPassword" = "Lütfen email ve parolanızı girin";
+"pleaseEnterEmail" = "Lütfen email adresinizi girin";
+"createAccount" = "Hesap Oluştur";
+"joinAITitle" = "AI Podcaster'a katıl ve harika podcastler oluşturmaya başla";
+"fullName" = "Tam Ad";
+"confirmPassword" = "Parolayı Onayla";
+"signIn" = "Giriş Yap";
+"alreadyHaveAccount" = "Zaten bir hesabınız var mı?";
+"passwordNotMatch" = "Parolalar eşleşmiyor";
+"pleaseFillAllFields" = "Lütfen tüm alanları doldurun";
+"yourAccountHasBeenCreated" = "Hesabınız başarıyla oluşturuldu!";
+// VM
+"failCreateUser" = "Kullanıcı Oluşturulamadı!";
+"failSaveUser" = "Kullanıcı Bilgileri Kaydedilemedi!";
+"notEmptyEmail" = "Email alanı boş olamaz!";
+"pleaseRealEmail" = "Lütfen geçerli bir email adresi girin!";
+"notEmptyPassword" = "Parola boş olamaz!";
+"notEmptyName" = "İsim boş olamaz!";
+"passwordMinLength" = "Parola en az 6 karakter olmalıdır!";
