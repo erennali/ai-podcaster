@@ -15,6 +15,7 @@ protocol CreaterPodcastsViewModelDelegate: AnyObject {
 
 final class CreaterPodcastsViewModel: NSObject {
     // MARK: - Properties
+    private let userDefaultsKey = "hasShownFirstTimeAlert"
     private let googleAIService: GoogleAIService
     let speechService: AVSpeechService
     private var currentText: String?
@@ -56,6 +57,14 @@ final class CreaterPodcastsViewModel: NSObject {
     }
     
     // MARK: - Public Methods
+    func shouldShowFirstTimeAlert() -> Bool {
+            let hasShown = UserDefaults.standard.bool(forKey: userDefaultsKey)
+            if !hasShown {
+                UserDefaults.standard.set(true, forKey: userDefaultsKey)
+            }
+            return !hasShown
+        }
+    
     func generatePodcast(prompt: String, duration: Int, style: String, language: String) {
         
         if !SceneDelegate.loginUser {

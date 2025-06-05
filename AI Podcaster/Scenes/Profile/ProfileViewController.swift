@@ -15,6 +15,28 @@ class ProfileViewController: UIViewController {
     private let viewModel = ProfileViewModel()
     
     // MARK: - UI Components
+    private let betterAudioExperienceButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        var configuration = UIButton.Configuration.filled()
+        configuration.title = NSLocalizedString("openBetterAudioExperience", comment: "")
+        configuration.baseBackgroundColor = UIColor(named: "anaTemaRenk") // Theme color
+        configuration.baseForegroundColor = .white
+        configuration.cornerStyle = .capsule
+        configuration.image = UIImage(systemName: "speaker.wave.2.circle") // Minimal icon
+        configuration.imagePadding = 6
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
+        
+        button.configuration = configuration
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 1)
+        button.layer.shadowOpacity = 0.08
+        button.layer.shadowRadius = 3
+        button.addTarget(self, action: #selector(openBetterAudioExperience), for: .touchUpInside)
+        
+        return button
+    }()
+    
     private lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .secondarySystemBackground
@@ -157,6 +179,7 @@ class ProfileViewController: UIViewController {
         
         view.addSubview(settingsButton)
         view.addSubview(exitButton)
+        view.addSubview(betterAudioExperienceButton)
     }
     
     private func configureLayout() {
@@ -212,6 +235,11 @@ class ProfileViewController: UIViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
             make.height.equalTo(50)
         }
+        betterAudioExperienceButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(podcastsContainerView.snp.bottom).offset(16)
+            make.height.equalTo(44)
+        }
     }
     
     // MARK: - Premium Status
@@ -221,6 +249,16 @@ class ProfileViewController: UIViewController {
     }
     
     // MARK: - Actions
+    @objc private func openBetterAudioExperience() {
+            let alert = UIAlertController(
+                title: NSLocalizedString("betterAudioExperienceTitle", comment: ""),
+                message: NSLocalizedString("betterAudioExperienceMessage", comment: ""),
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: NSLocalizedString("betterAudioExperienceButton", comment: ""), style: .default))
+            present(alert, animated: true)
+        }
+    
     @objc private func settingsButtonTapped() {
         let settingsVC = SettingsViewController()
         navigationController?.pushViewController(settingsVC, animated: true)

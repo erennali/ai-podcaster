@@ -80,12 +80,17 @@
 "podcasts" = "Podcasts";
 "areYouSureSignOut" = "Are you sure you want to sign out?";
 
+"betterAudioExperienceTitle" = "Better Audio Experience";
+"betterAudioExperienceMessage" = "For a better audio experience, go to Settings -> Accessibility -> Spoken Content -> Voices -> Enhanced Voice option, download and activate it.";
+"betterAudioExperienceButton" = "OK";
+"openBetterAudioExperience" = "Better Audio Experience";
+
 //MARK: Library
 "noPodcastsFilter" = "No podcasts match your filters.\nTry adjusting your filter settings.";
 "noPodcastsYet" = "No podcasts yet.\nCreate your first podcast from the Create tab!";
 
 //MARK: PodcastsCell
-"minutes" = "min";
+"minutes" = "min~";
 
 //MARK: SearchVC
 "searchPodcasts" = "Search your podcasts...";
@@ -131,7 +136,7 @@
 "podcastTopic" = "Podcast Topic";
 "enterPodcastTopic" = "Enter podcast topic or question";
 "podcastSettings" = "Podcast Settings";
-"duration5Minutes" = "Duration: 5 minutes~";
+"duration5Minutes" = "Duration: 5 min~";
 "play" = "Play";
 "pause" = "Pause";
 "warning" = "Warning";

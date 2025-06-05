@@ -82,12 +82,18 @@
 "podcasts" = "Podcastler";
 "areYouSureSignOut" = "Çıkış yapmak istediğinizden emin misiniz?";
 
+"betterAudioExperienceTitle" = "Daha İyi Ses Deneyimi";
+"betterAudioExperienceMessage" = "Daha iyi seslendirme deneyimi için Ayarlar -> Erişilebilirlik -> Seslendirilen içerik -> Sesler -> Geliştirilmiş Ses seçeneğini indirip aktif edin.";
+"betterAudioExperienceButton" = "Tamam";
+"openBetterAudioExperience" = "Daha İyi Ses Deneyimi";
+
+
 //MARK: Library
 "noPodcastsFilter" = "Filtrelerinizle eşleşen podcast yok.\nFiltre ayarlarınızı değiştirmeyi deneyin";
 "noPodcastsYet" = "Henüz podcast bulunamadı.\nPodcast oluşturmak için 'Oluştur' sekmesine gidin!";
 
 //MARK: PodcastsCell
-"minutes" = "dk";
+"minutes" = "dk~";
 
 //MARK: Search VC
 "searchPodcasts" = "Podcastlerinizi arayın...";
@@ -133,7 +139,7 @@
 "podcastTopic" = "Podcast Konusu";
 "enterPodcastTopic" = "Podcast konusu veya sorusu girin";
 "podcastSettings" = "Podcast Ayarları";
-"duration5Minutes" = "Süre: 5 dakika~";
+"duration5Minutes" = "Süre: 5 dk~";
 "play" = "Oynat";
 "pause" = "Duraklat";
 "warning" = "Uyarı";
@@ -176,3 +182,5 @@
 "notEmptyPassword" = "Parola boş olamaz!";
 "notEmptyName" = "İsim boş olamaz!";
 "passwordMinLength" = "Parola en az 6 karakter olmalıdır!";
+
+

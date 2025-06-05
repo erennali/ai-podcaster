@@ -285,6 +285,12 @@ final class CreaterPodcastsViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         setupViewModel()
+        
+        // Show alert if it's the first time
+        if viewModel.shouldShowFirstTimeAlert() {
+                showFirstTimeAlert()
+            }
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
     }
@@ -335,6 +341,16 @@ final class CreaterPodcastsViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    private func showFirstTimeAlert() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("betterAudioExperienceTitle", comment: ""),
+            message: NSLocalizedString("betterAudioExperienceMessage", comment: ""),
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: NSLocalizedString("betterAudioExperienceButton", comment: ""), style: .default))
+        present(alert, animated: true)
+    }
+    
     private func setupViewModel() {
         viewModel.delegate = self
     }
