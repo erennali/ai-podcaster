@@ -309,8 +309,10 @@ final class CreaterPodcastsViewController: UIViewController {
         responseTextView.textAlignment = .center
         playPauseButton.isEnabled = false
         
+        
         viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle, language: selectedLanguage)
         
+        view.endEditing(true)
         
     }
     
