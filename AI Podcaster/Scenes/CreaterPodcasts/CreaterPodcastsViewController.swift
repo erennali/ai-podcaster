@@ -299,14 +299,13 @@ final class CreaterPodcastsViewController: UIViewController {
         let prompt = promptTextField.text ?? ""
         let duration = Int(durationSlider.value)
         let selectedStyle = styleSegmentedControl.titleForSegment(at: styleSegmentedControl.selectedSegmentIndex) ?? ""
-        
-        responseTextView.text = NSLocalizedString("generatingPodcast", comment: "")
+     
         responseTextView.textAlignment = .center
         playPauseButton.isEnabled = false
         
         viewModel.generatePodcast(prompt: prompt, duration: duration, style: selectedStyle, language: selectedLanguage)
         
-        scrollToOutputContainer()
+        
     }
     
     @objc private func playPauseButtonTapped() {
@@ -345,7 +344,7 @@ final class CreaterPodcastsViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-    private func scrollToOutputContainer() {
+     func scrollToOutputContainer() {
         DispatchQueue.main.async {
             let outputRect = self.outputContainer.convert(self.outputContainer.bounds, to: self.scrollView)
             self.scrollView.scrollRectToVisible(outputRect, animated: true)

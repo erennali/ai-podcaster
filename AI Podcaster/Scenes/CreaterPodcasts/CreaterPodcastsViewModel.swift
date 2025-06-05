@@ -10,6 +10,7 @@ protocol CreaterPodcastsViewModelDelegate: AnyObject {
     func didUpdateUIState(isLoading: Bool)
     func didShowAlert(message: String)
     func didSavePodcastSuccessfully()
+    func scrollToOutputContainer()
 }
 
 final class CreaterPodcastsViewModel: NSObject {
@@ -45,7 +46,7 @@ final class CreaterPodcastsViewModel: NSObject {
     ]
     
     // MARK: - Initialization
-    init(googleAIService: GoogleAIService = .shared, 
+    init(googleAIService: GoogleAIService = .shared,
          speechService: AVSpeechService = .shared,
          subscriptionService: UserSubscriptionServiceProtocol = UserSubscriptionService.shared) {
         self.googleAIService = googleAIService
@@ -81,6 +82,7 @@ final class CreaterPodcastsViewModel: NSObject {
             }
             
             self.delegate?.didUpdateUIState(isLoading: true)
+            self.delegate?.scrollToOutputContainer()
             
             let podcastPrompt = """
             Sen profesyonel bir podcast içerik yazarısın. Bana aşağıdaki kriterlere uygun bir podcast senaryosu hazırla:
