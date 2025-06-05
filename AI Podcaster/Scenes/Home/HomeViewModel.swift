@@ -56,7 +56,7 @@ class HomeViewModel {
            let name = userData["name"] as? String {
             return name
         }
-        return "User"
+        return ""
     }
     
     func getPodcastCount(completion: @escaping (Int) -> Void) {

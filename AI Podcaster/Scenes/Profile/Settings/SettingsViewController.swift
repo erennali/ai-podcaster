@@ -117,7 +117,7 @@ private extension SettingsViewController {
         case .deleteAccount:
             deleteAccount()
         case .privacyPolicy , .termsOfUse :
-            openUrl("https://google.com")
+            openUrl("https://podcasterai.wordpress.com")
         case .subscription:
             showPaywall()
         case .restorePurchases:
@@ -128,12 +128,12 @@ private extension SettingsViewController {
     func deleteAccount() {
         let splashVC = SplashViewController()
         let alert = UIAlertController(
-            title: "Delete Account",
-            message: "Are you sure you want to delete your account?",
+            title: NSLocalizedString("deleteAccount", comment: ""),
+            message: NSLocalizedString("areYouSureDeleteAccount", comment: ""),
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("delete", comment: ""), style: .destructive) { [weak self] _ in
             self?.viewModel.deleteAccount()
             SceneDelegate.loginUser = false
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
@@ -157,7 +157,7 @@ private extension SettingsViewController {
     
     func showPaywall() {
         if IAPService.shared.isPremiumUser() {
-            showAlert(title: "Bilgi", message: "Zaten premium üyesiniz.")
+            showAlert(title: NSLocalizedString("info", comment: ""), message: NSLocalizedString("alreadyHavePremium", comment: ""))
             return
         }
         // Use the UIKit paywall implementation
@@ -168,7 +168,7 @@ private extension SettingsViewController {
     
     func restorePurchases() {
         // Show loading indicator
-        let loadingAlert = UIAlertController(title: nil, message: "Satın alımlar geri yükleniyor...", preferredStyle: .alert)
+        let loadingAlert = UIAlertController(title: nil, message: NSLocalizedString("restoringPurchases", comment: ""), preferredStyle: .alert)
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
         loadingIndicator.style = .medium
@@ -186,12 +186,12 @@ private extension SettingsViewController {
                     switch result {
                     case .success:
                         if self?.iapService.isPremiumUser() == true {
-                            self?.showAlert(title: "Başarılı", message: "Satın alımlarınız başarıyla geri yüklendi.")
+                            self?.showAlert(title: NSLocalizedString("success", comment: ""), message: NSLocalizedString("restoreSuccess", comment: ""))
                         } else {
-                            self?.showAlert(title: "Bilgi", message: "Hesabınızda aktif bir abonelik bulunamadı.")
+                            self?.showAlert(title: NSLocalizedString("info", comment: ""), message: NSLocalizedString("noActiveSubscription", comment: ""))
                         }
                     case .failure(let error):
-                        self?.showAlert(title: "Hata", message: "Satın alımlarınız geri yüklenirken bir hata oluştu: \(error.localizedDescription)")
+                        self?.showAlert(title: NSLocalizedString("error", comment: ""), message: "\(NSLocalizedString("error", comment: "")): \(error.localizedDescription)")
                     }
                 }
             }
@@ -200,7 +200,7 @@ private extension SettingsViewController {
     
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Tamam", style: .default))
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
     

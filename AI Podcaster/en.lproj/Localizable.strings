@@ -58,6 +58,18 @@
 "privacyPolicy" = "Privacy Policy";
 "termsOfUse" = "Terms of Use";
 
+"areYouSureDeleteAccount" = "Are you sure you want to delete your account?";
+"info" = "Info";
+"alreadyHavePremium" = "You already have a premium subscription!";
+"restoringPurchases" = "Restoring purchases...";
+"restoreSuccess" = "Purchases restored successfully!";
+"noActiveSubscription" = "You have no active subscriptions.";
+"great" = "Great!";
+"premiumActivated" = "Your premium subscription has been activated, you can use all premium features";
+"errorLoadingProducts" = "An error occurred while loading products. Please try again later.";
+"errorProductInfo" = "Product information not found. Please try again later.";
+"premiumUserLabel" = "Premium User";
+
 "auto" = "Auto";
 "dark" = "Dark";
 "light" = "Light";

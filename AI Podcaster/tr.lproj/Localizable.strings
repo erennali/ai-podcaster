@@ -59,6 +59,19 @@
 "privacyPolicy" = "Gizlilik Politikası";
 "termsOfUse" = "Kullanım Şartları";
 
+"areYouSureDeleteAccount" = "Hesabınızı silmek istediğinizden emin misiniz?";
+"info" = "Bilgi";
+"alreadyHavePremium" = "Zaten bir premium aboneliğiniz var!";
+"restoringPurchases" = "Satın alımlar geri yükleniyor...";
+"restoreSuccess" = "Satın alımlar başarıyla geri yüklendi!";
+"noActiveSubscription" = "Aktif bir aboneliğiniz yok.";
+"great" = "Harika!";
+"premiumActivated" = "Premium aboneliğiniz etkinleştirildi, tüm premium özellikleri kullanabilirsiniz";
+"errorLoadingProducts" = "Ürünler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.";
+"errorProductInfo" = "Ürün bilgisi bulunamadı. Lütfen daha sonra tekrar deneyin.";
+"premiumUserLabel" = "Premium Kullanıcı";
+
+
 "auto" = "Cihaz";
 "light" = "Açık";
 "dark" = "Koyu";

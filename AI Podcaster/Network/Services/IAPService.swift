@@ -209,21 +209,21 @@ final class IAPService: NSObject, PurchasesDelegate {
     
     // MARK: - Firebase Integration
     
-    /// Premium durumunu Firebase'e kaydeder
+    // Premium durumunu Firebase'e kaydeder
     func updatePremiumStatusInFirebase() {
         guard let user = Auth.auth().currentUser else {
             print("Firebase oturumu yok, premium durumu güncellenemedi")
             return
         }
         
-        
         let subscriptionType = getSubscriptionType()
+        let isPremium = subscriptionType != .free  // Convert to boolean
         
-        print("Firebase'e yazılıyor - isPremium: \(subscriptionType), subscriptionType: \(subscriptionType)")
+        print("Firebase'e yazılıyor - isPremium: \(isPremium), subscriptionType: \(subscriptionType)")
         
         let db = Firestore.firestore()
         db.collection("users").document(user.uid).updateData([
-            "isPremium": subscriptionType.rawValue,
+            "isPremium": isPremium,  // Now correctly storing a boolean
             "subscriptionType": subscriptionType.rawValue,
             "subscriptionUpdatedAt": FieldValue.serverTimestamp()
         ]) { error in

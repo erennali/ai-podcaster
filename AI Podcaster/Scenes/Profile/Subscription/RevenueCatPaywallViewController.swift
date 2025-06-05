@@ -17,7 +17,7 @@ final class RevenueCatPaywallViewController: UIViewController {
         // Check if user is already premium
         if IAPService.shared.isPremiumUser() {
             dismiss(animated: true) {
-                self.showAlert(title: "Premium Kullanıcı", message: "Zaten premium özelliklere erişiminiz var.")
+                self.showAlert(title: NSLocalizedString("premiumUser", comment: ""), message: NSLocalizedString("alreadyHavePremium", comment: ""))
             }
             return
         }
@@ -57,8 +57,8 @@ final class RevenueCatPaywallViewController: UIViewController {
                 if let error = error {
                     print("RevenueCat offerings error: \(error.localizedDescription)")
                     self.showAlert(
-                        title: "Hata", 
-                        message: "Ürünler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+                        title: NSLocalizedString("error", comment: ""),
+                        message: NSLocalizedString("errorLoadingProducts", comment: ""),
                         completion: { self.dismiss(animated: true) }
                     )
                     return
@@ -67,8 +67,8 @@ final class RevenueCatPaywallViewController: UIViewController {
                 guard let currentOffering = offerings?.current else {
                     print("RevenueCat current offering not found")
                     self.showAlert(
-                        title: "Hata", 
-                        message: "Ürün bilgileri bulunamadı. Lütfen daha sonra tekrar deneyin.",
+                        title: NSLocalizedString("error", comment: ""),
+                        message: NSLocalizedString("errorProductInfo", comment: ""),
                         completion: { self.dismiss(animated: true) }
                     )
                     return
@@ -107,7 +107,7 @@ final class RevenueCatPaywallViewController: UIViewController {
     // Helper method to show alerts with optional completion
     private func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Tamam", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
             completion?()
         })
         present(alert, animated: true)
@@ -127,11 +127,11 @@ extension RevenueCatPaywallViewController: PaywallViewControllerDelegate {
             // Show success message
             if let topVC = UIApplication.shared.windows.first?.rootViewController?.topMostViewController() {
                 let successAlert = UIAlertController(
-                    title: "Başarılı", 
-                    message: "Premium aboneliğiniz aktif edildi! Tüm premium özellikleri kullanabilirsiniz.", 
+                    title: NSLocalizedString("success", comment: ""),
+                    message: NSLocalizedString("premiumActivated", comment: ""),
                     preferredStyle: .alert
                 )
-                successAlert.addAction(UIAlertAction(title: "Harika!", style: .default))
+                successAlert.addAction(UIAlertAction(title: NSLocalizedString("great", comment: ""), style: .default))
                 topVC.present(successAlert, animated: true)
             }
         }
@@ -149,13 +149,13 @@ extension RevenueCatPaywallViewController: PaywallViewControllerDelegate {
         dismiss(animated: true) {
             // Show appropriate message
             if let topVC = UIApplication.shared.windows.first?.rootViewController?.topMostViewController() {
-                let title = hasPremium ? "Başarılı" : "Bilgi"
-                let message = hasPremium 
-                    ? "Satın alımlarınız başarıyla geri yüklendi." 
-                    : "Hesabınızda aktif bir abonelik bulunamadı."
+                let title = hasPremium ? NSLocalizedString("success", comment: "") : NSLocalizedString("info", comment: "")
+                let message = hasPremium
+                    ? NSLocalizedString("restoreSuccess", comment: "")
+                    : NSLocalizedString("noActiveSubscription", comment: "")
                 
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Tamam", style: .default))
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
                 topVC.present(alert, animated: true)
             }
         }
@@ -168,11 +168,11 @@ extension RevenueCatPaywallViewController: PaywallViewControllerDelegate {
             // Show error message
             if let topVC = UIApplication.shared.windows.first?.rootViewController?.topMostViewController() {
                 let alert = UIAlertController(
-                    title: "Hata", 
-                    message: "Satın alma işlemi başarısız oldu: \(error.localizedDescription)", 
+                    title: NSLocalizedString("error", comment: ""),
+                    message: "\(error.localizedDescription)",
                     preferredStyle: .alert
                 )
-                alert.addAction(UIAlertAction(title: "Tamam", style: .default))
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
                 topVC.present(alert, animated: true)
             }
         }
