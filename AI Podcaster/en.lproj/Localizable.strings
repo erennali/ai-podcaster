@@ -185,3 +185,10 @@
 //MARK: UserSubscriptions
 "unableToSub" = "Unable to verify subscription status. Please try again later.";
 
+//MARK: Guest Usage
+"guestLimitReached" = "You've reached the limit of free messages. Please create an account to continue.";
+"createAccountForMore" = "Create an account to send more messages and access all features.";
+"lastFreeMessage" = "This is your last free message. Create an account to continue using the app.";
+"oneMessageLeft" = "You have 1 free message left. Create an account for unlimited access.";
+"remainingFreeMessages" = "You have %d free messages left as a guest. Create an account for unlimited access.";
+

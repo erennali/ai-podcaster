@@ -187,5 +187,11 @@
 //MARK: UserSubscription
 "unableToSub" = "Abonelik durumu doğrulanamıyor. Lütfen daha sonra tekrar deneyin.";
 
+//MARK: Guest Usage
+"guestLimitReached" = "Ücretsiz mesaj limitine ulaştınız. Devam etmek için lütfen bir hesap oluşturun.";
+"createAccountForMore" = "Daha fazla mesaj göndermek ve tüm özelliklere erişmek için bir hesap oluşturun.";
+"lastFreeMessage" = "Bu son ücretsiz mesajınız. Uygulamayı kullanmaya devam etmek için bir hesap oluşturun.";
+"oneMessageLeft" = "1 ücretsiz mesajınız kaldı. Sınırsız erişim için bir hesap oluşturun.";
+"remainingFreeMessages" = "Misafir olarak %d ücretsiz mesajınız kaldı. Sınırsız erişim için bir hesap oluşturun.";
 
 
