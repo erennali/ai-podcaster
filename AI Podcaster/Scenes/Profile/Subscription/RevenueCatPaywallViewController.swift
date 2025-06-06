@@ -141,7 +141,7 @@ final class RevenueCatPaywallViewController: UIViewController {
     // MARK: - Actions
     @objc private func openTermsOfUse() {
         // BURAYA KENDİ KULLANIM ŞARTLARI URL'NİZİ GİRİN
-        guard let url = URL(string: "https://podcasterai.wordpress.com") else { return }
+        guard let url = URL(string: "https://podcasterai.wordpress.com/terms-of-use/") else { return }
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true)
     }

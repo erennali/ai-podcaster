@@ -116,8 +116,10 @@ private extension SettingsViewController {
         case .rateApp : promptReview()
         case .deleteAccount:
             deleteAccount()
-        case .privacyPolicy , .termsOfUse :
+        case .privacyPolicy :
             openUrl("https://podcasterai.wordpress.com")
+        case .termsOfUse:
+            openUrl("https://podcasterai.wordpress.com/terms-of-use/")
         case .subscription:
             showPaywall()
         case .restorePurchases:
