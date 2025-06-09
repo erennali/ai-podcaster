@@ -22,7 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          
         // RevenueCat konfigürasyonu
         Purchases.configure(withAPIKey: NetworkConstants.revenueCatApiKey)
+        #if DEBUG
         Purchases.debugLogsEnabled = true
+        #else
+        Purchases.debugLogsEnabled = false
+        #endif
         
         // IAPService'i konfigüre et
         IAPService.shared.configure()

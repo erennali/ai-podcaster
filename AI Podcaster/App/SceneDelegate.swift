@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import RevenueCat
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -111,6 +112,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     // Kullanıcı oturum açtığında RevenueCat entegrasyonunu yapılandır
     private func configureRevenueCatForLoggedInUser() {
+        // Cache'i temizle ve fresh data al
+        Purchases.shared.invalidateCustomerInfoCache()
+        
         // IAPService'i yeniden yapılandır - bu, RevenueCat ile kullanıcı kimliğini eşleştirecek
         IAPService.shared.configure()
     }

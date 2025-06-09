@@ -84,10 +84,17 @@ final class UserSubscriptionService: UserSubscriptionServiceProtocol {
     }
     
     func isFreePremiumFeatureAccessible(completion: @escaping (Bool, String?) -> Void) {
+        // PRIMARY CHECK: Use IAPService for most accurate RevenueCat entitlement status
+        if IAPService.shared.isPremiumUser() {
+            completion(true, nil)
+            return
+        }
+        
+        // SECONDARY CHECK: Firebase-based trial status for non-premium users
         checkSubscriptionStatus { status in
             switch status {
             case .premium:
-                // Premium users always have access
+                // This should not happen if IAPService check above is correct, but handle it
                 completion(true, nil)
                 
             case .freeTrial(let daysLeft):

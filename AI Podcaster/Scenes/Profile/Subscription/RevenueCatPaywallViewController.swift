@@ -11,7 +11,7 @@ final class RevenueCatPaywallViewController: UIViewController {
     // MARK: - Properties
     private var loadingIndicator: UIActivityIndicatorView!
     private var paywallVC: PaywallViewController?
-    private let premiumEntitlementID = "premium"
+    private let premiumEntitlementID = "Pro"
     
     // MARK: - UI Components for Links
     private lazy var linksStackView: UIStackView = {

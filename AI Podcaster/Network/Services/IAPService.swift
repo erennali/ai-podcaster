@@ -19,7 +19,7 @@ final class IAPService: NSObject, PurchasesDelegate {
     private let lifetimeProductID = "subscription_lifetime"
     
     // Premium entitlement identifier
-    private let premiumEntitlementID = "premium"
+    private let premiumEntitlementID = "Pro"
     
     // MARK: - Publishers
     private var cancellables = Set<AnyCancellable>()
@@ -59,13 +59,22 @@ final class IAPService: NSObject, PurchasesDelegate {
         Purchases.shared.getCustomerInfo { [weak self] (info, error) in
             if let error = error {
                 print("Error fetching customer info: \(error.localizedDescription)")
+                completion?(nil, error)
+                return
             }
+            
             self?.customerInfo = info
+            
             if let info = info {
                 self?.checkAndUpdateNonRenewingStatus(customerInfo: info)
-                // Premium durumunu Firebase'e kaydet
+                
+                // Update Firebase with latest entitlement status
                 self?.updatePremiumStatusInFirebase()
+                
+                // Notify UI of changes
+                NotificationCenter.default.post(name: .subscriptionStatusChanged, object: nil)
             }
+            
             completion?(info, error)
         }
     }
@@ -147,41 +156,50 @@ final class IAPService: NSObject, PurchasesDelegate {
     
     // MARK: - Subscription Status
     func isPremiumUser() -> Bool {
-        // Check if monthly subscription is active
+        // PRIMARY CHECK: RevenueCat entitlements (includes promotional grants from dashboard)
+        if let entitlement = customerInfo?.entitlements[premiumEntitlementID],
+           entitlement.isActive {
+            return true
+        }
+        
+        // SECONDARY CHECK: Direct store subscription verification (fallback)
         if let activeSubscriptions = customerInfo?.activeSubscriptions,
            activeSubscriptions.contains(monthlyProductID) {
             return true
         }
         
-        // Check if user has premium entitlement or active lifetime purchase
-        return customerInfo?.entitlements[premiumEntitlementID]?.isActive == true || isYearlyNonRenewingActive
+        // TERTIARY CHECK: Non-renewing lifetime purchases
+        return isYearlyNonRenewingActive
     }
     
     func getSubscriptionType() -> AppUser.SubscriptionType {
-        // Detaylı loglama ekleyelim
-        print("Entitlement durumu: \(customerInfo?.entitlements[premiumEntitlementID]?.isActive)")
-        print("Aktif abonelikler: \(customerInfo?.activeSubscriptions ?? [])")
-        print("Ömür boyu abonelik durumu: \(isYearlyNonRenewingActive)")
+        // PRIMARY CHECK: RevenueCat entitlements (includes promotional grants)
+        if let entitlement = customerInfo?.entitlements[premiumEntitlementID],
+           entitlement.isActive {
+            
+            // Determine subscription type based on product identifier or entitlement properties
+            if entitlement.productIdentifier == lifetimeProductID || isYearlyNonRenewingActive {
+                return .pro
+            } else {
+                return .premium
+            }
+        }
         
-        // Aylık abonelik kontrolü
+        // SECONDARY CHECK: Direct store subscription verification
         if let activeSubscriptions = customerInfo?.activeSubscriptions,
            activeSubscriptions.contains(monthlyProductID) {
-            print("Aylık abonelik tespit edildi")
             return .premium
         }
-        // Premium entitlement kontrolü
-        else if customerInfo?.entitlements[premiumEntitlementID]?.isActive == true {
-            print("Premium entitlement aktif")
-            return .premium
-        }
-        // Ömür boyu abonelik kontrolü
-        else if isYearlyNonRenewingActive {
-            print("Ömür boyu abonelik aktif")
+        
+        // TERTIARY CHECK: Non-renewing lifetime purchases
+        if isYearlyNonRenewingActive {
             return .pro
-        } else {
-            return .free
         }
+        
+        return .free
     }
+    
+
     
     // MARK: - User Identity Management
     
@@ -198,7 +216,6 @@ final class IAPService: NSObject, PurchasesDelegate {
                 self?.customerInfo = customerInfo
                 if let customerInfo = customerInfo {
                     self?.checkAndUpdateNonRenewingStatus(customerInfo: customerInfo)
-                    print("RevenueCat user identity set: \(user.uid), new user: \(created)")
                     
                     // Kullanıcı kimliği eşleştirildikten sonra Firebase'i güncelle
                     self?.updatePremiumStatusInFirebase()
@@ -212,25 +229,20 @@ final class IAPService: NSObject, PurchasesDelegate {
     // Premium durumunu Firebase'e kaydeder
     func updatePremiumStatusInFirebase() {
         guard let user = Auth.auth().currentUser else {
-            print("Firebase oturumu yok, premium durumu güncellenemedi")
             return
         }
         
         let subscriptionType = getSubscriptionType()
-        let isPremium = subscriptionType != .free  // Convert to boolean
-        
-        print("Firebase'e yazılıyor - isPremium: \(isPremium), subscriptionType: \(subscriptionType)")
+        let isPremium = subscriptionType != .free
         
         let db = Firestore.firestore()
         db.collection("users").document(user.uid).updateData([
-            "isPremium": isPremium,  // Now correctly storing a boolean
+            "isPremium": isPremium,
             "subscriptionType": subscriptionType.rawValue,
             "subscriptionUpdatedAt": FieldValue.serverTimestamp()
         ]) { error in
             if let error = error {
-                print("Premium durumu Firebase'e kaydedilemedi: \(error.localizedDescription)")
-            } else {
-                print("Premium durumu Firebase'e başarıyla kaydedildi: \(subscriptionType)")
+                print("Failed to update premium status: \(error.localizedDescription)")
             }
         }
     }
@@ -255,4 +267,43 @@ final class IAPService: NSObject, PurchasesDelegate {
 // MARK: - Notification Names
 extension Notification.Name {
     static let subscriptionStatusChanged = Notification.Name("subscriptionStatusChanged")
-} 
+}
+
+// MARK: - RevenueCat Entitlements Best Practices Documentation
+/*
+ 🚀 REVENUECAT ENTITLEMENTS IMPLEMENTATION GUIDE:
+ 
+ Bu implementation RevenueCat'in en iyi practice'lerini takip eder:
+ 
+ 1. ✅ PRIMARY CHECK: customerInfo.entitlements[entitlementID]?.isActive
+    - RevenueCat panelinden verilen promotional grants'ları da kapsar
+    - Store'dan gelen tüm active subscription'ları otomatik olarak entitlement'a çevirir
+    - Cross-platform sync destekler
+    - Manual grants otomatik olarak algılanır
+ 
+ 2. ✅ SECONDARY CHECK: customerInfo.activeSubscriptions.contains(productID)
+    - Direct store verification (fallback)
+    - Sadece gerçek store subscription'ları gösterir
+    - Promotional grants'ları kapsamaz
+ 
+ 3. ✅ TERTIARY CHECK: Non-renewing purchases
+    - Lifetime purchases gibi özel durumlar için
+ 
+ 🎯 Bu yaklaşım sayesinde:
+ - ✅ RevenueCat panelinden kullanıcılara premium access verebilirsiniz
+ - ✅ Normal store subscription'ları çalışmaya devam eder
+ - ✅ Promotional campaigns yönetebilirsiniz
+ - ✅ Cross-platform sync otomatik olarak çalışır
+ - ✅ Uygulama her açılışında entitlement durumu Firebase'e senkronize edilir
+ 
+ 🔧 Test etmek için:
+ 1. Settings > Debug Entitlements'tan mevcut durumu kontrol edin
+ 2. RevenueCat panelinden test kullanıcısına grant verin
+ 3. Uygulama cache'ini temizleyip fresh data alın (debug butonları ile)
+ 4. Firebase'deki isPremium field'ını kontrol edin
+ 
+ 📱 Uygulama akışı:
+ - App launch → cache invalidate → customerInfo fetch → Firebase sync
+ - Foreground → fresh check → Firebase sync if needed
+ - Purchase/Restore → immediate Firebase sync
+ */ 
